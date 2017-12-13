@@ -2,25 +2,22 @@
   <div class="app-container">
     <!-- filter ↓ -->
     <div class="filter-container">
-      <el-input placeholder="请输入内容" style="width: 200px;" class="filter-item"></el-input>
-      <el-select placeholder="品种" v-model="listQuery.variety" class="filter-item">
+      <el-input placeholder="请输入市场编码" style="width: 200px;" v-model="listQuery.MDBCodeId" class="filter-item">
+      </el-input>
+      <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
         <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-      <el-select placeholder="交易所" v-model="listQuery.exchange" class="filter-item">
+      <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
         <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-      <el-select placeholder="来源" v-model="listQuery.feedSource" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select placeholder="类型" v-model="listQuery.feedType" class="filter-item">
+      <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
         <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
       <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
-      <el-button type="primary" icon="el-icon-edit" class="filter-item">添加</el-button>
+      <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
       <el-button type="info" icon="el-icon-download" class="filter-item">导出</el-button>
       <el-button type="success" icon="el-icon-refresh" round class="filter-item">获取彭博行情</el-button>
     </div>
@@ -28,7 +25,7 @@
     <div>
       <el-table
         :data="tableData"
-        border fit highlight-current-row
+        border fit
         style="width: 100%">
         <el-table-column
           type="selection"
@@ -37,52 +34,42 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="date"
-          label="交易日期"
+          prop="MDBCodeId"
+          label="市场编码Id"
           align="center"
           width="150">
         </el-table-column>
         <el-table-column
-          prop="exchange"
+          prop="PriceType"
           align="center"
-          label="交易所">
+          label="行情类型">
         </el-table-column>
         <el-table-column
-          prop="commodity"
+          prop="PriceValue"
           align="center"
-          label="品种">
+          label="行情值">
         </el-table-column>
         <el-table-column
-          prop="contract"
+          prop="Source"
           align="center"
-          label="合约">
+          label="行情来源">
         </el-table-column>
         <el-table-column
-          prop="feedSource"
+          prop="MarketType"
           align="center"
-          label="来源">
+          label="市场类型">
         </el-table-column>
         <el-table-column
-          prop="feedType"
-          align="center"
-          label="类型">
-        </el-table-column>
-        <el-table-column
-          prop="lastUpdateDate"
+          prop="LastUpdateTime"
           align="center"
           label="更新时间">
-        </el-table-column>
-        <el-table-column
-          prop="updater"
-          align="center"
-          label="更新者">
         </el-table-column>
         <el-table-column
           label="操作"
           align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini">编辑</el-button>
-            <el-button size="mini" type="danger">删除</el-button>
+            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+            <el-button type="danger" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -96,6 +83,48 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
+      </div>
+
+      <div>
+        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+          <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="80px"
+                   style='width: 400px; margin-left:50px;'>
+            <el-form-item label="市场编码Id">
+              <el-input v-model="temp.MDBCodeId"></el-input>
+            </el-form-item>
+            <el-form-item label="行情类型">
+              <el-select class="filter-item" v-model="temp.PriceType" placeholder="请选择" style="width: 100%;">
+                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="行情值">
+              <el-input v-model="temp.PriceValue"></el-input>
+            </el-form-item>
+            <el-form-item label="行情来源">
+              <el-select class="filter-item" v-model="temp.Source" placeholder="请选择" style="width: 100%;">
+                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="市场类型">
+              <el-select class="filter-item" v-model="temp.MarketType" placeholder="请选择" style="width: 100%;">
+                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="时间" prop="timestamp">
+              <el-date-picker v-model="temp.timestamp" type="datetime" disabledDate="return true" placeholder="选择日期时间"
+                              style="width: 100%;">
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确 定</el-button>
+            <el-button type="primary" v-else @click="updateData">确 定</el-button>
+          </div>
+        </el-dialog>
       </div>
 
     </div>
@@ -114,12 +143,14 @@
         listQuery: {
           page: 1,
           limit: 20,
-          variety: '',
-          commodity: '',
-          exchange: '',
-          feedSource: '',
-          feedType: ''
+          MDBCodeId: '',
+          PriceType: '',
+          PriceValue: '',
+          Source: '',
+          MarketType: '',
+          LastUpdateTime: ''
         },
+        statusOptions: [1, 2, 3],
         varietyOptions: [
           {
             value: 'gold',
@@ -134,46 +165,88 @@
             label: '铜'
           }
         ],
-        tableData: [{
-          date: '2016-05-03',
-          exchange: '上期所',
-          commodity: '铜',
-          contract: 'Cu1710',
-          feedSource: '彭博',
-          feedType: '时点价',
-          lastUpdateDate: new Date().toLocaleString(),
-          updater: 'Admin'
-        }, {
-          date: '2016-05-02',
-          exchange: '上期所',
-          commodity: '金',
-          contract: 'dominant',
-          feedSource: '手工录入',
-          feedType: '结算价',
-          lastUpdateDate: new Date().toLocaleString(),
-          updater: 'Admin'
-        }, {
-          date: '2016-05-04',
-          exchange: 'COMEX',
-          commodity: '铜',
-          contract: 'cu1809',
-          feedSource: '彭博',
-          feedType: '时点价',
-          lastUpdateDate: new Date().toLocaleString(),
-          updater: 'Admin'
-        }, {
-          date: '2016-05-01',
-          exchange: '上期所',
-          commodity: '铜',
-          contract: 'cu1809',
-          feedSource: '彭博',
-          feedType: '时点价',
-          lastUpdateDate: new Date().toLocaleString(),
-          updater: 'Admin'
-        }]
+        tableData: [
+          {
+            MDBCodeId: '123',
+            PriceType: '上期所',
+            PriceValue: '49000',
+            Source: '彭博',
+            MarketType: '时点价',
+            LastUpdateTime: new Date().toLocaleString()
+          }, {
+            MDBCodeId: '122',
+            PriceType: '上期所',
+            PriceValue: '50170',
+            Source: '手工录入',
+            MarketType: '结算价',
+            LastUpdateTime: new Date().toLocaleString()
+          }, {
+            MDBCodeId: '111',
+            PriceType: 'COMEX',
+            PriceValue: '52050',
+            Source: '彭博',
+            MarketType: '时点价',
+            LastUpdateTime: new Date().toLocaleString()
+          }, {
+            MDBCodeId: '142',
+            PriceType: '上期所',
+            PriceValue: '51180',
+            Source: '彭博',
+            MarketType: '时点价',
+            LastUpdateTime: new Date().toLocaleString()
+          }
+        ],
+        temp: {
+          MDBCodeId: '',
+          PriceType: '',
+          PriceValue: '',
+          Source: '',
+          MarketType: '',
+          LastUpdateTime: ''
+        },
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: '编辑',
+          create: '创建'
+        },
+        dialogPvVisible: false,
+        rules: {}
       }
     },
-    methods: {}
+    methods: {
+      resetTemp: function () {
+        this.temp = {
+          MDBCodeId: '',
+          PriceType: '',
+          PriceValue: '',
+          Source: '',
+          MarketType: '',
+          LastUpdateTime: ''
+        }
+      },
+      handleCreate: function () {
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      handleUpdate: function (row) {
+        this.temp = Object.assign({}, row)
+        this.temp.timestamp = new Date()
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      createData: function () {
+      },
+      updateData: function () {
+      }
+    }
   }
 </script>
 
