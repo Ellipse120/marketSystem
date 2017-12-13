@@ -46,8 +46,34 @@ export const constantRouterMap = [
         name: 'marketDataManagement',
         component: _import('market-data-management/index'),
         meta: {
-          title: '行情数据管理',
+          title: '行情数据',
           icon: 'table'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/marketConfig',
+    component: Layout,
+    meta: { title: '行情配置', icon: 'example' },
+    children: [
+      {
+        path: 'bloomBerg',
+        name: 'marketConfig',
+        component: _import('market-config/index'),
+        meta: {
+          title: '彭博配置',
+          icon: 'bloombergconfig'
+        }
+      },
+      {
+        path: 'code',
+        name: 'marketConfig',
+        component: _import('market-config/index'),
+        meta: {
+          title: '编码配置',
+          icon: 'config'
         }
       }
     ]

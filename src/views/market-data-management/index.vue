@@ -114,14 +114,14 @@
               </el-select>
             </el-form-item>
             <el-form-item label="时间" prop="timestamp">
-              <el-date-picker v-model="temp.timestamp" type="datetime" disabledDate="return true" placeholder="选择日期时间"
+              <el-date-picker :readonly="dialogStatus ==='update'" v-model="temp.timestamp" type="datetime" disabledDate="return true" placeholder="选择日期时间"
                               style="width: 100%;">
               </el-date-picker>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确 定</el-button>
+            <el-button v-if="dialogStatus === 'create'" type="primary" @click="createData">确 定</el-button>
             <el-button type="primary" v-else @click="updateData">确 定</el-button>
           </div>
         </el-dialog>
@@ -243,8 +243,10 @@
         })
       },
       createData: function () {
+        console.log('create')
       },
       updateData: function () {
+        console.log('update')
       }
     }
   }
