@@ -21,7 +21,7 @@ service.interceptors.request.use(config => {
   Promise.reject(error)
 })
 
-// respone拦截器
+// response拦截器
 service.interceptors.response.use(
   response => {
     /**
@@ -62,5 +62,9 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+service.interceptors.response.use(undefined, function axiosRetryInterceptor (err) {
+  // TODO 超时重试
+})
 
 export default service

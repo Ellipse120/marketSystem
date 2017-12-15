@@ -25,6 +25,8 @@
     <div>
       <el-table
         :data="tableData"
+        v-loading.body="listLoading"
+        element-loading-text="拼命加载中。。。"
         border fit
         style="width: 100%">
         <el-table-column
@@ -66,10 +68,13 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          align="center">
+          align="center"
+          fixed="right"
+          width="200">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button type="primary" icon="el-icon-edit-outline" size="mini" @click="handleUpdate(scope.row)">编辑
+            </el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -115,7 +120,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="时间" prop="timestamp">
-              <el-date-picker :readonly="dialogStatus ==='update'" v-model="temp.timestamp" type="datetime" disabledDate="return true" placeholder="选择日期时间"
+              <el-date-picker :readonly="dialogStatus ==='update'" v-model="temp.timestamp" type="datetime"
+                              disabledDate="return true" placeholder="选择日期时间"
                               style="width: 100%;">
               </el-date-picker>
             </el-form-item>
@@ -133,10 +139,10 @@
 </template>
 
 <script>
+  import { getList } from '../../api/market-config'
+
   export default {
     name: 'marketDataManagement',
-    created () {
-    },
     data () {
       return {
         total: 4,
@@ -215,7 +221,17 @@
         rules: {}
       }
     },
+    created () {
+      this.getList()
+    },
     methods: {
+      getList () {
+        this.listLoading = true
+        getList(this.listQuery).then(response => {
+          console.log(response)
+          this.listLoading = false
+        })
+      },
       resetTemp: function () {
         this.temp = {
           MDBCodeId: '',
