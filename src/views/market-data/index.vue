@@ -18,7 +18,7 @@
       </el-select>
       <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
       <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-      <el-button type="info" icon="el-icon-download" class="filter-item">导出</el-button>
+      <el-button type="info" icon="el-icon-download" class="filter-item">导入</el-button>
       <el-button type="success" icon="el-icon-refresh" round class="filter-item">获取彭博行情</el-button>
     </div>
     <!-- table ↓ -->
@@ -69,7 +69,7 @@
           align="center">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,6 +85,7 @@
         </el-pagination>
       </div>
 
+      <!-- dialog -->
       <div>
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
           <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="80px"
@@ -240,6 +241,24 @@
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
+        })
+      },
+      handleDelete: function (row) {
+        this.$confirm(`此操作将永久删除市场编码Id【${row.MDBCodeId}】`, '提示', {
+          type: 'warning',
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          center: true
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除操作'
+          })
         })
       },
       createData: function () {

@@ -25,7 +25,7 @@ export const constantRouterMap = [
     path: '',
     component: Layout,
     redirect: 'dashboard',
-    name: 'Dashboard',
+    name: '首页',
     children: [{
       path: 'dashboard',
       component: _import('dashboard/index'),
@@ -38,13 +38,13 @@ export const constantRouterMap = [
   },
 
   {
-    path: '/marketDataManagement',
+    path: '/marketData',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'marketDataManagement',
-        component: _import('market-data-management/index'),
+        name: 'marketData',
+        component: _import('market-data/index'),
         meta: {
           title: '行情数据',
           icon: 'table'
@@ -56,12 +56,14 @@ export const constantRouterMap = [
   {
     path: '/marketConfig',
     component: Layout,
+    name: 'marketConfig',
+    redirect: '/marketConfig/bloomBerg',
     meta: { title: '行情配置', icon: 'example' },
     children: [
       {
         path: 'bloomBerg',
-        name: 'marketConfig',
-        component: _import('market-config/index'),
+        name: 'bloomBergConfig',
+        component: _import('market-config/bloomberg'),
         meta: {
           title: '彭博配置',
           icon: 'bloombergconfig'
@@ -69,8 +71,8 @@ export const constantRouterMap = [
       },
       {
         path: 'code',
-        name: 'marketConfig',
-        component: _import('market-config/index'),
+        name: 'codeConfig',
+        component: _import('market-config/code'),
         meta: {
           title: '编码配置',
           icon: 'config'
