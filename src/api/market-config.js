@@ -5,7 +5,6 @@ export function getList (params) {
     url: '/table/list',
     method: 'get',
     params,
-    retry: 3,
-    retryDelay: 11000
+    retry: 3
   })
 }

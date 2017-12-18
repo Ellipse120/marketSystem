@@ -55,9 +55,9 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error)// for debug
     Message({
-      message: `${error.message}, 5秒后重新请求...`,
+      message: `${error.message}, 即将重试...`,
       type: 'error',
-      duration: 5 * 1000
+      duration: 2 * 1000
     })
     return Promise.reject(error)
   }
@@ -68,11 +68,18 @@ service.interceptors.response.use(undefined, function axiosRetryInterceptor (err
 
   if (!config || !config.retry) return Promise.reject(err)
 
-  config.retryCount = config.retryCount || 0
+  config._retryCount = config._retryCount || 0
 
-  if (config.retryCount >= config.retry) {
+  if (config._retryCount >= config.retry) {
+    Message({
+      message: `${err.message}, 重试次数过多，请检查网络是否正常`,
+      type: 'error',
+      duration: 2 * 1000
+    })
     return Promise.reject(err)
   }
+
+  config._retryCount += 1
 
   const backOff = new Promise(function (resolve) {
     setTimeout(function () {
