@@ -55,7 +55,7 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error)// for debug
     Message({
-      message: error.message,
+      message: `${error.message}, 5秒后重新请求...`,
       type: 'error',
       duration: 5 * 1000
     })
@@ -64,7 +64,25 @@ service.interceptors.response.use(
 )
 
 service.interceptors.response.use(undefined, function axiosRetryInterceptor (err) {
-  // TODO 超时重试
+  const config = err.config
+
+  if (!config || !config.retry) return Promise.reject(err)
+
+  config.retryCount = config.retryCount || 0
+
+  if (config.retryCount >= config.retry) {
+    return Promise.reject(err)
+  }
+
+  const backOff = new Promise(function (resolve) {
+    setTimeout(function () {
+      resolve()
+    }, 5000)
+  })
+
+  return backOff.then(function () {
+    return service(config)
+  })
 })
 
 export default service
