@@ -117,7 +117,15 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="marketTypeObj.label">
-            <el-select class="filter-item" v-model="temp.ObjectId" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'" v-model="temp.FutureContractId" placeholder="请选择" style="width: 100%;">
+              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              </el-option>
+            </el-select>
+            <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'" v-model="temp.InterestRateId" placeholder="请选择" style="width: 100%;">
+              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              </el-option>
+            </el-select>
+            <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'" v-model="temp.ForexId" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
@@ -235,6 +243,7 @@
         this.temp = Object.assign({}, row)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
+        this.temp.ForexId = '2222'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
