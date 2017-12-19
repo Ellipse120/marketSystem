@@ -127,30 +127,36 @@
 
     <!-- dialog -->
     <div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible"
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="10vh" width="600px"
                  @close="closeBloomDialog">
         <el-form :rules="rules" ref="dataForm" :model="bloomConfig2" label-position="left" label-width="100px"
-                 style='width: 400px; margin-left:50px;'>
+                 size="mini" style='width: 500px; margin-left:35px;'>
           <el-form-item label="编码配置">
-            <el-select class="filter-item" v-model="bloomConfig2.CodeConfigId" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="bloomConfig2.CodeConfigId" placeholder="请选择编码配置"
+                       style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="行情类型">
-            <el-select class="filter-item" v-model="bloomConfig2.PriceType" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="bloomConfig2.PriceType" placeholder="请选择行情类型" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="彭博代码">
-            <el-input v-model="bloomConfig2.BloombergCode"></el-input>
+            <el-input v-model="bloomConfig2.BloombergCode" placeholder="请输入彭博代码"></el-input>
           </el-form-item>
           <el-form-item label="请求类型">
-            <el-input v-model="bloomConfig2.RequestType"></el-input>
+            <el-select class="filter-item" v-model="bloomConfig2.RequestType" placeholder="请选择请求类型"
+                       style="width: 100%;">
+              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="市场活动类型">
-            <el-select class="filter-item" v-model="bloomConfig2.BloombergDataType" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="bloomConfig2.BloombergDataType" placeholder="请选择市场活动类型"
+                       style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
@@ -160,10 +166,10 @@
               v-model="value4"
               type="datetimerange"
               :picker-options="pickerOptions2"
-              range-separator="至"
+              range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              align="right">
+              align="center">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="创建时间">
@@ -226,17 +232,6 @@
             label: '铜'
           }
         ],
-        temp: {
-          CodeConfigId: '',
-          PriceType: '',
-          BloombergCode: '',
-          RequestType: '',
-          BloombergDataType: '',
-          RequestStartTime: '',
-          RequestEndTime: '',
-          CreationTime: '',
-          LastUpdateTime: ''
-        },
         dialogStatus: '',
         textMap: {
           update: '编辑',
@@ -275,6 +270,7 @@
       }
     },
     created () {
+      console.log(this.$store.state)
     },
     computed: {
       ...mapGetters([

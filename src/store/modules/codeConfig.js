@@ -47,7 +47,8 @@ const codeConfig = {
   },
 
   actions: {
-    getAllCodeConfigs () {}
+    getAllCodeConfigs () {
+    }
   }
 }
 

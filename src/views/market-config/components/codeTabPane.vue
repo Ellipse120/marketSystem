@@ -114,7 +114,7 @@
 
     <!-- dialog-->
     <div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeBloomDialog">
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeBloomDialog" top="10vh">
         <el-form :rules="rules" ref="dataForm" :model="codeConfigItem" label-position="left" label-width="80px"
                  style='width: 400px; margin-left:50px;'>
           <el-form-item label="唯一编码">
@@ -142,12 +142,14 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="marketTypeObj.label">
-            <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'" v-model="codeConfigItem.FutureContractId"
+            <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'"
+                       v-model="codeConfigItem.FutureContractId"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
-            <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'" v-model="codeConfigItem.InterestRateId"
+            <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'"
+                       v-model="codeConfigItem.InterestRateId"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
@@ -206,18 +208,7 @@
           }
         ],
         statusOptions: [1, 2, 3],
-        tableData: [
-        ],
-        temp: {
-          Code: '',
-          DisplayName: '',
-          Id: '',
-          MarketType: '',
-          ObjectId: '',
-          FutureContractId: '',
-          InterestRateId: '',
-          ForexId: ''
-        },
+        tableData: [],
         dialogStatus: '',
         textMap: {
           update: '编辑',
