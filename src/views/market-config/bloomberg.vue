@@ -2,22 +2,35 @@
   <div class="app-container">
     <!-- filter -->
     <div class="filter-container">
-      <el-input placeholder="请输入彭博代码" style="width: 200px;" v-model="listQuery.MDBCodeId" class="filter-item">
-      </el-input>
-      <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select placeholder="市场活动类型" v-model="listQuery.BloombergDataType" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
-      <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
+      <el-row :gutter="10">
+        <el-col :span="3">
+          <el-input placeholder="彭博代码" v-model="listQuery.MDBCodeId" class="filter-item">
+          </el-input>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="市场类型" v-model="listQuery.BloombergDataType" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
+          <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleCreate">导入</el-button>
+        </el-col>
+      </el-row>
     </div>
 
     <!-- table -->
@@ -32,13 +45,18 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="BloombergCode"
-          label="彭博代码"
+          prop="CodeConfigId"
+          label="编码配置代码"
           align="center">
         </el-table-column>
         <el-table-column
           prop="PriceType"
           label="行情类型"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="BloombergCode"
+          label="彭博代码"
           align="center">
         </el-table-column>
         <el-table-column
@@ -72,14 +90,24 @@
           align="center">
         </el-table-column>
         <el-table-column
-          label="操作"
+          label=""
           align="center"
           fixed="right"
-          width="200">
+          width="80">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit-outline" size="mini" @click="handleUpdate(scope.row)">编辑
-            </el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            <el-dropdown size="medium">
+              <el-button type="text">
+                操作<i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleUpdate(scope.row)">编辑</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -102,14 +130,20 @@
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
         <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="100px"
                  style='width: 400px; margin-left:50px;'>
-          <el-form-item label="彭博代码">
-            <el-input v-model="temp.BloombergCode"></el-input>
+          <el-form-item label="编码配置">
+            <el-select class="filter-item" v-model="temp.CodeConfigId" placeholder="请选择" style="width: 100%;">
+              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="行情类型">
             <el-select class="filter-item" v-model="temp.PriceType" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="彭博代码">
+            <el-input v-model="temp.BloombergCode"></el-input>
           </el-form-item>
           <el-form-item label="请求类型">
             <el-input v-model="temp.RequestType"></el-input>
@@ -191,8 +225,9 @@
         ],
         tableData: [
           {
-            BloombergCode: 'CU3 Comdty',
+            CodeConfigId: '3',
             PriceType: '结算价',
+            BloombergCode: 'CU3 Comdty',
             RequestType: '历史日内行情_含时间段',
             BloombergDataType: 'open',
             RequestStartTime: new Date().toLocaleString(),
@@ -201,8 +236,9 @@
             LastUpdateTime: new Date().toLocaleString()
           },
           {
-            BloombergCode: 'SHGFMAUT Index',
+            CodeConfigId: '2',
             PriceType: '时点价',
+            BloombergCode: 'SHGFMAUT Index',
             RequestType: '历史日内行情_含时间段',
             BloombergDataType: 'open',
             RequestStartTime: new Date().toLocaleString(),
@@ -211,8 +247,9 @@
             LastUpdateTime: new Date().toLocaleString()
           },
           {
-            BloombergCode: 'SHGFMAUT Index',
+            CodeConfigId: '2',
             PriceType: '时点价',
+            BloombergCode: 'SHGFMAUT Index',
             RequestType: '历史日内行情_含时间段',
             BloombergDataType: 'close',
             RequestStartTime: new Date().toLocaleString(),
@@ -221,8 +258,9 @@
             LastUpdateTime: new Date().toLocaleString()
           },
           {
-            BloombergCode: 'HG{0} Comdty',
+            CodeConfigId: '1',
             PriceType: '结算价',
+            BloombergCode: 'HG{0} Comdty',
             RequestType: '历史日内行情_含时间段',
             BloombergDataType: 'close',
             RequestStartTime: new Date().toLocaleString(),
@@ -232,8 +270,9 @@
           }
         ],
         temp: {
-          BloombergCode: '',
+          CodeConfigId: '',
           PriceType: '',
+          BloombergCode: '',
           RequestType: '',
           BloombergDataType: '',
           RequestStartTime: '',
@@ -282,8 +321,9 @@
     methods: {
       resetTemp: function () {
         this.temp = {
-          BloombergCode: '',
+          CodeConfigId: '',
           PriceType: '',
+          BloombergCode: '',
           RequestType: '',
           BloombergDataType: '',
           RequestStartTime: '',
@@ -311,7 +351,7 @@
         })
       },
       handleDelete: function (row) {
-        this.$confirm(`此操作将永久删除市场编码Id【${row.MDBCodeId}】`, '提示', {
+        this.$confirm(`此操作将永久删除彭博代码【${row.BloombergCode}】`, '提示', {
           type: 'warning',
           confirmButtonText: '删除',
           cancelButtonText: '取消',

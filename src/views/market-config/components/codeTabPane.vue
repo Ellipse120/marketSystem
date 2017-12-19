@@ -2,22 +2,34 @@
   <div class="app-container">
     <!-- filter -->
     <div class="filter-container">
-      <el-input placeholder="请输入市场编码" style="width: 200px;" v-model="listQuery.MDBCodeId" class="filter-item">
-      </el-input>
-      <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
-      <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
+      <el-row :gutter="10">
+        <el-col :span="4">
+          <el-input placeholder="市场编码" v-model="listQuery.MDBCodeId" class="filter-item">
+          </el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="4">
+          <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="4">
+          <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="8">
+          <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
+          <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
+        </el-col>
+      </el-row>
     </div>
 
     <!-- table -->
@@ -65,11 +77,24 @@
           label="操作"
           align="center"
           fixed="right"
-          width="200">
+          width="80">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit-outline" size="mini" @click="handleUpdate(scope.row)">编辑
-            </el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            <el-dropdown size="medium">
+              <el-button type="text">
+                操作<i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleUpdate(scope.row)">编辑</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleBloomConfig(scope.row)">配置彭博</el-button>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -117,15 +142,18 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="marketTypeObj.label">
-            <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'" v-model="temp.FutureContractId" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'" v-model="temp.FutureContractId"
+                       placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
-            <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'" v-model="temp.InterestRateId" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'" v-model="temp.InterestRateId"
+                       placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
-            <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'" v-model="temp.ForexId" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'" v-model="temp.ForexId"
+                       placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
@@ -265,6 +293,10 @@
             message: '已取消删除操作'
           })
         })
+      },
+      handleBloomConfig: function (row) {
+        // TODO 跳转到彭博配置页面打开弹窗
+        this.$router.push('bloomBerg')
       },
       createData: function () {
         console.log('create')

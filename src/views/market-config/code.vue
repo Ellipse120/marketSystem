@@ -6,11 +6,15 @@
         :key="item.key"
         :label="item.label"
         :name="item.key">
-        <span slot="label"><svg-icon :icon-class="item.key"/> {{item.label}}</span>
-        <code-tab-pane
-          v-if="activeLabel===item.key"
-          :type="item.key"
-        ></code-tab-pane>
+        <span slot="label"><svg-icon :icon-class="item.key"/>{{item.label}}</span>
+        <transition name="el-zoom-in-center">
+          <keep-alive>
+            <code-tab-pane
+              v-if="activeLabel===item.key"
+              :type="item.key">
+            </code-tab-pane>
+          </keep-alive>
+        </transition>
       </el-tab-pane>
     </el-tabs>
   </div>

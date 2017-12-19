@@ -2,24 +2,36 @@
   <div class="app-container">
     <!-- filter ↓ -->
     <div class="filter-container">
-      <el-input placeholder="请输入市场编码" style="width: 200px;" v-model="listQuery.MDBCodeId" class="filter-item">
-      </el-input>
-      <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
-        <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
-      <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-      <el-button type="info" icon="el-icon-download" class="filter-item">导入</el-button>
-      <el-button type="success" icon="el-icon-refresh" round class="filter-item">获取彭博行情</el-button>
+      <el-row :gutter="10">
+        <el-col :span="3">
+          <el-input placeholder="市场编码" v-model="listQuery.MDBCodeId" class="filter-item">
+          </el-input>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
+            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="12" style="display: inline-flex;">
+          <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
+          <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item">导入</el-button>
+          <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item">彭博行情</el-button>
+        </el-col>
+      </el-row>
     </div>
     <!-- table ↓ -->
     <div>
