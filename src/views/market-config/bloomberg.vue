@@ -36,7 +36,7 @@
     <!-- table -->
     <div>
       <el-table
-        :data="tableData"
+        :data="allBloomConfigs"
         border
         style="width: 100%;">
         <el-table-column
@@ -127,29 +127,30 @@
 
     <!-- dialog -->
     <div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-        <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="100px"
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible"
+                 @close="closeBloomDialog">
+        <el-form :rules="rules" ref="dataForm" :model="bloomConfig2" label-position="left" label-width="100px"
                  style='width: 400px; margin-left:50px;'>
           <el-form-item label="编码配置">
-            <el-select class="filter-item" v-model="temp.CodeConfigId" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="bloomConfig2.CodeConfigId" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="行情类型">
-            <el-select class="filter-item" v-model="temp.PriceType" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="bloomConfig2.PriceType" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="彭博代码">
-            <el-input v-model="temp.BloombergCode"></el-input>
+            <el-input v-model="bloomConfig2.BloombergCode"></el-input>
           </el-form-item>
           <el-form-item label="请求类型">
-            <el-input v-model="temp.RequestType"></el-input>
+            <el-input v-model="bloomConfig2.RequestType"></el-input>
           </el-form-item>
           <el-form-item label="市场活动类型">
-            <el-select class="filter-item" v-model="temp.BloombergDataType" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="bloomConfig2.BloombergDataType" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
@@ -166,20 +167,20 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="创建时间">
-            <el-date-picker :readonly="dialogStatus ==='update'" v-model="temp.CreationTime" type="datetime"
+            <el-date-picker :readonly="dialogStatus ==='update'" v-model="bloomConfig2.CreationTime" type="datetime"
                             disabledDate="return true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="最后更新时间">
-            <el-date-picker :readonly="dialogStatus ==='update'" v-model="temp.LastUpdateTime" type="datetime"
+            <el-date-picker :readonly="dialogStatus ==='update'" v-model="bloomConfig2.LastUpdateTime" type="datetime"
                             disabledDate="return true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="cancel">取 消</el-button>
           <el-button v-if="dialogStatus === 'create'" type="primary" @click="createData">确 定</el-button>
           <el-button type="primary" v-else @click="updateData">确 定</el-button>
         </div>
@@ -190,6 +191,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'bloomberg',
     data () {
@@ -223,52 +226,6 @@
             label: '铜'
           }
         ],
-        tableData: [
-          {
-            CodeConfigId: '3',
-            PriceType: '结算价',
-            BloombergCode: 'CU3 Comdty',
-            RequestType: '历史日内行情_含时间段',
-            BloombergDataType: 'open',
-            RequestStartTime: new Date().toLocaleString(),
-            RequestEndTime: new Date().toLocaleString(),
-            CreationTime: new Date().toLocaleString(),
-            LastUpdateTime: new Date().toLocaleString()
-          },
-          {
-            CodeConfigId: '2',
-            PriceType: '时点价',
-            BloombergCode: 'SHGFMAUT Index',
-            RequestType: '历史日内行情_含时间段',
-            BloombergDataType: 'open',
-            RequestStartTime: new Date().toLocaleString(),
-            RequestEndTime: new Date().toLocaleString(),
-            CreationTime: new Date().toLocaleString(),
-            LastUpdateTime: new Date().toLocaleString()
-          },
-          {
-            CodeConfigId: '2',
-            PriceType: '时点价',
-            BloombergCode: 'SHGFMAUT Index',
-            RequestType: '历史日内行情_含时间段',
-            BloombergDataType: 'close',
-            RequestStartTime: new Date().toLocaleString(),
-            RequestEndTime: new Date().toLocaleString(),
-            CreationTime: new Date().toLocaleString(),
-            LastUpdateTime: new Date().toLocaleString()
-          },
-          {
-            CodeConfigId: '1',
-            PriceType: '结算价',
-            BloombergCode: 'HG{0} Comdty',
-            RequestType: '历史日内行情_含时间段',
-            BloombergDataType: 'close',
-            RequestStartTime: new Date().toLocaleString(),
-            RequestEndTime: new Date().toLocaleString(),
-            CreationTime: new Date().toLocaleString(),
-            LastUpdateTime: new Date().toLocaleString()
-          }
-        ],
         temp: {
           CodeConfigId: '',
           PriceType: '',
@@ -280,7 +237,6 @@
           CreationTime: '',
           LastUpdateTime: ''
         },
-        dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
           update: '编辑',
@@ -318,33 +274,37 @@
         }
       }
     },
-    methods: {
-      resetTemp: function () {
-        this.temp = {
-          CodeConfigId: '',
-          PriceType: '',
-          BloombergCode: '',
-          RequestType: '',
-          BloombergDataType: '',
-          RequestStartTime: '',
-          RequestEndTime: '',
-          CreationTime: '',
-          LastUpdateTime: ''
+    created () {
+    },
+    computed: {
+      ...mapGetters([
+        'isShowDialog',
+        'allBloomConfigs',
+        'bloomConfig2'
+      ]),
+      dialogFormVisible: {
+        get: function () {
+          return this.$store.state.bloomConfig.isShowDialog
+        },
+        set: function () {
+          return ''
         }
-      },
+      }
+    },
+    methods: {
       handleCreate: function () {
-        this.resetTemp()
+        this.$store.commit('resetBloomConfigRow')
+        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
         this.dialogStatus = 'create'
-        this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
       handleUpdate: function (row) {
-        this.temp = Object.assign({}, row)
-        this.temp.CreationTime = new Date() + ''
-        this.temp.LastUpdateTime = new Date() + ''
-        this.dialogFormVisible = true
+        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.$store.commit('GETBYID', row.CodeConfigId)
         this.dialogStatus = 'update'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
@@ -368,11 +328,19 @@
           })
         })
       },
+      cancel: function () {
+        this.$store.commit('CHANGE_DIALOG', { val: false })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
+      },
       createData: function () {
         console.log('create')
       },
       updateData: function () {
         console.log('update')
+      },
+      closeBloomDialog: function () {
+        this.$store.commit('CHANGE_DIALOG', { val: false })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
       }
     }
   }

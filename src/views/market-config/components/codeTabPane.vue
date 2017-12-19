@@ -3,29 +3,29 @@
     <!-- filter -->
     <div class="filter-container">
       <el-row :gutter="10">
-        <el-col :span="4">
+        <el-col :span="3">
           <el-input placeholder="市场编码" v-model="listQuery.MDBCodeId" class="filter-item">
           </el-input>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
             <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
             <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
             <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="12">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
         </el-col>
@@ -35,7 +35,7 @@
     <!-- table -->
     <div>
       <el-table
-        :data="tableData"
+        :data="allCodeConfigs"
         border
         style="width: 100%;">
         <el-table-column
@@ -114,45 +114,45 @@
 
     <!-- dialog-->
     <div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-        <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="80px"
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeBloomDialog">
+        <el-form :rules="rules" ref="dataForm" :model="codeConfigItem" label-position="left" label-width="80px"
                  style='width: 400px; margin-left:50px;'>
           <el-form-item label="唯一编码">
-            <el-input v-model="temp.Code"></el-input>
+            <el-input v-model="codeConfigItem.Code"></el-input>
           </el-form-item>
           <el-form-item label="名称">
-            <el-select class="filter-item" v-model="temp.DisplayName" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="codeConfigItem.DisplayName" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="Id">
-            <el-input v-model="temp.Id"></el-input>
+            <el-input v-model="codeConfigItem.Id"></el-input>
           </el-form-item>
           <el-form-item label="市场">
-            <el-select class="filter-item" v-model="temp.MarketType" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="codeConfigItem.MarketType" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="交易对象">
-            <el-select class="filter-item" v-model="temp.ObjectId" placeholder="请选择" style="width: 100%;">
+            <el-select class="filter-item" v-model="codeConfigItem.ObjectId" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item :label="marketTypeObj.label">
-            <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'" v-model="temp.FutureContractId"
+            <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'" v-model="codeConfigItem.FutureContractId"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
-            <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'" v-model="temp.InterestRateId"
+            <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'" v-model="codeConfigItem.InterestRateId"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
-            <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'" v-model="temp.ForexId"
+            <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'" v-model="codeConfigItem.ForexId"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
@@ -160,7 +160,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="cancel">取 消</el-button>
           <el-button v-if="dialogStatus === 'create'" type="primary" @click="createData">确 定</el-button>
           <el-button type="primary" v-else @click="updateData">确 定</el-button>
         </div>
@@ -170,6 +170,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'code-tab-pane',
     props: {
@@ -205,22 +207,6 @@
         ],
         statusOptions: [1, 2, 3],
         tableData: [
-          {
-            Code: '1',
-            DisplayName: '1',
-            Id: '1',
-            MarketType: '1',
-            ObjectId: '1',
-            FutureContractId: '1'
-          },
-          {
-            Code: '1',
-            DisplayName: '1',
-            Id: '1',
-            MarketType: '1',
-            ObjectId: '1',
-            FutureContractId: '1'
-          }
         ],
         temp: {
           Code: '',
@@ -232,7 +218,6 @@
           InterestRateId: '',
           ForexId: ''
         },
-        dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
           update: '编辑',
@@ -247,31 +232,20 @@
       }
     },
     methods: {
-      resetTemp: function () {
-        this.temp = {
-          Code: '',
-          DisplayName: '',
-          Id: '',
-          MarketType: '',
-          ObjectId: '',
-          FutureContractId: '',
-          InterestRateId: '',
-          ForexId: ''
-        }
-      },
       handleCreate: function () {
-        this.resetTemp()
+        this.$store.commit('resetCodeConfigItem')
+        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
         this.dialogStatus = 'create'
-        this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
       handleUpdate: function (row) {
-        this.temp = Object.assign({}, row)
+        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.$store.commit('GET_BY_CODEID', row.Code)
         this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-        this.temp.ForexId = '2222'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
@@ -294,18 +268,41 @@
           })
         })
       },
+      cancel: function () {
+        this.$store.commit('CHANGE_DIALOG', { val: false })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
+      },
       handleBloomConfig: function (row) {
-        // TODO 跳转到彭博配置页面打开弹窗
         this.$router.push('bloomBerg')
+        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.$store.commit('GETBYID', row.Code)
       },
       createData: function () {
         console.log('create')
       },
       updateData: function () {
         console.log('update')
+      },
+      closeBloomDialog: function () {
+        this.$store.commit('CHANGE_DIALOG', { val: false })
+        this.dialogFormVisible = this.$store.getters.isShowDialog
       }
     },
     computed: {
+      ...mapGetters([
+        'isShowDialog',
+        'allCodeConfigs',
+        'codeConfigItem'
+      ]),
+      dialogFormVisible: {
+        get: function () {
+          return this.$store.state.bloomConfig.isShowDialog
+        },
+        set: function () {
+          return ''
+        }
+      },
       marketTypeObj: function () {
         switch (this.type) {
           case 'MDBFutureCode':
