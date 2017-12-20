@@ -1,3 +1,5 @@
+import { getAllFutureContracts } from '../../api/code-config'
+
 const codeConfig = {
   state: {
     isShowDialog: false,
@@ -19,13 +21,15 @@ const codeConfig = {
         FutureContractId: '1'
       }
     ],
-    codeConfigItem: {}
+    codeConfigItem: {},
+    futureContracts: {}
   },
 
   getters: {
     isShow: state => state.isShowDialog,
     allCodeConfigs: state => state.all,
-    codeConfigItem: state => state.codeConfigItem
+    codeConfigItem: state => state.codeConfigItem,
+    futureContracts: state => state.futureContracts
   },
 
   mutations: {
@@ -43,11 +47,22 @@ const codeConfig = {
     },
     GET_BY_CODEID: (state, val) => {
       state.codeConfigItem = state.all.find(p => p.Code === val)
+    },
+    allFutureContracts: (state, data) => {
+      state.futureContracts = data
     }
   },
 
   actions: {
-    getAllCodeConfigs () {
+    allFutureContracts ({ commit }) {
+      return new Promise((resolve, reject) => {
+        getAllFutureContracts()
+          .then(response => {
+            commit('allFutureContracts', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
     }
   }
 }

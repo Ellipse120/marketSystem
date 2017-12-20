@@ -5,12 +5,17 @@
 </template>
 
 <script>
-export default {
-  name: 'app'
-}
+  export default {
+    name: 'app',
+    created () {
+      this.$store.dispatch('getMarketTypes')
+      this.$store.dispatch('getPriceTypes')
+    }
+  }
 </script>
 
 <style lang="scss">
-  @import '~normalize.css/normalize.css';// normalize.css 样式格式化
+  @import '~normalize.css/normalize.css';
+  // normalize.css 样式格式化
   @import './styles/index.scss'; // 全局自定义的css样式
 </style>

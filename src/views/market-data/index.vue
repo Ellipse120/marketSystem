@@ -158,7 +158,7 @@
     data () {
       return {
         total: 4,
-        listLoading: true,
+        listLoading: false,
         listQuery: {
           page: 1,
           limit: 20,
@@ -234,7 +234,7 @@
       }
     },
     created () {
-      this.getList()
+      // this.getList()
     },
     methods: {
       getList () {

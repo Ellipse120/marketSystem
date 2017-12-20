@@ -8,20 +8,20 @@
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
+          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item" :clearable="true">
+            <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item" :clearable="true">
             <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="3">
-          <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+          <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item" :clearable="true">
+            <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
@@ -61,7 +61,7 @@
         <el-table-column
           prop="MarketType"
           align="center"
-          label="市场">
+          label="市场类型">
         </el-table-column>
         <el-table-column
           prop="ObjectId"
@@ -129,9 +129,10 @@
           <el-form-item label="Id">
             <el-input v-model="codeConfigItem.Id"></el-input>
           </el-form-item>
-          <el-form-item label="市场">
-            <el-select class="filter-item" v-model="codeConfigItem.MarketType" placeholder="请选择" style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+          <el-form-item label="市场类型">
+            <el-select class="filter-item" v-model="codeConfigItem.MarketType" placeholder="请选择" :clearable="true"
+                       style="width: 100%;">
+              <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
             </el-select>
           </el-form-item>
@@ -183,6 +184,9 @@
       }
     },
     created () {
+      this.$store.dispatch('allFutureContracts').then(() => {
+        console.log('done')
+      })
     },
     data () {
       return {
@@ -191,7 +195,8 @@
         listQuery: {
           page: 1,
           limit: 20,
-          MDBCodeId: ''
+          MDBCodeId: '',
+          MarketType: ''
         },
         varietyOptions: [
           {
@@ -267,7 +272,7 @@
         this.$router.push('bloomBerg')
         this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
         this.dialogFormVisible = this.$store.getters.isShowDialog
-        this.$store.commit('GETBYID', row.Code)
+        this.$store.commit('GET_BY_ID', row.Code)
       },
       createData: function () {
         console.log('create')
@@ -284,7 +289,10 @@
       ...mapGetters([
         'isShowDialog',
         'allCodeConfigs',
-        'codeConfigItem'
+        'codeConfigItem',
+        'marketTypes',
+        'priceTypes',
+        'futureContracts'
       ]),
       dialogFormVisible: {
         get: function () {

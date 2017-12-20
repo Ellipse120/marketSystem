@@ -5,7 +5,7 @@ const user = {
   state: {
     token: getToken(),
     name: '',
-    avatar: '',
+    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     roles: []
   },
 
@@ -30,9 +30,12 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
-          const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
+          const data = response.Data
+          const userInfo = data.UserInfo
+          setToken(data.Token)
+          commit('SET_TOKEN', data.Token)
+          commit('SET_NAME', userInfo.UserName)
+          commit('SET_ROLES', userInfo.Roles)
           resolve()
         }).catch(error => {
           reject(error)
@@ -44,9 +47,9 @@ const user = {
     GetInfo ({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
-          const data = response.data
-          commit('SET_ROLES', data.role)
-          commit('SET_NAME', data.name)
+          const data = response.Data
+          commit('SET_ROLES', data.Roles)
+          commit('SET_NAME', data.UserName)
           commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {

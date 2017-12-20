@@ -8,20 +8,20 @@
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
+          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item" :clearable="true">
+            <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="3">
+          <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item" :clearable="true">
             <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="3">
-          <el-select placeholder="市场类型" v-model="listQuery.BloombergDataType" class="filter-item">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+          <el-select placeholder="市场类型" v-model="listQuery.BloombergDataType" class="filter-item" :clearable="true">
+            <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
@@ -270,13 +270,14 @@
       }
     },
     created () {
-      console.log(this.$store.state)
     },
     computed: {
       ...mapGetters([
         'isShowDialog',
         'allBloomConfigs',
-        'bloomConfig2'
+        'bloomConfig2',
+        'marketTypes',
+        'priceTypes',
       ]),
       dialogFormVisible: {
         get: function () {
@@ -300,7 +301,7 @@
       handleUpdate: function (row) {
         this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
         this.dialogFormVisible = this.$store.getters.isShowDialog
-        this.$store.commit('GETBYID', row.CodeConfigId)
+        this.$store.commit('GET_BY_ID', row.CodeConfigId)
         this.dialogStatus = 'update'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()

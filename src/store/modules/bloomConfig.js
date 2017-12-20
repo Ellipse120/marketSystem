@@ -72,7 +72,7 @@ const bloomConfig = {
     CHANGE_DIALOG: (state, val) => {
       state.isShowDialog = val.val
     },
-    GETBYID: (state, val) => {
+    GET_BY_ID: (state, val) => {
       state.bloomConfig2 = state.all.find(p => p.CodeConfigId === val)
     }
   },
