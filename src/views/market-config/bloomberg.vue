@@ -277,7 +277,7 @@
         'allBloomConfigs',
         'bloomConfig2',
         'marketTypes',
-        'priceTypes',
+        'priceTypes'
       ]),
       dialogFormVisible: {
         get: function () {
