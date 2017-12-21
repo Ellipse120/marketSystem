@@ -39,6 +39,17 @@ export function addFutureCode (data) {
 }
 
 /**
+ * 修改期货配置
+ * */
+export function updateFutureCode (data) {
+  return request({
+    url: `${baseUrl}UpdateList`,
+    method: 'post',
+    data
+  })
+}
+
+/**
  * 删除期货配置
  * */
 export function deleteFutureCode (data) {

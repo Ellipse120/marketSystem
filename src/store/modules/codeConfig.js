@@ -1,4 +1,10 @@
-import { getAllMDBCodeConfigs, getAllFutureContracts, addFutureCode, deleteFutureCode } from '../../api/code-config'
+import {
+  getAllMDBCodeConfigs,
+  getAllFutureContracts,
+  addFutureCode,
+  deleteFutureCode,
+  updateFutureCode
+} from '../../api/code-config'
 
 const codeConfig = {
   state: {
@@ -82,6 +88,16 @@ const codeConfig = {
     addFutureCode ({ commit }, data) {
       return new Promise((resolve, reject) => {
         addFutureCode(data)
+          .then(response => {
+            console.log(response)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+    updateFutureCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        updateFutureCode(data)
           .then(response => {
             console.log(response)
             resolve()

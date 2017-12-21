@@ -307,6 +307,24 @@
           })
       },
       updateData: function () {
+        const data = [{
+          'Id': this.codeConfigItem.Id,
+          'Code': this.codeConfigItem.Code,
+          'DisplayName': this.codeConfigItem.DisplayName,
+          'MarketType': this.codeConfigItem.MarketType,
+          'FutureContractId': this.codeConfigItem.FutureContractId
+        }]
+        this.$store.dispatch('updateFutureCode', data)
+          .then(() => {
+            this.changeDialog(false)
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
       },
       closeBloomDialog: function () {
         this.changeDialog(false)
