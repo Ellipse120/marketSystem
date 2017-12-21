@@ -10,6 +10,8 @@
     created () {
       this.$store.dispatch('getMarketTypes')
       this.$store.dispatch('getPriceTypes')
+      this.$store.dispatch('getAllBloombergRequestTypes')
+      this.$store.dispatch('getAllQuotationSources')
     }
   }
 </script>

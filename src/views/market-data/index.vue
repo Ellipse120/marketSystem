@@ -9,19 +9,19 @@
         </el-col>
         <el-col :span="3">
           <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
         <el-col :span="3">
           <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
         <el-col :span="3">
           <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
@@ -112,7 +112,7 @@
             </el-form-item>
             <el-form-item label="行情类型">
               <el-select class="filter-item" v-model="temp.PriceType" placeholder="请选择" style="width: 100%;">
-                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+                <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -121,13 +121,13 @@
             </el-form-item>
             <el-form-item label="行情来源">
               <el-select class="filter-item" v-model="temp.Source" placeholder="请选择" style="width: 100%;">
-                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+                <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="市场类型">
               <el-select class="filter-item" v-model="temp.MarketType" placeholder="请选择" style="width: 100%;">
-                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+                <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -152,6 +152,7 @@
 
 <script>
   import { getList } from '../../api/market-config'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'marketDataManagement',
@@ -235,6 +236,13 @@
     },
     created () {
       // this.getList()
+    },
+    computed: {
+      ...mapGetters([
+        'marketTypes',
+        'priceTypes',
+        'quotationSources'
+      ])
     },
     methods: {
       getList () {

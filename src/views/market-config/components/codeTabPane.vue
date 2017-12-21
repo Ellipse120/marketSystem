@@ -13,19 +13,19 @@
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="3">
-          <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item" :clearable="true">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-col>
+        <!--<el-col :span="3">-->
+        <!--<el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item" :clearable="true">-->
+        <!--<el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">-->
+        <!--</el-option>-->
+        <!--</el-select>-->
+        <!--</el-col>-->
         <el-col :span="3">
           <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item" :clearable="true">
             <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="15">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
         </el-col>
@@ -35,7 +35,9 @@
     <!-- table -->
     <div>
       <el-table
-        :data="allCodeConfigs"
+        :data="tableData.List"
+        v-loading.body="listLoading"
+        element-loading-text="拼命加载中。。。"
         border
         style="width: 100%;">
         <el-table-column
@@ -54,19 +56,9 @@
           label="名称">
         </el-table-column>
         <el-table-column
-          prop="Id"
-          align="center"
-          label="Id">
-        </el-table-column>
-        <el-table-column
           prop="MarketType"
           align="center"
           label="市场类型">
-        </el-table-column>
-        <el-table-column
-          prop="ObjectId"
-          align="center"
-          label="交易对象">
         </el-table-column>
         <el-table-column
           :prop="marketTypeObj.code"
@@ -104,11 +96,13 @@
     <div class="pagination-container">
       <el-pagination
         background
-        :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]"
-        :page-size="listQuery.limit"
+        :current-page.sync="listQuery.CurrentPage"
+        :page-sizes="[10,20,30,50]"
+        :page-size="listQuery.PageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="tableData.Pagination.TotalCount"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange">
       </el-pagination>
     </div>
 
@@ -117,28 +111,17 @@
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeBloomDialog" top="10vh">
         <el-form :rules="rules" ref="dataForm" :model="codeConfigItem" label-position="left" label-width="80px"
                  style='width: 400px; margin-left:50px;'>
+          <div>Id: {{codeConfigItem.Id}}</div>
           <el-form-item label="唯一编码">
-            <el-input v-model="codeConfigItem.Code"></el-input>
+            <el-input v-model="codeConfigItem.Code" :disabled="dialogStatus === 'update'"></el-input>
           </el-form-item>
           <el-form-item label="名称">
-            <el-select class="filter-item" v-model="codeConfigItem.DisplayName" placeholder="请选择" style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="Id">
-            <el-input v-model="codeConfigItem.Id"></el-input>
+            <el-input v-model="codeConfigItem.DisplayName"></el-input>
           </el-form-item>
           <el-form-item label="市场类型">
             <el-select class="filter-item" v-model="codeConfigItem.MarketType" placeholder="请选择" :clearable="true"
-                       style="width: 100%;">
+                       style="width: 100%;" disabled>
               <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="交易对象">
-            <el-select class="filter-item" v-model="codeConfigItem.ObjectId" placeholder="请选择" style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
@@ -185,35 +168,29 @@
     },
     created () {
       this.$store.dispatch('allFutureContracts').then(() => {
-        console.log('done')
       })
+      this.getList()
+      this.changeDialog(false)
     },
     data () {
       return {
-        total: 2,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          MDBCodeId: '',
-          MarketType: ''
+          CurrentPage: 1,
+          PageSize: 10,
+          PriceType: null,
+          marketType: 1
         },
-        varietyOptions: [
-          {
-            value: 'gold',
-            label: '金'
-          },
-          {
-            value: 'silver',
-            label: '银'
-          },
-          {
-            value: 'copper',
-            label: '铜'
-          }
-        ],
         statusOptions: [1, 2, 3],
-        tableData: [],
+        tableData: {
+          List: [],
+          Pagination: {
+            CurrentPage: 1,
+            PageCount: 1,
+            PageSize: 10,
+            TotalCount: 0
+          }
+        },
         dialogStatus: '',
         textMap: {
           update: '编辑',
@@ -228,18 +205,53 @@
       }
     },
     methods: {
+      getList: function () {
+        this.listLoading = true
+        switch (this.type) {
+          case 'MDBFutureCode':
+            this.listQuery.marketType = 1
+            this.$store.dispatch('allMDBCodeConfigs', this.listQuery).then(() => {
+              this.tableData = this.allMDBCodeConfigs
+              this.listLoading = false
+            })
+            break
+          case 'MDBForexCode':
+            this.listQuery.marketType = 2
+            this.$store.dispatch('allMDBCodeConfigs', this.listQuery).then(() => {
+              this.tableData = this.allMDBCodeConfigs
+              this.listLoading = false
+            })
+            break
+          case 'MDBIborCode':
+            this.listQuery.marketType = 3
+            this.$store.dispatch('allMDBCodeConfigs', this.listQuery).then(() => {
+              this.tableData = this.allMDBCodeConfigs
+              this.listLoading = false
+            })
+            break
+        }
+      },
       handleCreate: function () {
+        this.changeDialog(true)
         this.$store.commit('resetCodeConfigItem')
-        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
-        this.dialogFormVisible = this.$store.getters.isShowDialog
         this.dialogStatus = 'create'
+        switch (this.type) {
+          case 'MDBFutureCode':
+            this.codeConfigItem.MarketType = 1
+            break
+          case 'MDBForexCode':
+            this.codeConfigItem.MarketType = 2
+            break
+          case 'MDBIborCode':
+            this.codeConfigItem.MarketType = 3
+            break
+        }
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
       handleUpdate: function (row) {
-        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
-        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.changeDialog(true)
         this.$store.commit('GET_BY_CODEID', row.Code)
         this.dialogStatus = 'update'
         this.$nextTick(() => {
@@ -253,9 +265,12 @@
           cancelButtonText: '取消',
           center: true
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功'
+          this.$store.dispatch('deleteFutureCode', [row.Id]).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            })
+            this.getList()
           })
         }).catch(() => {
           this.$message({
@@ -265,24 +280,48 @@
         })
       },
       cancel: function () {
-        this.$store.commit('CHANGE_DIALOG', { val: false })
-        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.changeDialog(false)
       },
       handleBloomConfig: function (row) {
         this.$router.push('bloomBerg')
-        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
-        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.changeDialog(true)
         this.$store.commit('GET_BY_ID', row.Code)
       },
       createData: function () {
-        console.log('create')
+        const data = [{
+          'Code': this.codeConfigItem.Code,
+          'DisplayName': this.codeConfigItem.DisplayName,
+          'MarketType': this.codeConfigItem.MarketType,
+          'FutureContractId': this.codeConfigItem.FutureContractId
+        }]
+        this.$store.dispatch('addFutureCode', data)
+          .then(() => {
+            this.changeDialog(false)
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
       },
       updateData: function () {
-        console.log('update')
       },
       closeBloomDialog: function () {
-        this.$store.commit('CHANGE_DIALOG', { val: false })
+        this.changeDialog(false)
+      },
+      changeDialog: function (v) {
+        this.$store.commit('CHANGE_DIALOG', { val: v })
         this.dialogFormVisible = this.$store.getters.isShowDialog
+      },
+      handleSizeChange: function (val) {
+        this.listQuery.PageSize = val
+        this.getList()
+      },
+      handleCurrentChange: function (val) {
+        this.listQuery.CurrentPage = val
+        this.getList()
       }
     },
     computed: {
@@ -292,7 +331,8 @@
         'codeConfigItem',
         'marketTypes',
         'priceTypes',
-        'futureContracts'
+        'futureContracts',
+        'allMDBCodeConfigs'
       ]),
       dialogFormVisible: {
         get: function () {

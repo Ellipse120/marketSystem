@@ -105,6 +105,8 @@
     @include relative;
     height: 100vh;
     background-color: $bg;
+    background-image: url("http://d3static.com/hilton/waldorfastoria3/magazine/issue1/the-jewel-of-shanghai/assets/images/shanghai-skyline.jpg");
+    background-repeat: round;
     input:-webkit-autofill {
       -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;
       -webkit-text-fill-color: #fff !important;

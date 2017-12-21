@@ -15,7 +15,7 @@
         </el-col>
         <el-col :span="3">
           <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item" :clearable="true">
-            <el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">
+            <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
@@ -28,7 +28,7 @@
         <el-col :span="12">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleCreate">导入</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportBloomConfig">导入</el-button>
         </el-col>
       </el-row>
     </div>
@@ -150,14 +150,14 @@
           <el-form-item label="请求类型">
             <el-select class="filter-item" v-model="bloomConfig2.RequestType" placeholder="请选择请求类型"
                        style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="市场活动类型">
+          <el-form-item label="市场类型">
             <el-select class="filter-item" v-model="bloomConfig2.BloombergDataType" placeholder="请选择市场活动类型"
                        style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
             </el-select>
           </el-form-item>
@@ -277,7 +277,8 @@
         'allBloomConfigs',
         'bloomConfig2',
         'marketTypes',
-        'priceTypes'
+        'priceTypes',
+        'bloombergRequestTypes'
       ]),
       dialogFormVisible: {
         get: function () {
@@ -291,16 +292,14 @@
     methods: {
       handleCreate: function () {
         this.$store.commit('resetBloomConfigRow')
-        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
-        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.changeDialog(true)
         this.dialogStatus = 'create'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
       handleUpdate: function (row) {
-        this.$store.dispatch('CHANGE_DIALOG_ASYNC', { val: true })
-        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.changeDialog(true)
         this.$store.commit('GET_BY_ID', row.CodeConfigId)
         this.dialogStatus = 'update'
         this.$nextTick(() => {
@@ -326,8 +325,7 @@
         })
       },
       cancel: function () {
-        this.$store.commit('CHANGE_DIALOG', { val: false })
-        this.dialogFormVisible = this.$store.getters.isShowDialog
+        this.changeDialog(false)
       },
       createData: function () {
         console.log('create')
@@ -336,8 +334,14 @@
         console.log('update')
       },
       closeBloomDialog: function () {
-        this.$store.commit('CHANGE_DIALOG', { val: false })
+        this.changeDialog(false)
+      },
+      changeDialog: function (v) {
+        this.$store.commit('CHANGE_DIALOG', { val: v })
         this.dialogFormVisible = this.$store.getters.isShowDialog
+      },
+      handleImportBloomConfig() {
+        console.log('import bloomBerg config')
       }
     }
   }

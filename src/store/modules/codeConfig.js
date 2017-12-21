@@ -1,9 +1,9 @@
-import { getAllFutureContracts } from '../../api/code-config'
+import { getAllMDBCodeConfigs, getAllFutureContracts, addFutureCode, deleteFutureCode } from '../../api/code-config'
 
 const codeConfig = {
   state: {
     isShowDialog: false,
-    all: [
+    all: [ // FIXME 测试数据,以后删除
       {
         Code: '1',
         DisplayName: '1',
@@ -21,6 +21,7 @@ const codeConfig = {
         FutureContractId: '1'
       }
     ],
+    MDBCodeConfigList: [],
     codeConfigItem: {},
     futureContracts: {}
   },
@@ -28,6 +29,7 @@ const codeConfig = {
   getters: {
     isShow: state => state.isShowDialog,
     allCodeConfigs: state => state.all,
+    allMDBCodeConfigs: state => state.MDBCodeConfigList,
     codeConfigItem: state => state.codeConfigItem,
     futureContracts: state => state.futureContracts
   },
@@ -46,7 +48,10 @@ const codeConfig = {
       }
     },
     GET_BY_CODEID: (state, val) => {
-      state.codeConfigItem = state.all.find(p => p.Code === val)
+      state.codeConfigItem = state.MDBCodeConfigList.List.find(p => p.Code === val)
+    },
+    allMDBCodeConfigs: (state, data) => {
+      state.MDBCodeConfigList = data
     },
     allFutureContracts: (state, data) => {
       state.futureContracts = data
@@ -54,11 +59,40 @@ const codeConfig = {
   },
 
   actions: {
+    allMDBCodeConfigs ({ commit }, query) {
+      return new Promise((resolve, reject) => {
+        getAllMDBCodeConfigs(query)
+          .then(response => {
+            commit('allMDBCodeConfigs', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
     allFutureContracts ({ commit }) {
       return new Promise((resolve, reject) => {
         getAllFutureContracts()
           .then(response => {
             commit('allFutureContracts', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+    addFutureCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        addFutureCode(data)
+          .then(response => {
+            console.log(response)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+    deleteFutureCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        deleteFutureCode(data)
+          .then(response => {
             resolve()
           })
           .catch(err => reject(err))

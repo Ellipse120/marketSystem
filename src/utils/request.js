@@ -12,7 +12,6 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
   if (store.getters.token) {
-    // config.headers['X-Token'] = getToken() // 每个请求携带自定义token
     config.headers['token'] = getToken()
   }
   return config
@@ -52,7 +51,7 @@ service.interceptors.response.use(
     // } else {
     if (!response.data.Status) {
       Message({
-        message: response.data.Message,
+        message: response.data.message,
         type: 'error',
         duration: 5 * 1000
       })
@@ -61,12 +60,21 @@ service.interceptors.response.use(
     // }
   },
   error => {
-    console.log('err' + error)// for debug
-    Message({
-      message: `${error.message}, 稍后重试...`,
-      type: 'error',
-      duration: 2 * 1000
-    })
+    debugger
+    console.log('err+ 超时处理' + error)// for debug TODO 超时处理
+    if (error.response) {
+      Message({
+        message: `${error.response.data.Message},请重新登录`,
+        type: 'error',
+        duration: 2 * 1000
+      })
+    } else {
+      Message({
+        message: `${error.message}, 稍后重试...`,
+        type: 'error',
+        duration: 2 * 1000
+      })
+    }
     return Promise.reject(error)
   }
 )
