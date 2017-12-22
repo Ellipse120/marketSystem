@@ -198,17 +198,15 @@
               align="center">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="创建时间">
+          <el-form-item label="创建时间" v-if="dialogStatus === 'update'">
             <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.CreationTime"
-                            type="datetime"
-                            disabledDate="return true" placeholder="选择日期时间"
+                            type="datetime" disabled="true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="最后更新时间">
+          <el-form-item label="最后更新时间" v-if="dialogStatus === 'update'">
             <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.LastUpdateTime"
-                            type="datetime"
-                            disabledDate="return true" placeholder="选择日期时间"
+                            type="datetime"  disabled="true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
