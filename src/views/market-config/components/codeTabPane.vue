@@ -111,8 +111,6 @@
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeBloomDialog" top="10vh">
         <el-form :rules="rules" ref="dataForm" :model="codeConfigItem" label-position="left" label-width="80px"
                  style='width: 400px; margin-left:50px;'>
-          <div>Id: {{codeConfigItem}}</div>
-          <div>Id: {{dialogStatus === 'create' ? 'id' + codeConfigItem.Id: ' ,Object'+ codeConfigItem.ObjectId}}</div>
           <el-form-item label="唯一编码">
             <el-input v-model="codeConfigItem.Code" :disabled="dialogStatus === 'update'"></el-input>
           </el-form-item>
