@@ -26,9 +26,27 @@ export function getAllFutureContracts () {
     method: 'get'
   })
 }
+/**
+ * 获取外汇
+ * */
+export function getAllForexes () {
+  return request({
+    url: '/BasicForex/QueryForexs',
+    method: 'get'
+  })
+}
+/**
+ * 获取利率
+ * */
+export function getAllInterestRates () {
+  return request({
+    url: '/BasicInterestRate/QueryInterestRates',
+    method: 'get'
+  })
+}
 
 /**
- * 增加期货配置
+ * 新增期货市场行情编码
  * */
 export function addFutureCode (data) {
   return request({
@@ -56,6 +74,28 @@ export function deleteFutureCode (data) {
   return request({
     url: `${baseUrl}DeleteList`,
     method: 'delete',
+    data
+  })
+}
+
+/**
+ * 增加外汇市场行情编码
+ * */
+export function addForexCode (data) {
+  return request({
+    url: `${baseUrl}AddMDBForexCodes`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 增加利率市场行情编码
+ * */
+export function addInterestRateCode (data) {
+  return request({
+    url: `${baseUrl}AddMDBInterestRateCodes`,
+    method: 'post',
     data
   })
 }

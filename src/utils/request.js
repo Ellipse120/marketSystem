@@ -60,7 +60,6 @@ service.interceptors.response.use(
     // }
   },
   error => {
-    debugger
     console.log('err+ 超时处理' + error)// for debug TODO 超时处理
     if (error.response) {
       Message({
@@ -68,6 +67,15 @@ service.interceptors.response.use(
         type: 'error',
         duration: 2 * 1000
       })
+      // MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+      //   confirmButtonText: '重新登录',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   store.dispatch('FedLogOut').then(() => {
+      //     location.reload()
+      //   })
+      // })
     } else {
       Message({
         message: `${error.message}, 稍后重试...`,

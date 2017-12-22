@@ -8,12 +8,18 @@
 </template>
 
 <script>
-export default {
-  name: 'AppMain',
-  computed: {
-    // key() {
-    //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
-    // }
+  export default {
+    name: 'AppMain',
+    created () {
+      this.$store.dispatch('getMarketTypes')
+      this.$store.dispatch('getPriceTypes')
+      this.$store.dispatch('getAllBloombergRequestTypes')
+      this.$store.dispatch('getAllQuotationSources')
+    },
+    computed: {
+      // key() {
+      //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
+      // }
+    }
   }
-}
 </script>

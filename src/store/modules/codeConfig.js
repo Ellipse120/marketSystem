@@ -1,7 +1,11 @@
 import {
   getAllMDBCodeConfigs,
   getAllFutureContracts,
+  getAllForexes,
   addFutureCode,
+  addForexCode,
+  addInterestRateCode,
+  getAllInterestRates,
   deleteFutureCode,
   updateFutureCode
 } from '../../api/code-config'
@@ -9,35 +13,20 @@ import {
 const codeConfig = {
   state: {
     isShowDialog: false,
-    all: [ // FIXME 测试数据,以后删除
-      {
-        Code: '1',
-        DisplayName: '1',
-        Id: '1',
-        MarketType: '1',
-        ObjectId: '1',
-        FutureContractId: '1'
-      },
-      {
-        Code: '2',
-        DisplayName: '1',
-        Id: '1',
-        MarketType: '1',
-        ObjectId: '1',
-        FutureContractId: '1'
-      }
-    ],
     MDBCodeConfigList: [],
     codeConfigItem: {},
-    futureContracts: {}
+    futureContracts: {},
+    forexes: {},
+    interestRates: {}
   },
 
   getters: {
     isShow: state => state.isShowDialog,
-    allCodeConfigs: state => state.all,
     allMDBCodeConfigs: state => state.MDBCodeConfigList,
     codeConfigItem: state => state.codeConfigItem,
-    futureContracts: state => state.futureContracts
+    futureContracts: state => state.futureContracts,
+    forexes: state => state.forexes,
+    interestRates: state => state.interestRates
   },
 
   mutations: {
@@ -49,18 +38,24 @@ const codeConfig = {
         MarketType: '',
         ObjectId: '',
         FutureContractId: '',
-        InterestRateId: '',
-        ForexId: ''
+        ForexId: '',
+        InterestRateId: ''
       }
     },
-    GET_BY_CODEID: (state, val) => {
-      state.codeConfigItem = state.MDBCodeConfigList.List.find(p => p.Code === val)
+    GET_ITEM_BY_ID: (state, val) => {
+      state.codeConfigItem = state.MDBCodeConfigList.List.find(p => p.Id === val)
     },
     allMDBCodeConfigs: (state, data) => {
       state.MDBCodeConfigList = data
     },
     allFutureContracts: (state, data) => {
       state.futureContracts = data
+    },
+    allForexes: (state, data) => {
+      state.forexes = data
+    },
+    allInterestRates: (state, data) => {
+      state.interestRates = data
     }
   },
 
@@ -75,6 +70,7 @@ const codeConfig = {
           .catch(err => reject(err))
       })
     },
+
     allFutureContracts ({ commit }) {
       return new Promise((resolve, reject) => {
         getAllFutureContracts()
@@ -85,6 +81,29 @@ const codeConfig = {
           .catch(err => reject(err))
       })
     },
+
+    allForexes ({ commit }) {
+      return new Promise((resolve, reject) => {
+        getAllForexes()
+          .then(response => {
+            commit('allForexes', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    allInterestRates ({ commit }) {
+      return new Promise((resolve, reject) => {
+        getAllInterestRates()
+          .then(response => {
+            commit('allInterestRates', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+
     addFutureCode ({ commit }, data) {
       return new Promise((resolve, reject) => {
         addFutureCode(data)
@@ -95,6 +114,29 @@ const codeConfig = {
           .catch(err => reject(err))
       })
     },
+
+    addForexCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        addForexCode(data)
+          .then(response => {
+            console.log(response)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    addInterestRateCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        addInterestRateCode(data)
+          .then(response => {
+            console.log(response)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+
     updateFutureCode ({ commit }, data) {
       return new Promise((resolve, reject) => {
         updateFutureCode(data)
@@ -105,6 +147,7 @@ const codeConfig = {
           .catch(err => reject(err))
       })
     },
+
     deleteFutureCode ({ commit }, data) {
       return new Promise((resolve, reject) => {
         deleteFutureCode(data)

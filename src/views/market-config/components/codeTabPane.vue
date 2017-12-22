@@ -61,7 +61,7 @@
           label="市场类型">
         </el-table-column>
         <el-table-column
-          :prop="marketTypeObj.code"
+          prop="ObjectDescription"
           align="center"
           :label="marketTypeObj.label">
         </el-table-column>
@@ -111,7 +111,8 @@
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeBloomDialog" top="10vh">
         <el-form :rules="rules" ref="dataForm" :model="codeConfigItem" label-position="left" label-width="80px"
                  style='width: 400px; margin-left:50px;'>
-          <div>Id: {{codeConfigItem.Id}}</div>
+          <div>Id: {{codeConfigItem}}</div>
+          <div>Id: {{dialogStatus === 'create' ? 'id' + codeConfigItem.Id: ' ,Object'+ codeConfigItem.ObjectId}}</div>
           <el-form-item label="唯一编码">
             <el-input v-model="codeConfigItem.Code" :disabled="dialogStatus === 'update'"></el-input>
           </el-form-item>
@@ -127,20 +128,33 @@
           </el-form-item>
           <el-form-item :label="marketTypeObj.label">
             <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'"
-                       v-model="codeConfigItem.FutureContractId"
+                       v-model="codeConfigItem.ObjectId"
+                       :disabled="dialogStatus === 'update'"
                        placeholder="请选择" style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              <el-option v-for="item in futureContracts.datas"
+                         :key="item.Id"
+                         :label="item.DisplayName"
+                         :value="item.Id">
               </el-option>
             </el-select>
             <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'"
-                       v-model="codeConfigItem.InterestRateId"
+                       v-model="codeConfigItem.ObjectId"
+                       :disabled="dialogStatus === 'update'"
                        placeholder="请选择" style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              <el-option v-for="item in forexes.datas"
+                         :key="item.Id"
+                         :label="item.DisplayName"
+                         :value="item.Id">
               </el-option>
             </el-select>
-            <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'" v-model="codeConfigItem.ForexId"
+            <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'"
+                       :disabled="dialogStatus === 'ObjectId'"
+                       v-model="codeConfigItem.InterestRateId"
                        placeholder="请选择" style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              <el-option v-for="item in interestRates.datas"
+                         :key="item.Id"
+                         :label="item.DisplayName"
+                         :value="item.Id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -168,6 +182,10 @@
     },
     created () {
       this.$store.dispatch('allFutureContracts').then(() => {
+      })
+      this.$store.dispatch('allForexes').then(() => {
+      })
+      this.$store.dispatch('allInterestRates').then(() => {
       })
       this.getList()
       this.changeDialog(false)
@@ -252,7 +270,7 @@
       },
       handleUpdate: function (row) {
         this.changeDialog(true)
-        this.$store.commit('GET_BY_CODEID', row.Code)
+        this.$store.commit('GET_ITEM_BY_ID', row.Id)
         this.dialogStatus = 'update'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
@@ -288,34 +306,73 @@
         this.$store.commit('GET_BY_ID', row.Code)
       },
       createData: function () {
-        // TODO 其他Tab 新增 接口待实现
-        const data = [{
+        const data = {
           'Code': this.codeConfigItem.Code,
           'DisplayName': this.codeConfigItem.DisplayName,
-          'MarketType': this.codeConfigItem.MarketType,
-          'FutureContractId': this.codeConfigItem.FutureContractId
-        }]
-        this.$store.dispatch('addFutureCode', data)
-          .then(() => {
-            this.changeDialog(false)
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+          'MarketType': this.codeConfigItem.MarketType
+        }
+        let futureConfig = {}
+        let forexConfig = {}
+        let IborConfig = {}
+        switch (this.type) {
+          case 'MDBFutureCode':
+            futureConfig = Object.assign(data, {
+              'FutureContractId': this.codeConfigItem.ObjectId
             })
-            this.getList()
-          })
+            this.$store.dispatch('addFutureCode', [futureConfig])
+              .then(() => {
+                this.changeDialog(false)
+                this.$notify({
+                  title: '成功',
+                  message: '更新成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
+              })
+            break
+          case 'MDBForexCode':
+            forexConfig = Object.assign(data, {
+              'ForexId': this.codeConfigItem.ObjectId
+            })
+            this.$store.dispatch('addForexCode', [forexConfig])
+              .then(() => {
+                this.changeDialog(false)
+                this.$notify({
+                  title: '成功',
+                  message: '更新成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
+              })
+            break
+          case 'MDBIborCode':
+            IborConfig = Object.assign(data, {
+              'InterestRateId': this.codeConfigItem.ObjectId
+            })
+            this.$store.dispatch('addInterestRateCode', [IborConfig])
+              .then(() => {
+                this.changeDialog(false)
+                this.$notify({
+                  title: '成功',
+                  message: '更新成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
+              })
+            break
+        }
       },
       updateData: function () {
-        const data = [{
+        const data = {
           'Id': this.codeConfigItem.Id,
           'Code': this.codeConfigItem.Code,
           'DisplayName': this.codeConfigItem.DisplayName,
-          'MarketType': this.codeConfigItem.MarketType,
-          'FutureContractId': this.codeConfigItem.FutureContractId
-        }]
-        this.$store.dispatch('updateFutureCode', data)
+          'MarketType': this.codeConfigItem.MarketType
+        }
+        this.$store.dispatch('updateFutureCode', [data])
           .then(() => {
             this.changeDialog(false)
             this.$notify({
@@ -346,11 +403,12 @@
     computed: {
       ...mapGetters([
         'isShowDialog',
-        'allCodeConfigs',
         'codeConfigItem',
         'marketTypes',
         'priceTypes',
         'futureContracts',
+        'forexes',
+        'interestRates',
         'allMDBCodeConfigs'
       ]),
       dialogFormVisible: {
