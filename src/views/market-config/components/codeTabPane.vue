@@ -247,6 +247,7 @@
             break
         }
       },
+
       handleCreate: function () {
         this.changeDialog(true)
         this.$store.commit('resetCodeConfigItem')
@@ -266,6 +267,7 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
+
       handleUpdate: function (row) {
         this.changeDialog(true)
         this.$store.commit('GET_ITEM_BY_ID', row.Id)
@@ -274,6 +276,7 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
+
       handleDelete: function (row) {
         this.$confirm(`此操作将永久删除编码【${row.Code}】`, '提示', {
           type: 'warning',
@@ -295,14 +298,17 @@
           })
         })
       },
+
       cancel: function () {
         this.changeDialog(false)
       },
+
       handleBloomConfig: function (row) {
         this.$router.push('bloomBerg')
         this.changeDialog(true)
         this.$store.commit('GET_BY_ID', row.Code)
       },
+
       createData: function () {
         const data = {
           'Code': this.codeConfigItem.Code,
@@ -322,7 +328,7 @@
                 this.changeDialog(false)
                 this.$notify({
                   title: '成功',
-                  message: '更新成功',
+                  message: '创建成功',
                   type: 'success',
                   duration: 2000
                 })
@@ -338,7 +344,7 @@
                 this.changeDialog(false)
                 this.$notify({
                   title: '成功',
-                  message: '更新成功',
+                  message: '创建成功',
                   type: 'success',
                   duration: 2000
                 })
@@ -354,7 +360,7 @@
                 this.changeDialog(false)
                 this.$notify({
                   title: '成功',
-                  message: '更新成功',
+                  message: '创建成功',
                   type: 'success',
                   duration: 2000
                 })
@@ -363,6 +369,7 @@
             break
         }
       },
+
       updateData: function () {
         const data = {
           'Id': this.codeConfigItem.Id,
@@ -382,17 +389,21 @@
             this.getList()
           })
       },
+
       closeBloomDialog: function () {
         this.changeDialog(false)
       },
+
       changeDialog: function (v) {
         this.$store.commit('CHANGE_DIALOG', { val: v })
         this.dialogFormVisible = this.$store.getters.isShowDialog
       },
+
       handleSizeChange: function (val) {
         this.listQuery.PageSize = val
         this.getList()
       },
+
       handleCurrentChange: function (val) {
         this.listQuery.CurrentPage = val
         this.getList()

@@ -64,7 +64,7 @@ export function getQuotationSources () {
 /**
  * 查询利率周期键值对
  * */
-export function getDurations () {
+export function getInterestDurations () {
   return request({
     url: '/BasicStaticData/QueryDurations',
     method: 'get'

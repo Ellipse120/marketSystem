@@ -12,7 +12,7 @@ import {
 
 const codeConfig = {
   state: {
-    isShowDialog: false,
+    // isShowDialog: false,
     MDBCodeConfigList: [],
     codeConfigItem: {},
     futureContracts: {},
@@ -21,7 +21,7 @@ const codeConfig = {
   },
 
   getters: {
-    isShow: state => state.isShowDialog,
+    // isShow: state => state.isShowDialog,
     allMDBCodeConfigs: state => state.MDBCodeConfigList,
     codeConfigItem: state => state.codeConfigItem,
     futureContracts: state => state.futureContracts,

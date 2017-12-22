@@ -15,7 +15,8 @@
         </el-col>
         <el-col :span="3">
           <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item" :clearable="true">
-            <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+            <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description"
+                       :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
@@ -28,7 +29,8 @@
         <el-col :span="12">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportBloomConfig">导入</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportBloomConfig">导入
+          </el-button>
         </el-col>
       </el-row>
     </div>
@@ -36,7 +38,9 @@
     <!-- table -->
     <div>
       <el-table
-        :data="allBloomConfigs"
+        :data="tableData.List"
+        v-loading.body="listLoading"
+        element-loading-text="拼命加载中。。。"
         border
         style="width: 100%;">
         <el-table-column
@@ -45,7 +49,7 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="CodeConfigId"
+          prop="MDBCodeId"
           label="编码配置代码"
           align="center">
         </el-table-column>
@@ -70,6 +74,11 @@
           align="center">
         </el-table-column>
         <el-table-column
+          prop="Warehouse"
+          label="合成转仓预设"
+          align="center">
+        </el-table-column>
+        <el-table-column
           prop="RequestStartTime"
           label="请求开始时间"
           align="center">
@@ -87,6 +96,11 @@
         <el-table-column
           prop="LastUpdateTime"
           label="最后更新时间"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="ExpirationDate"
+          label="失效时间"
           align="center">
         </el-table-column>
         <el-table-column
@@ -117,11 +131,13 @@
     <div class="pagination-container">
       <el-pagination
         background
-        :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]"
-        :page-size="listQuery.limit"
+        :current-page.sync="listQuery.CurrentPage"
+        :page-sizes="[10,20,30,50]"
+        :page-size="listQuery.PageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="tableData.Pagination.TotalCount"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange">
       </el-pagination>
     </div>
 
@@ -129,35 +145,45 @@
     <div>
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="10vh" width="600px"
                  @close="closeBloomDialog">
-        <el-form :rules="rules" ref="dataForm" :model="bloomConfig2" label-position="left" label-width="100px"
+        <el-form :rules="rules" ref="dataForm" :model="bloombergConfigItem" label-position="left" label-width="100px"
                  size="mini" style='width: 500px; margin-left:35px;'>
           <el-form-item label="编码配置">
-            <el-select class="filter-item" v-model="bloomConfig2.CodeConfigId" placeholder="请选择编码配置"
+            <el-select class="filter-item" v-model="bloombergConfigItem.MDBCodeId" placeholder="请选择编码配置"
                        style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+              <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.DisplayName"
+                         :value="item.Id">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="行情类型">
-            <el-select class="filter-item" v-model="bloomConfig2.PriceType" placeholder="请选择行情类型" style="width: 100%;">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item">
+            <el-select class="filter-item" v-model="bloombergConfigItem.PriceType" placeholder="请选择行情类型"
+                       style="width: 100%;">
+              <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="彭博代码">
-            <el-input v-model="bloomConfig2.BloombergCode" placeholder="请输入彭博代码"></el-input>
+            <el-input v-model="bloombergConfigItem.BloombergCode" placeholder="请输入彭博代码"></el-input>
           </el-form-item>
           <el-form-item label="请求类型">
-            <el-select class="filter-item" v-model="bloomConfig2.RequestType" placeholder="请选择请求类型"
+            <el-select class="filter-item" v-model="bloombergConfigItem.RequestType" placeholder="请选择请求类型"
                        style="width: 100%;">
-              <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+              <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description"
+                         :value="item.Key">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="市场类型">
-            <el-select class="filter-item" v-model="bloomConfig2.BloombergDataType" placeholder="请选择市场活动类型"
+          <el-form-item label="市场活动类型">
+            <el-select class="filter-item" v-model="bloombergConfigItem.BloombergDataType" placeholder="请选择市场活动类型"
                        style="width: 100%;">
               <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="合成转仓预设">
+            <el-select class="filter-item" v-model="bloombergConfigItem.Warehouse" placeholder="请选择市场活动类型"
+                       style="width: 100%;">
+              <el-option v-for="item in warehouses" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
             </el-select>
           </el-form-item>
@@ -173,13 +199,22 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="创建时间">
-            <el-date-picker :readonly="dialogStatus ==='update'" v-model="bloomConfig2.CreationTime" type="datetime"
+            <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.CreationTime"
+                            type="datetime"
                             disabledDate="return true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="最后更新时间">
-            <el-date-picker :readonly="dialogStatus ==='update'" v-model="bloomConfig2.LastUpdateTime" type="datetime"
+            <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.LastUpdateTime"
+                            type="datetime"
+                            disabledDate="return true" placeholder="选择日期时间"
+                            style="width: 100%;">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="失效时间">
+            <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.ExpirationDate"
+                            type="datetime"
                             disabledDate="return true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
@@ -203,35 +238,30 @@
     name: 'bloomberg',
     data () {
       return {
-        total: 4,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
+          CurrentPage: 1,
+          PageSize: 10,
           BloombergCode: '',
-          PriceType: '',
+          PriceType: null,
           RequestType: '',
           BloombergDataType: '',
+          Warehouse: '',
           RequestStartTime: '',
           RequestEndTime: '',
           CreationTime: '',
-          LastUpdateTime: ''
+          LastUpdateTime: '',
+          ExpirationDate: ''
         },
-        statusOptions: [1, 2, 3],
-        varietyOptions: [
-          {
-            value: 'gold',
-            label: '金'
-          },
-          {
-            value: 'silver',
-            label: '银'
-          },
-          {
-            value: 'copper',
-            label: '铜'
+        tableData: {
+          List: [],
+          Pagination: {
+            CurrentPage: 1,
+            PageCount: 1,
+            PageSize: 10,
+            TotalCount: 0
           }
-        ],
+        },
         dialogStatus: '',
         textMap: {
           update: '编辑',
@@ -270,15 +300,21 @@
       }
     },
     created () {
+      this.$store.dispatch('allMDBCodeConfigs', { marketType: null }).then(() => {
+      })
+      this.getList()
     },
     computed: {
       ...mapGetters([
         'isShowDialog',
-        'allBloomConfigs',
         'bloomConfig2',
         'marketTypes',
         'priceTypes',
-        'bloombergRequestTypes'
+        'warehouses',
+        'bloombergRequestTypes',
+        'allMDBCodeConfigs',
+        'allMDBBloombergConfigList',
+        'bloombergConfigItem'
       ]),
       dialogFormVisible: {
         get: function () {
@@ -290,22 +326,33 @@
       }
     },
     methods: {
+      getList: function () {
+        this.listLoading = true
+        this.$store.dispatch('allMDBBloombergConfigList', this.listQuery)
+          .then(() => {
+            this.tableData = this.allMDBBloombergConfigList
+            this.listLoading = false
+          })
+      },
+
       handleCreate: function () {
-        this.$store.commit('resetBloomConfigRow')
         this.changeDialog(true)
+        this.$store.commit('resetBloomConfigRow')
         this.dialogStatus = 'create'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
+
       handleUpdate: function (row) {
         this.changeDialog(true)
-        this.$store.commit('GET_BY_ID', row.CodeConfigId)
+        this.$store.commit('GET_BY_ID', row.Id)
         this.dialogStatus = 'update'
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
+
       handleDelete: function (row) {
         this.$confirm(`此操作将永久删除彭博代码【${row.BloombergCode}】`, '提示', {
           type: 'warning',
@@ -313,9 +360,12 @@
           cancelButtonText: '取消',
           center: true
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功'
+          this.$store.dispatch('deleteBloombergConfig', [row.Id]).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            })
+            this.getList()
           })
         }).catch(() => {
           this.$message({
@@ -324,24 +374,64 @@
           })
         })
       },
+
       cancel: function () {
         this.changeDialog(false)
       },
+
       createData: function () {
-        console.log('create')
+        this.bloombergConfigItem.RequestStartTime = this.value4[0]
+        this.bloombergConfigItem.RequestEndTime = this.value4[1]
+        this.$store.dispatch('addBloombergConfig', [this.bloombergConfigItem])
+          .then(() => {
+            this.changeDialog(false)
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
       },
+
       updateData: function () {
-        console.log('update')
+        this.bloombergConfigItem.RequestStartTime = this.value4[0]
+        this.bloombergConfigItem.RequestEndTime = this.value4[1]
+        this.$store.dispatch('updateBloombergConfig', [this.bloombergConfigItem])
+          .then(() => {
+            this.changeDialog(false)
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
       },
+
       closeBloomDialog: function () {
         this.changeDialog(false)
       },
+
       changeDialog: function (v) {
         this.$store.commit('CHANGE_DIALOG', { val: v })
         this.dialogFormVisible = this.$store.getters.isShowDialog
       },
-      handleImportBloomConfig() {
+
+      handleImportBloomConfig () {
         console.log('import bloomBerg config')
+      },
+
+      handleSizeChange: function (val) {
+        this.listQuery.PageSize = val
+        this.getList()
+      },
+
+      handleCurrentChange: function (val) {
+        this.listQuery.CurrentPage = val
+        this.getList()
       }
     }
   }

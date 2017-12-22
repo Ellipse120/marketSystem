@@ -5,7 +5,7 @@ import {
   getWarehouses,
   getMarketTypes,
   getQuotationSources,
-  getDurations
+  getInterestDurations
 } from '../../api/enum'
 
 import { Message } from 'element-ui'
@@ -14,17 +14,21 @@ const enums = {
   state: {
     marketTypes: [],
     priceTypes: [],
-    requestTypes: [],
     bloombergRequestTypes: [],
-    quotationSources: []
+    quotationSources: [],
+    warehouses: [],
+    contractTypes: [],
+    interestDurations: []
   },
 
   getters: {
     marketTypes: state => state.marketTypes,
     priceTypes: state => state.priceTypes,
-    requestTypes: state => state.requestTypes,
     bloombergRequestTypes: state => state.bloombergRequestTypes,
-    quotationSources: state => state.quotationSources
+    quotationSources: state => state.quotationSources,
+    warehouses: state => state.warehouses,
+    contractTypes: state => state.contractTypes,
+    interestDurations: state => state.interestDurations
   },
 
   mutations: {
@@ -34,14 +38,20 @@ const enums = {
     allPriceTypes: (state, data) => {
       state.priceTypes = data
     },
-    allRequestTypes: (state, data) => {
-      state.requestTypes = data
-    },
     allBloombergRequestTypes: (state, data) => {
       state.bloombergRequestTypes = data
     },
     allQuotationSources: (state, data) => {
       state.quotationSources = data
+    },
+    allWarehouses: (state, data) => {
+      state.warehouses = data
+    },
+    allContractTypes: (state, data) => {
+      state.contractTypes = data
+    },
+    allInterestRates: (state, data) => {
+      state.interestDurations = data
     }
   },
 
@@ -73,8 +83,6 @@ const enums = {
           .catch(err => reject(err))
       })
     },
-    getAllRequestTypes: ({ commit }) => {
-    },
     getAllBloombergRequestTypes: ({ commit }) => {
       return new Promise((resolve, reject) => {
         getBloombergRequestTypes()
@@ -90,6 +98,36 @@ const enums = {
         getQuotationSources()
           .then(response => {
             commit('allQuotationSources', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+    getWarehouses: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        getWarehouses()
+          .then(response => {
+            commit('allWarehouses', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+    getContractTypes: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        getContractTypes()
+          .then(response => {
+            commit('allContractTypes', response.Data)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+    getInterestDurations: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        getInterestDurations()
+          .then(response => {
+            commit('allInterestRates', response.Data)
             resolve()
           })
           .catch(err => reject(err))

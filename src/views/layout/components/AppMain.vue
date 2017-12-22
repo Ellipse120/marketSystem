@@ -15,6 +15,9 @@
       this.$store.dispatch('getPriceTypes')
       this.$store.dispatch('getAllBloombergRequestTypes')
       this.$store.dispatch('getAllQuotationSources')
+      this.$store.dispatch('getWarehouses')
+      this.$store.dispatch('getContractTypes')
+      this.$store.dispatch('getInterestDurations')
     },
     computed: {
       // key() {
