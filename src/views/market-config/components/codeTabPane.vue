@@ -13,12 +13,6 @@
             </el-option>
           </el-select>
         </el-col>
-        <!--<el-col :span="3">-->
-        <!--<el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item" :clearable="true">-->
-        <!--<el-option v-for="item in varietyOptions" :key="item.$index" :label="item.label" :value="item.value">-->
-        <!--</el-option>-->
-        <!--</el-select>-->
-        <!--</el-col>-->
         <el-col :span="3">
           <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item" :clearable="true">
             <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">

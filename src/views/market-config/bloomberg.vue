@@ -192,16 +192,28 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="请求时间区间">
-            <el-date-picker
-              v-model="value4"
-              type="datetimerange"
-              :picker-options="pickerOptions2"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              align="center">
-            </el-date-picker>
+          <el-form-item label="请求起止区间">
+            <div style="display: flex;">
+              <el-time-select
+                placeholder="起始时间"
+                v-model="bloombergConfigItem.RequestStartTime"
+                :picker-options="{
+                  start: '00:00',
+                  step: '00:15',
+                  end: '24:00'
+                }">
+              </el-time-select>
+              <el-time-select
+                placeholder="结束时间"
+                v-model="bloombergConfigItem.RequestEndTime"
+                :picker-options="{
+                  start: '00:00',
+                  step: '00:15',
+                  end: '24:00',
+                  minTime: bloombergConfigItem.RequestStartTime
+                }">
+              </el-time-select>
+            </div>
           </el-form-item>
           <el-form-item label="创建时间" v-if="dialogStatus === 'update'">
             <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.CreationTime"
@@ -211,7 +223,7 @@
           </el-form-item>
           <el-form-item label="最后更新时间" v-if="dialogStatus === 'update'">
             <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.LastUpdateTime"
-                            type="datetime"  :disabled="true" placeholder="选择日期时间"
+                            type="datetime" :disabled="true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
@@ -236,8 +248,10 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import ElFormItem from 'element-ui/packages/form/src/form-item'
 
   export default {
+    components: { ElFormItem },
     name: 'bloomberg',
     data () {
       return {
@@ -272,7 +286,6 @@
         },
         dialogPvVisible: false,
         rules: {},
-        value4: '',
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -339,7 +352,6 @@
 
       handleCreate: function () {
         this.changeDialog(true)
-        this.value4 = ''
         this.$store.commit('resetBloomConfigRow')
         this.dialogStatus = 'create'
         this.$nextTick(() => {
@@ -383,8 +395,7 @@
       },
 
       createData: function () {
-        this.bloombergConfigItem.RequestStartTime = this.value4[0]
-        this.bloombergConfigItem.RequestEndTime = this.value4[1]
+        debugger
         this.$store.dispatch('addBloombergConfig', [this.bloombergConfigItem])
           .then(() => {
             this.changeDialog(false)
@@ -399,8 +410,6 @@
       },
 
       updateData: function () {
-        this.bloombergConfigItem.RequestStartTime = this.value4[0]
-        this.bloombergConfigItem.RequestEndTime = this.value4[1]
         this.$store.dispatch('updateBloombergConfig', [this.bloombergConfigItem])
           .then(() => {
             this.changeDialog(false)
