@@ -4,6 +4,7 @@ import app from './modules/app'
 import user from './modules/user'
 import bloomConfig from './modules/bloomConfig'
 import codeConfig from './modules/codeConfig'
+import marketData from './modules/market-data'
 import getters from './getters'
 import enums from './modules/enums'
 
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
     user,
     bloomConfig,
     codeConfig,
+    marketData,
     enums
   },
   getters

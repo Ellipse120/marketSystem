@@ -63,7 +63,7 @@ service.interceptors.response.use(
     console.log('err+ 超时处理' + error)// for debug TODO 超时处理
     if (error.response) {
       Message({
-        message: `${error.response.data.Message},请重新登录`,
+        message: `${error.response.data.Message}`,
         type: 'error',
         duration: 2 * 1000
       })

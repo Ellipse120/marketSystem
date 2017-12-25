@@ -28,7 +28,7 @@
         <el-col :span="12" style="display: inline-flex;">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-          <el-button type="info" icon="el-icon-download" class="filter-item">导入</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData()">导入</el-button>
           <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item">彭博行情</el-button>
         </el-col>
       </el-row>
@@ -36,7 +36,7 @@
     <!-- table ↓ -->
     <div>
       <el-table
-        :data="tableData"
+        :data="tableData.List"
         v-loading.body="listLoading"
         element-loading-text="拼命加载中。。。"
         border fit
@@ -47,14 +47,17 @@
           width="55">
         </el-table-column>
         <el-table-column
-          fixed
-          prop="MDBCodeId"
-          label="市场编码Id"
-          align="center"
-          width="150">
+          prop="MDBCodeDisplayName"
+          label="市场编码"
+          align="center">
         </el-table-column>
         <el-table-column
-          prop="PriceType"
+          prop="TradeDate"
+          label="交易日期"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="PriceTypeNote"
           align="center"
           label="行情类型">
         </el-table-column>
@@ -64,12 +67,12 @@
           label="行情值">
         </el-table-column>
         <el-table-column
-          prop="Source"
+          prop="SourceNote"
           align="center"
           label="行情来源">
         </el-table-column>
         <el-table-column
-          prop="MarketType"
+          prop="MarketTypeNote"
           align="center"
           label="市场类型">
         </el-table-column>
@@ -82,11 +85,24 @@
           label="操作"
           align="center"
           fixed="right"
-          width="200">
+          width="80">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit-outline" size="mini" @click="handleUpdate(scope.row)">编辑
-            </el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            <el-dropdown size="medium">
+              <el-button type="text">
+                操作<i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleUpdate(scope.row)">编辑</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!--<el-button type="primary" icon="el-icon-edit-outline" size="mini" @click="handleUpdate(scope.row)">编辑-->
+            <!--</el-button>-->
+            <!--<el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -94,48 +110,56 @@
       <div class="pagination-container">
         <el-pagination
           background
-          :current-page.sync="listQuery.page"
-          :page-sizes="[10,20,30, 50]"
-          :page-size="listQuery.limit"
+          :current-page.sync="listQuery.CurrentPage"
+          :page-sizes="[10,20,30,50]"
+          :page-size="listQuery.PageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+          :total="tableData.Pagination.TotalCount"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange">
         </el-pagination>
       </div>
 
       <!-- dialog -->
       <div>
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-          <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="80px"
+          <el-form :rules="rules" ref="dataForm" :model="mDBDataItem" label-position="left" label-width="80px"
                    style='width: 400px; margin-left:50px;'>
-            <el-form-item label="市场编码Id">
-              <el-input v-model="temp.MDBCodeId"></el-input>
+            <el-form-item label="市场编码">
+              <!--<el-input v-model="mDBDataItem.MDBCodeId"></el-input>-->
+              <el-select class="filter-item" v-model="mDBDataItem.MDBCodeId" placeholder="请选择编码配置"
+                         style="width: 100%;">
+                <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.DisplayName"
+                           :value="item.Id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="交易日期" prop="TradeDate">
+              <el-date-picker :readonly="dialogStatus ==='update'" v-model="mDBDataItem.TradeDate" type="datetime"
+                              disabledDate="return true" placeholder="选择日期时间"
+                              style="width: 100%;">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="行情类型">
-              <el-select class="filter-item" v-model="temp.PriceType" placeholder="请选择" style="width: 100%;">
+              <el-select class="filter-item" v-model="mDBDataItem.PriceType" placeholder="请选择" style="width: 100%;">
                 <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="行情值">
-              <el-input v-model="temp.PriceValue"></el-input>
+              <el-input v-model="mDBDataItem.PriceValue"></el-input>
             </el-form-item>
             <el-form-item label="行情来源">
-              <el-select class="filter-item" v-model="temp.Source" placeholder="请选择" style="width: 100%;">
+              <el-select class="filter-item" v-model="mDBDataItem.Source" placeholder="请选择" style="width: 100%;">
                 <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="市场类型">
-              <el-select class="filter-item" v-model="temp.MarketType" placeholder="请选择" style="width: 100%;">
+              <el-select class="filter-item" v-model="mDBDataItem.MarketType" placeholder="请选择" style="width: 100%;">
                 <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="时间" prop="timestamp">
-              <el-date-picker :readonly="dialogStatus ==='update'" v-model="temp.timestamp" type="datetime"
-                              disabledDate="return true" placeholder="选择日期时间"
-                              style="width: 100%;">
-              </el-date-picker>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -151,7 +175,6 @@
 </template>
 
 <script>
-  import { getList } from '../../api/market-config'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -161,14 +184,14 @@
         total: 4,
         listLoading: false,
         listQuery: {
-          page: 1,
-          limit: 20,
+          CurrentPage: 1,
+          PageSize: 20,
           MDBCodeId: '',
+          TradeDate: '',
           PriceType: '',
           PriceValue: '',
           Source: '',
-          MarketType: '',
-          LastUpdateTime: ''
+          MarketType: ''
         },
         statusOptions: [1, 2, 3],
         varietyOptions: [
@@ -185,37 +208,15 @@
             label: '铜'
           }
         ],
-        tableData: [
-          {
-            MDBCodeId: '123',
-            PriceType: '上期所',
-            PriceValue: '49000',
-            Source: '彭博',
-            MarketType: '时点价',
-            LastUpdateTime: new Date().toLocaleString()
-          }, {
-            MDBCodeId: '122',
-            PriceType: '上期所',
-            PriceValue: '50170',
-            Source: '手工录入',
-            MarketType: '结算价',
-            LastUpdateTime: new Date().toLocaleString()
-          }, {
-            MDBCodeId: '111',
-            PriceType: 'COMEX',
-            PriceValue: '52050',
-            Source: '彭博',
-            MarketType: '时点价',
-            LastUpdateTime: new Date().toLocaleString()
-          }, {
-            MDBCodeId: '142',
-            PriceType: '上期所',
-            PriceValue: '51180',
-            Source: '彭博',
-            MarketType: '时点价',
-            LastUpdateTime: new Date().toLocaleString()
+        tableData: {
+          List: [],
+          Pagination: {
+            CurrentPage: 1,
+            PageCount: 1,
+            PageSize: 10,
+            TotalCount: 0
           }
-        ],
+        },
         temp: {
           MDBCodeId: '',
           PriceType: '',
@@ -235,50 +236,48 @@
       }
     },
     created () {
-      // this.getList()
+      this.$store.dispatch('allMDBCodeConfigs', { marketType: null }).then(() => {
+      })
+      this.getList()
     },
     computed: {
       ...mapGetters([
         'marketTypes',
         'priceTypes',
-        'quotationSources'
+        'quotationSources',
+        'allMDBDataList',
+        'mDBDataItem',
+        'allMDBCodeConfigs'
       ])
     },
     methods: {
       getList () {
         this.listLoading = true
-        getList(this.listQuery).then(response => {
-          console.log(response)
-          this.listLoading = false
-        })
+        this.$store.dispatch('allMDBDataList', this.listQuery)
+          .then(() => {
+            this.tableData = this.allMDBDataList
+            this.listLoading = false
+          })
       },
-      resetTemp: function () {
-        this.temp = {
-          MDBCodeId: '',
-          PriceType: '',
-          PriceValue: '',
-          Source: '',
-          MarketType: '',
-          LastUpdateTime: ''
-        }
-      },
+
       handleCreate: function () {
-        this.resetTemp()
+        this.$store.commit('resetMDBDataItem')
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
+
       handleUpdate: function (row) {
-        this.temp = Object.assign({}, row)
-        this.temp.timestamp = new Date()
+        this.$store.commit('GET_MDBDATA_BY_ID', row.Id)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
+
       handleDelete: function (row) {
         this.$confirm(`此操作将永久删除市场编码Id【${row.MDBCodeId}】`, '提示', {
           type: 'warning',
@@ -286,9 +285,12 @@
           cancelButtonText: '取消',
           center: true
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功'
+          this.$store.dispatch('deleteMDBData', [row.Id]).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            })
+            this.getList()
           })
         }).catch(() => {
           this.$message({
@@ -297,11 +299,47 @@
           })
         })
       },
+
       createData: function () {
-        console.log('create')
+        this.$store.dispatch('addMDBData', [this.mDBDataItem])
+          .then(() => {
+            this.dialogFormVisible = false
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
       },
+
       updateData: function () {
-        console.log('update')
+        this.$store.dispatch('updateMDBData', [this.mDBDataItem])
+          .then(() => {
+            this.dialogFormVisible = false
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
+      },
+
+      handleSizeChange: function (val) {
+        this.listQuery.PageSize = val
+        this.getList()
+      },
+
+      handleCurrentChange: function (val) {
+        this.listQuery.CurrentPage = val
+        this.getList()
+      },
+
+      handleImportMDBData: function () {
+        //  TODO 导入
       }
     }
   }

@@ -54,7 +54,12 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="PriceType"
+          prop="MDBCodeDisplayName"
+          label="编码配置名称"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="PriceTypeNote"
           label="行情类型"
           align="center">
         </el-table-column>
@@ -64,7 +69,7 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="RequestType"
+          prop="RequestTypeNote"
           label="请求类型"
           align="center">
         </el-table-column>
@@ -74,7 +79,7 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="Warehouse"
+          prop="WarehouseNote"
           label="合成转仓预设"
           align="center">
         </el-table-column>
@@ -200,13 +205,13 @@
           </el-form-item>
           <el-form-item label="创建时间" v-if="dialogStatus === 'update'">
             <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.CreationTime"
-                            type="datetime" disabled="true" placeholder="选择日期时间"
+                            type="datetime" :disabled="true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="最后更新时间" v-if="dialogStatus === 'update'">
             <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.LastUpdateTime"
-                            type="datetime"  disabled="true" placeholder="选择日期时间"
+                            type="datetime"  :disabled="true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>
           </el-form-item>
@@ -305,7 +310,6 @@
     computed: {
       ...mapGetters([
         'isShowDialog',
-        'bloomConfig2',
         'marketTypes',
         'priceTypes',
         'warehouses',
@@ -335,6 +339,7 @@
 
       handleCreate: function () {
         this.changeDialog(true)
+        this.value4 = ''
         this.$store.commit('resetBloomConfigRow')
         this.dialogStatus = 'create'
         this.$nextTick(() => {
@@ -419,6 +424,7 @@
       },
 
       handleImportBloomConfig () {
+        // TODO 导入
         console.log('import bloomBerg config')
       },
 

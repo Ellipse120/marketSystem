@@ -80,7 +80,6 @@ const enums = {
             commit('allPriceTypes', response.Data)
             resolve()
           })
-          .catch(err => reject(err))
       })
     },
     getAllBloombergRequestTypes: ({ commit }) => {
@@ -90,7 +89,6 @@ const enums = {
             commit('allBloombergRequestTypes', response.Data)
             resolve()
           })
-          .catch(err => reject(err))
       })
     },
     getAllQuotationSources: ({ commit }) => {
@@ -100,7 +98,6 @@ const enums = {
             commit('allQuotationSources', response.Data)
             resolve()
           })
-          .catch(err => reject(err))
       })
     },
     getWarehouses: ({ commit }) => {
@@ -110,7 +107,6 @@ const enums = {
             commit('allWarehouses', response.Data)
             resolve()
           })
-          .catch(err => reject(err))
       })
     },
     getContractTypes: ({ commit }) => {
@@ -120,7 +116,6 @@ const enums = {
             commit('allContractTypes', response.Data)
             resolve()
           })
-          .catch(err => reject(err))
       })
     },
     getInterestDurations: ({ commit }) => {
@@ -130,7 +125,6 @@ const enums = {
             commit('allInterestRates', response.Data)
             resolve()
           })
-          .catch(err => reject(err))
       })
     }
   }

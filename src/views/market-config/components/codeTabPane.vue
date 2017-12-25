@@ -56,7 +56,7 @@
           label="名称">
         </el-table-column>
         <el-table-column
-          prop="MarketType"
+          prop="MarketTypeNote"
           align="center"
           label="市场类型">
         </el-table-column>
@@ -306,7 +306,8 @@
       handleBloomConfig: function (row) {
         this.$router.push('bloomBerg')
         this.changeDialog(true)
-        this.$store.commit('GET_BY_ID', row.Code)
+        this.$store.commit('resetBloomConfigRow')
+        this.$store.commit('CONFIG_BLOOMBERG', row.Id)
       },
 
       createData: function () {
