@@ -102,8 +102,17 @@
 
     <!-- dialog-->
     <div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeBloomDialog" top="10vh">
-        <el-form :rules="rules" ref="dataForm" :model="codeConfigItem" label-position="left" label-width="80px"
+      <el-dialog
+        :title="textMap[dialogStatus]"
+        :visible.sync="dialogFormVisible"
+        @close="closeBloomDialog"
+        top="10vh"
+        width="30%">
+        <el-form :rules="rules"
+                 ref="dataForm"
+                 :model="codeConfigItem"
+                 label-position="left"
+                 label-width="80px"
                  style='width: 400px; margin-left:50px;'>
           <el-form-item label="唯一编码">
             <el-input v-model="codeConfigItem.Code" :disabled="dialogStatus === 'update'"></el-input>
@@ -206,7 +215,6 @@
           update: '编辑',
           create: '创建'
         },
-        dialogPvVisible: false,
         rules: {},
         marketType: {
           label: '',

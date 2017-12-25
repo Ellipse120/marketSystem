@@ -148,10 +148,17 @@
 
     <!-- dialog -->
     <div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" top="10vh" width="600px"
+      <el-dialog :title="textMap[dialogStatus]"
+                 :visible.sync="dialogFormVisible"
+                 top="10vh"
+                 width="30%"
                  @close="closeBloomDialog">
-        <el-form :rules="rules" ref="dataForm" :model="bloombergConfigItem" label-position="left" label-width="100px"
-                 size="mini" style='width: 500px; margin-left:35px;'>
+        <el-form :rules="rules"
+                 ref="dataForm"
+                 :model="bloombergConfigItem"
+                 label-position="left"
+                 label-width="100px"
+                 style='width: 400px; margin-left:50px;'>
           <el-form-item label="编码配置">
             <el-select class="filter-item" v-model="bloombergConfigItem.MDBCodeId" placeholder="请选择编码配置"
                        style="width: 100%;">
@@ -284,7 +291,6 @@
           update: '编辑',
           create: '创建'
         },
-        dialogPvVisible: false,
         rules: {},
         pickerOptions2: {
           shortcuts: [{

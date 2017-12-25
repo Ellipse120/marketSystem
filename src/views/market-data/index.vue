@@ -28,7 +28,8 @@
         <el-col :span="12" style="display: inline-flex;">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData()">导入</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData()">导入
+          </el-button>
           <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item">彭博行情</el-button>
         </el-col>
       </el-row>
@@ -120,10 +121,16 @@
         </el-pagination>
       </div>
 
-      <!-- dialog -->
+      <!-- add/update dialog -->
       <div>
-        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-          <el-form :rules="rules" ref="dataForm" :model="mDBDataItem" label-position="left" label-width="80px"
+        <el-dialog :title="textMap[dialogStatus]"
+                   :visible.sync="dialogFormVisible"
+                   width="30%">
+          <el-form :rules="rules"
+                   ref="dataForm"
+                   :model="mDBDataItem"
+                   label-position="left"
+                   label-width="80px"
                    style='width: 400px; margin-left:50px;'>
             <el-form-item label="市场编码">
               <!--<el-input v-model="mDBDataItem.MDBCodeId"></el-input>-->
@@ -170,6 +177,21 @@
         </el-dialog>
       </div>
 
+      <!-- import dialog -->
+      <div>
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogImportVisible"
+          width="30%"
+          :before-close="handleClose">
+          <span>这是一段信息</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogImportVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogImportVisible = false">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+
     </div>
   </div>
 </template>
@@ -181,7 +203,6 @@
     name: 'marketDataManagement',
     data () {
       return {
-        total: 4,
         listLoading: false,
         listQuery: {
           CurrentPage: 1,
@@ -231,7 +252,7 @@
           update: '编辑',
           create: '创建'
         },
-        dialogPvVisible: false,
+        dialogImportVisible: false,
         rules: {}
       }
     },
