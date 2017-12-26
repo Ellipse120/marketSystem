@@ -99,3 +99,25 @@ export function addInterestRateCode (data) {
     data
   })
 }
+
+/**
+ * 期货编码预览接口
+ * */
+export function doPreviewMDBFutureCode (data) {
+  return request({
+    url: `${baseUrl}PreviewMDBFutureCode/${data.id}`,
+    method: 'get',
+    params: data
+  })
+}
+
+/**
+ * 期货编码导入接口
+ * */
+export function doImportMDBFutureCode (data) {
+  return request({
+    url: `${baseUrl}ImportMDBFutureCode/${data.id}`,
+    method: 'get',
+    params: data
+  })
+}

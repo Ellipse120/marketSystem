@@ -27,3 +27,13 @@
     }
   }
 }
+
+.upload-demo {
+  .el-upload {
+    margin: 0 90px;
+  }
+
+  .el-upload__tip {
+    text-align: center;
+  }
+}

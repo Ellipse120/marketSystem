@@ -7,12 +7,13 @@ import {
   addInterestRateCode,
   getAllInterestRates,
   deleteFutureCode,
-  updateFutureCode
+  updateFutureCode,
+  doPreviewMDBFutureCode,
+  doImportMDBFutureCode
 } from '../../api/code-config'
 
 const codeConfig = {
   state: {
-    // isShowDialog: false,
     MDBCodeConfigList: [],
     codeConfigItem: {},
     futureContracts: {},
@@ -21,7 +22,6 @@ const codeConfig = {
   },
 
   getters: {
-    // isShow: state => state.isShowDialog,
     allMDBCodeConfigs: state => state.MDBCodeConfigList,
     codeConfigItem: state => state.codeConfigItem,
     futureContracts: state => state.futureContracts,

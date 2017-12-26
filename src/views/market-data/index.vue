@@ -101,9 +101,6 @@
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <!--<el-button type="primary" icon="el-icon-edit-outline" size="mini" @click="handleUpdate(scope.row)">编辑-->
-            <!--</el-button>-->
-            <!--<el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -133,7 +130,6 @@
                    label-width="80px"
                    style='width: 400px; margin-left:50px;'>
             <el-form-item label="市场编码">
-              <!--<el-input v-model="mDBDataItem.MDBCodeId"></el-input>-->
               <el-select class="filter-item" v-model="mDBDataItem.MDBCodeId" placeholder="请选择编码配置"
                          style="width: 100%;">
                 <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.DisplayName"
@@ -179,14 +175,15 @@
 
       <!-- import dialog -->
       <div>
-        <el-dialog
-          title="提示"
-          :visible.sync="dialogImportVisible"
-          width="30%"
-          :before-close="handleClose">
-          <span>这是一段信息</span>
+        <el-dialog v-if="dialogImportVisible"
+                   title="导入"
+                   :visible.sync="dialogImportVisible"
+                   width="30%"
+                   :close-on-click-modal="false"
+                   :before-close="handleBeforeClose">
+          <upload-excel :uploadURI="uploadURI" @do-preview="doPreview"></upload-excel>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogImportVisible = false">取 消</el-button>
+            <el-button @click="handleBeforeClose">取 消</el-button>
             <el-button type="primary" @click="dialogImportVisible = false">确 定</el-button>
           </span>
         </el-dialog>
@@ -199,10 +196,14 @@
 <script>
   import { mapGetters } from 'vuex'
 
+  import uploadExcel from '../../components/uploadExcel/index'
+
   export default {
     name: 'marketDataManagement',
+    components: { uploadExcel },
     data () {
       return {
+        uploadURI: 'http://192.168.125.63:12345/api/File/Upload',
         listLoading: false,
         listQuery: {
           CurrentPage: 1,
@@ -214,21 +215,6 @@
           Source: '',
           MarketType: ''
         },
-        statusOptions: [1, 2, 3],
-        varietyOptions: [
-          {
-            value: 'gold',
-            label: '金'
-          },
-          {
-            value: 'silver',
-            label: '银'
-          },
-          {
-            value: 'copper',
-            label: '铜'
-          }
-        ],
         tableData: {
           List: [],
           Pagination: {
@@ -237,14 +223,6 @@
             PageSize: 10,
             TotalCount: 0
           }
-        },
-        temp: {
-          MDBCodeId: '',
-          PriceType: '',
-          PriceValue: '',
-          Source: '',
-          MarketType: '',
-          LastUpdateTime: ''
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -361,8 +339,19 @@
 
       handleImportMDBData: function () {
         //  TODO 导入
+        this.dialogImportVisible = true
+      },
+
+      handleBeforeClose: function () {
+        // TODO debugger
+      },
+
+      doPreview: function (previewSheet) {
+        console.log('previewSheet； ', previewSheet)
       }
+
     }
+
   }
 </script>
 
