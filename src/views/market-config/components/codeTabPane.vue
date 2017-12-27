@@ -13,15 +13,11 @@
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="3">
-          <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item" :clearable="true">
-            <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
-            </el-option>
-          </el-select>
-        </el-col>
         <el-col :span="15">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportCodeConfig()">导入
+          </el-button>
         </el-col>
       </el-row>
     </div>
@@ -166,15 +162,34 @@
           <el-button type="primary" v-else @click="updateData">确 定</el-button>
         </div>
       </el-dialog>
+
+      <!-- import dialog -->
+      <div>
+        <el-dialog v-if="dialogImportVisible"
+                   title="导入"
+                   :visible.sync="dialogImportVisible"
+                   width="30%"
+                   :close-on-click-modal="false"
+                   :before-close="handleBeforeClose">
+          <upload-excel @do-preview="doPreview"></upload-excel>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="handleBeforeClose">取 消</el-button>
+            <el-button type="primary" @click="dialogImportVisible = false">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
+  import uploadExcel from '@/components/uploadExcel/index'
 
   export default {
     name: 'code-tab-pane',
+    components: { uploadExcel },
     props: {
       type: {
         type: String,
@@ -219,7 +234,8 @@
         marketType: {
           label: '',
           code: ''
-        }
+        },
+        dialogImportVisible: false
       }
     },
     methods: {
@@ -410,6 +426,21 @@
       handleCurrentChange: function (val) {
         this.listQuery.CurrentPage = val
         this.getList()
+      },
+
+      handleImportCodeConfig: function () {
+        this.dialogImportVisible = true
+      },
+
+      handleBeforeClose: function () {
+        // TODO debugger
+      },
+
+      doPreview: function (data) {
+        this.$store.dispatch('doPreviewMDBFutureCode', data)
+          .then(res => {
+            console.log(res)
+          })
       }
     },
     computed: {

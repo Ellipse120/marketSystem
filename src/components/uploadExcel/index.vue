@@ -24,11 +24,13 @@
           <div>
             <el-row :gutter="10">
               <el-col :span="10">
-                <el-select v-model="previewTarget">
+                <el-select v-model="previewSheetName">
                   <el-option
                     v-for="item in xlsSheets"
-                    :key="item" :label="item" :value="item"
-                  ></el-option>
+                    :key="item"
+                    :label="item"
+                    :value="item">
+                  </el-option>
                 </el-select>
               </el-col>
               <el-col :span="4">
@@ -41,7 +43,7 @@
             <!-- main -->
           </div>
         </div>
-        <div v-if="stepActive === 2">2</div>
+        <div v-if="stepActive === 2">导入</div>
       </transition>
     </div>
   </div>
@@ -49,14 +51,11 @@
 
 <script>
   import { getToken } from '../../utils/auth'
+  import ElOption from 'element-ui/packages/select/src/option'
 
   export default {
+    components: { ElOption },
     name: 'uploadExcel',
-    props: {
-      uploadURI: {
-        required: true
-      }
-    },
     created () {
     },
     data () {
@@ -64,11 +63,16 @@
         headers: {
           'token': getToken()
         },
-        previewTarget: '',
+        uploadURI: 'http://192.168.125.63:12345/api/File/Upload',
         stepActive: 0,
         finishStatus: 'wait',
         uploadRecordId: '',
-        xlsSheets: [1, 2, 3]
+        xlsSheets: []
+      }
+    },
+    computed: {
+      previewSheetName () {
+        return this.xlsSheets[0]
       }
     },
     methods: {
@@ -100,7 +104,7 @@
       },
 
       handlePreview: function () {
-        this.$emit('do-preview', { id: this.previewTarget })
+        this.$emit('do-preview', { id: this.uploadRecordId, sheetName: this.previewSheetName })
       }
     }
   }

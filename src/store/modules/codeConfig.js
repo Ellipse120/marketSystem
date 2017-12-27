@@ -156,6 +156,28 @@ const codeConfig = {
           })
           .catch(err => reject(err))
       })
+    },
+
+    doPreviewMDBFutureCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doPreviewMDBFutureCode(data)
+          .then(response => {
+            console.log(response)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doImportMDBFutureCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doImportMDBFutureCode(data)
+          .then(response => {
+            console.log(response)
+            resolve()
+          })
+          .catch(err => reject(err))
+      })
     }
   }
 }

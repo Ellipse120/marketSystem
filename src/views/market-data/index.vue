@@ -181,7 +181,7 @@
                    width="30%"
                    :close-on-click-modal="false"
                    :before-close="handleBeforeClose">
-          <upload-excel :uploadURI="uploadURI" @do-preview="doPreview"></upload-excel>
+          <upload-excel @do-preview="doPreview"></upload-excel>
           <span slot="footer" class="dialog-footer">
             <el-button @click="handleBeforeClose">取 消</el-button>
             <el-button type="primary" @click="dialogImportVisible = false">确 定</el-button>
@@ -196,14 +196,13 @@
 <script>
   import { mapGetters } from 'vuex'
 
-  import uploadExcel from '../../components/uploadExcel/index'
+  import uploadExcel from '@/components/uploadExcel/index'
 
   export default {
     name: 'marketDataManagement',
     components: { uploadExcel },
     data () {
       return {
-        uploadURI: 'http://192.168.125.63:12345/api/File/Upload',
         listLoading: false,
         listQuery: {
           CurrentPage: 1,

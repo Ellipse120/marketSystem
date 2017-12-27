@@ -107,7 +107,9 @@ export function doPreviewMDBFutureCode (data) {
   return request({
     url: `${baseUrl}PreviewMDBFutureCode/${data.id}`,
     method: 'get',
-    params: data
+    params: {
+      sheetName: data.sheetName
+    }
   })
 }
 
