@@ -60,22 +60,25 @@ service.interceptors.response.use(
     // }
   },
   error => {
-    console.log('err+ 超时处理' + error)// for debug TODO 超时处理
+    console.log('err+ 超时处理' + error)
     if (error.response) {
       Message({
         message: `${error.response.data.Message}`,
         type: 'error',
         duration: 2 * 1000
       })
-      // MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-      //   confirmButtonText: '重新登录',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   store.dispatch('FedLogOut').then(() => {
-      //     location.reload()
-      //   })
-      // })
+      if (error.response.data.Message === 'token错误！') {
+        // TODO 超时处理目前只能先这么干
+        MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('FedLogOut').then(() => {
+            location.reload()
+          })
+        })
+      }
     } else {
       Message({
         message: `${error.message}, 稍后重试...`,
