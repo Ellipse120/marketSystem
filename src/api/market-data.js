@@ -50,3 +50,26 @@ export function deleteMDBData (data) {
   })
 }
 
+/**
+ * 市场行情预览接口
+ * */
+export function doPreviewMDBData (data) {
+  return request({
+    url: `${baseUrl}PreviewMDBData/${data.id}`,
+    method: 'get',
+    params: {
+      sheetName: data.sheetName
+    }
+  })
+}
+
+/**
+ * 市场行情导入接口
+ * */
+export function doImportMDBData (data) {
+  return request({
+    url: `${baseUrl}ImportMDBData/${data.id}`,
+    method: 'post',
+    params: data
+  })
+}

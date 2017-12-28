@@ -48,7 +48,7 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="MDBCodeDisplayName"
+          prop="MDBCodeCode"
           label="市场编码"
           align="center">
         </el-table-column>
@@ -132,7 +132,7 @@
             <el-form-item label="市场编码">
               <el-select class="filter-item" v-model="mDBDataItem.MDBCodeId" placeholder="请选择编码配置"
                          style="width: 100%;">
-                <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.DisplayName"
+                <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.Code"
                            :value="item.Id">
                 </el-option>
               </el-select>
@@ -181,10 +181,15 @@
                    width="30%"
                    :close-on-click-modal="false"
                    :before-close="handleBeforeClose">
-          <upload-excel @do-preview="doPreview"></upload-excel>
+          <upload-excel
+            :previewData="previewData"
+            :isImportSuccess="isImportSuccess"
+            @do-preview="doPreview"
+            @do-import="doImportCode">
+          </upload-excel>
           <span slot="footer" class="dialog-footer">
             <el-button @click="handleBeforeClose">取 消</el-button>
-            <el-button type="primary" @click="dialogImportVisible = false">确 定</el-button>
+            <el-button type="primary" @click="handleSure">确 定</el-button>
           </span>
         </el-dialog>
       </div>
@@ -230,7 +235,9 @@
           create: '创建'
         },
         dialogImportVisible: false,
-        rules: {}
+        rules: {},
+        previewData: {},
+        isImportSuccess: false
       }
     },
     created () {
@@ -337,20 +344,46 @@
       },
 
       handleImportMDBData: function () {
-        //  TODO 导入
         this.dialogImportVisible = true
       },
 
-      handleBeforeClose: function () {
-        // TODO debugger
+      handleSure: function () {
+        this.dialogImportVisible = false
+        if (this.isImportSuccess) {
+          this.getList()
+        }
       },
 
-      doPreview: function (previewSheet) {
-        console.log('previewSheet； ', previewSheet)
+      handleBeforeClose: function () {
+        this.$store.commit('resetUpload')
+        this.previewData = {}
+        this.dialogImportVisible = false
+      },
+
+      doPreview: function (data) {
+        this.$store.dispatch('doPreviewMDBData', data)
+          .then(res => {
+            this.previewData = res.Data.PreviewData
+            this.$store.commit('changeIsPreviewCheck', false)
+            if (res.Data.PreviewData.ImportAllowed) {
+              this.$store.commit('changeStepActive', 2)
+              this.$store.commit('changeFinishStatus', 'success')
+            }
+          })
+      },
+
+      doImportCode: function (data) {
+        this.$store.dispatch('doImportMDBData', data)
+          .then(res => {
+            this.isImportSuccess = res.Status
+            if (res.Status) {
+              this.$store.commit('changeStepActive', 3)
+              this.$store.commit('changeFinishStatus', 'success')
+            }
+          })
       }
 
     }
-
   }
 </script>
 

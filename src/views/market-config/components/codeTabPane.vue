@@ -175,7 +175,7 @@
             :previewData="previewData"
             :isImportSuccess="isImportSuccess"
             @do-preview="doPreview"
-            @do-import="doImportFuture">
+            @do-import="doImportCode">
           </upload-excel>
           <span slot="footer" class="dialog-footer">
             <el-button @click="handleBeforeClose">取 消</el-button>
@@ -448,6 +448,7 @@
 
       handleBeforeClose: function () {
         this.$store.commit('resetUpload')
+        this.previewData = {}
         this.dialogImportVisible = false
         // this.$confirm('此操作将取消导入操作, 是否继续?', '提示', {
         //   confirmButtonText: '确定',
@@ -506,7 +507,7 @@
         }
       },
 
-      doImportFuture: function (data) {
+      doImportCode: function (data) {
         switch (this.type) {
           case 'MDBFutureCode':
             this.$store.dispatch('doImportMDBFutureCode', data)

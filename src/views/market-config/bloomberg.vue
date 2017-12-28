@@ -54,7 +54,7 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="MDBCodeDisplayName"
+          prop="MDBCodeCode"
           label="编码配置名称"
           align="center">
         </el-table-column>

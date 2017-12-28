@@ -1,4 +1,11 @@
-import { getAllMDBData, addMDBData, deleteMDBData, updateMDBData } from '../../api/market-data'
+import {
+  getAllMDBData,
+  addMDBData,
+  deleteMDBData,
+  updateMDBData,
+  doPreviewMDBData,
+  doImportMDBData
+} from '../../api/market-data'
 
 const marketData = {
   state: {
@@ -67,6 +74,26 @@ const marketData = {
         deleteMDBData(data)
           .then(response => {
             resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doPreviewMDBData ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doPreviewMDBData(data)
+          .then(response => {
+            resolve(response)
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doImportMDBData ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doImportMDBData(data)
+          .then(response => {
+            resolve(response)
           })
           .catch(err => reject(err))
       })

@@ -92,19 +92,19 @@
       :before-close="handleClose"
       top="10vh">
       <el-table
-        :data="previewData.ResultDatas"
+        :data="detailData"
         border
         max-height="600">
         <!--<el-table-column v-for="item of detailTableHeaders.slice(0,1)"-->
-                         <!--fixed="left"-->
-                         <!--:label="item"-->
-                         <!--:key="item"-->
-                         <!--:prop="item">-->
+        <!--fixed="left"-->
+        <!--:label="item"-->
+        <!--:key="item"-->
+        <!--:prop="item">-->
         <!--</el-table-column>-->
         <!--<el-table-column v-for="item of detailTableHeaders.slice(1)"-->
-                         <!--:label="item"-->
-                         <!--:key="item"-->
-                         <!--:prop="item">-->
+        <!--:label="item"-->
+        <!--:key="item"-->
+        <!--:prop="item">-->
         <!--</el-table-column>-->
         <el-table-column v-for="item of detailTableHeaders"
                          :label="item"
@@ -125,6 +125,7 @@
     name: 'uploadExcel',
     props: {
       previewData: {
+        default: {},
         required: false
       },
       isImportSuccess: {
@@ -135,6 +136,9 @@
     created () {
       this.$store.commit('resetUpload')
       this.errorTableData = []
+    },
+    mounted () {
+      // this.previewData.ResultDatas = {}
     },
     data () {
       return {
@@ -155,16 +159,27 @@
         'isPreviewCheck'
       ]),
       isAllowImport: function () {
-        return this.previewData.ImportAllowed
+        if (this.previewData !== null) {
+          return this.previewData.ImportAllowed
+        }
+      },
+      detailData: {
+        get: function () {
+          if (this.previewData !== null) {
+            return this.previewData.ResultDatas
+          }
+        }
       },
       errorTableData: {
         get: function () {
-          const temp = []
-          const errMessages = this.previewData.ErrorRowMessages
-          if (errMessages !== undefined) {
-            Object.keys(errMessages).map(k => temp.push({ row: k, message: errMessages[k] }))
+          if (this.previewData !== null) {
+            const temp = []
+            const errMessages = this.previewData.ErrorRowMessages
+            if (errMessages !== undefined) {
+              Object.keys(errMessages).map(k => temp.push({ row: k, message: errMessages[k] }))
+            }
+            return temp
           }
-          return temp
         },
         set: function (v) {
           return v
@@ -212,7 +227,6 @@
       },
 
       handlePreview: function () {
-        console.log(this.isPreviewCheck)
         this.$store.commit('changeIsPreviewCheck', true)
         this.$emit('do-preview', { id: this.uploadRecordId, sheetName: this.xlsSheet })
       },
