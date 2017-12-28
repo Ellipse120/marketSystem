@@ -26,6 +26,7 @@ export function getAllFutureContracts () {
     method: 'get'
   })
 }
+
 /**
  * 获取外汇
  * */
@@ -35,6 +36,7 @@ export function getAllForexes () {
     method: 'get'
   })
 }
+
 /**
  * 获取利率
  * */
@@ -119,7 +121,55 @@ export function doPreviewMDBFutureCode (data) {
 export function doImportMDBFutureCode (data) {
   return request({
     url: `${baseUrl}ImportMDBFutureCode/${data.id}`,
+    method: 'post',
+    params: data
+  })
+}
+
+/**
+ * 外汇编码预览接口
+ * */
+export function doPreviewMDBForexCode (data) {
+  return request({
+    url: `${baseUrl}PreviewMDBForexCode/${data.id}`,
     method: 'get',
+    params: {
+      sheetName: data.sheetName
+    }
+  })
+}
+
+/**
+ * 外汇编码导入接口
+ * */
+export function doImportMDBForexCode (data) {
+  return request({
+    url: `${baseUrl}ImportMDBForexCode/${data.id}`,
+    method: 'post',
+    params: data
+  })
+}
+
+/**
+ * 利率编码预览接口
+ * */
+export function doPreviewMDBInterestRateCode (data) {
+  return request({
+    url: `${baseUrl}PreviewMDBInterestRateCode/${data.id}`,
+    method: 'get',
+    params: {
+      sheetName: data.sheetName
+    }
+  })
+}
+
+/**
+ * 利率编码导入接口
+ * */
+export function doImportMDBInterestRateCode (data) {
+  return request({
+    url: `${baseUrl}ImportMDBInterestRateCode/${data.id}`,
+    method: 'post',
     params: data
   })
 }

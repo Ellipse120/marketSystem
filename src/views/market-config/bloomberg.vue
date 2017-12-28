@@ -401,7 +401,6 @@
       },
 
       createData: function () {
-        debugger
         this.$store.dispatch('addBloombergConfig', [this.bloombergConfigItem])
           .then(() => {
             this.changeDialog(false)

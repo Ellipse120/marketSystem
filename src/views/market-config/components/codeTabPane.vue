@@ -171,10 +171,15 @@
                    width="30%"
                    :close-on-click-modal="false"
                    :before-close="handleBeforeClose">
-          <upload-excel @do-preview="doPreview"></upload-excel>
+          <upload-excel
+            :previewData="previewData"
+            :isImportSuccess="isImportSuccess"
+            @do-preview="doPreview"
+            @do-import="doImportFuture">
+          </upload-excel>
           <span slot="footer" class="dialog-footer">
             <el-button @click="handleBeforeClose">取 消</el-button>
-            <el-button type="primary" @click="dialogImportVisible = false">确 定</el-button>
+            <el-button type="primary" @click="handleSure">确 定</el-button>
           </span>
         </el-dialog>
       </div>
@@ -235,7 +240,9 @@
           label: '',
           code: ''
         },
-        dialogImportVisible: false
+        dialogImportVisible: false,
+        previewData: {},
+        isImportSuccess: false
       }
     },
     methods: {
@@ -319,6 +326,13 @@
 
       cancel: function () {
         this.changeDialog(false)
+      },
+
+      handleSure: function () {
+        this.dialogImportVisible = false
+        if (this.isImportSuccess) {
+          this.getList()
+        }
       },
 
       handleBloomConfig: function (row) {
@@ -433,14 +447,98 @@
       },
 
       handleBeforeClose: function () {
-        // TODO debugger
+        this.$store.commit('resetUpload')
+        this.dialogImportVisible = false
+        // this.$confirm('此操作将取消导入操作, 是否继续?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning',
+        //   center: true
+        // }).then(() => {
+        //   this.dialogImportVisible = false
+        //   // this.$message({
+        //   //   type: 'success',
+        //   //   message: '删除成功!'
+        //   // })
+        // }).catch(() => {
+        //   this.$message({
+        //     type: 'info',
+        //     message: '已取消导入'
+        //   })
+        // })
       },
 
       doPreview: function (data) {
-        this.$store.dispatch('doPreviewMDBFutureCode', data)
-          .then(res => {
-            console.log(res)
-          })
+        switch (this.type) {
+          case 'MDBFutureCode':
+            this.$store.dispatch('doPreviewMDBFutureCode', data)
+              .then(res => {
+                this.previewData = res.Data.PreviewData
+                this.$store.commit('changeIsPreviewCheck', false)
+                if (res.Data.PreviewData.ImportAllowed) {
+                  this.$store.commit('changeStepActive', 2)
+                  this.$store.commit('changeFinishStatus', 'success')
+                }
+              })
+            break
+          case 'MDBForexCode':
+            this.$store.dispatch('doPreviewMDBForexCode', data)
+              .then(res => {
+                this.previewData = res.Data.PreviewData
+                this.$store.commit('changeIsPreviewCheck', false)
+                if (res.Data.PreviewData.ImportAllowed) {
+                  this.$store.commit('changeStepActive', 2)
+                  this.$store.commit('changeFinishStatus', 'success')
+                }
+              })
+            break
+          case 'MDBIborCode':
+            this.$store.dispatch('doPreviewMDBInterestRateCode', data)
+              .then(res => {
+                this.previewData = res.Data.PreviewData
+                this.$store.commit('changeIsPreviewCheck', false)
+                if (res.Data.PreviewData.ImportAllowed) {
+                  this.$store.commit('changeStepActive', 2)
+                  this.$store.commit('changeFinishStatus', 'success')
+                }
+              })
+            break
+        }
+      },
+
+      doImportFuture: function (data) {
+        switch (this.type) {
+          case 'MDBFutureCode':
+            this.$store.dispatch('doImportMDBFutureCode', data)
+              .then(res => {
+                this.isImportSuccess = res.Status
+                if (res.Status) {
+                  this.$store.commit('changeStepActive', 3)
+                  this.$store.commit('changeFinishStatus', 'success')
+                }
+              })
+            break
+          case 'MDBForexCode':
+            this.$store.dispatch('doImportMDBForexCode', data)
+              .then(res => {
+                this.isImportSuccess = res.Status
+                if (res.Status) {
+                  this.$store.commit('changeStepActive', 3)
+                  this.$store.commit('changeFinishStatus', 'success')
+                }
+              })
+            break
+          case 'MDBIborCode':
+            this.$store.dispatch('doImportMDBInterestRateCode', data)
+              .then(res => {
+                this.isImportSuccess = res.Status
+                if (res.Status) {
+                  this.$store.commit('changeStepActive', 3)
+                  this.$store.commit('changeFinishStatus', 'success')
+                }
+              })
+            break
+        }
       }
     },
     computed: {
@@ -472,13 +570,13 @@
             return this.marketType
           case 'MDBForexCode':
             this.marketType = {
-              label: '外汇编码',
+              label: '外汇名称',
               code: 'InterestRateId'
             }
             return this.marketType
           case 'MDBIborCode':
             this.marketType = {
-              label: '利率编码',
+              label: '利率名称',
               code: 'ForexId'
             }
             return this.marketType

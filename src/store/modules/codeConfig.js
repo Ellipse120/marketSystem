@@ -9,7 +9,11 @@ import {
   deleteFutureCode,
   updateFutureCode,
   doPreviewMDBFutureCode,
-  doImportMDBFutureCode
+  doImportMDBFutureCode,
+  doPreviewMDBForexCode,
+  doImportMDBForexCode,
+  doPreviewMDBInterestRateCode,
+  doImportMDBInterestRateCode
 } from '../../api/code-config'
 
 const codeConfig = {
@@ -162,8 +166,7 @@ const codeConfig = {
       return new Promise((resolve, reject) => {
         doPreviewMDBFutureCode(data)
           .then(response => {
-            console.log(response)
-            resolve()
+            resolve(response)
           })
           .catch(err => reject(err))
       })
@@ -173,13 +176,53 @@ const codeConfig = {
       return new Promise((resolve, reject) => {
         doImportMDBFutureCode(data)
           .then(response => {
-            console.log(response)
-            resolve()
+            resolve(response)
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doPreviewMDBForexCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doPreviewMDBForexCode(data)
+          .then(response => {
+            resolve(response)
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doImportMDBForexCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doImportMDBForexCode(data)
+          .then(response => {
+            resolve(response)
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doPreviewMDBInterestRateCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doPreviewMDBInterestRateCode(data)
+          .then(response => {
+            resolve(response)
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doImportMDBInterestRateCode ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doImportMDBInterestRateCode(data)
+          .then(response => {
+            resolve(response)
           })
           .catch(err => reject(err))
       })
     }
   }
+
 }
 
 export default codeConfig

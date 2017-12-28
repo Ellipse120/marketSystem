@@ -64,7 +64,6 @@ const enums = {
             resolve()
           })
           .catch(err => {
-            debugger
             Message({
               message: `${err.response.data.Message}`,
               type: 'error',
