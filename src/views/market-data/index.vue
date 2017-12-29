@@ -348,6 +348,7 @@
       },
 
       handleSure: function () {
+        this.previewData = {}
         this.dialogImportVisible = false
         if (this.isImportSuccess) {
           this.getList()

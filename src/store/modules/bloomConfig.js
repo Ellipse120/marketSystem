@@ -2,7 +2,9 @@ import {
   getAllMDBBloombergConfigs,
   addBloombergConfig,
   updateBloombergConfig,
-  deleteBloombergConfig
+  deleteBloombergConfig,
+  doPreviewMDBBloomberg,
+  doImportMDBBloomberg
 } from '../../api/bloomberg-config'
 
 const bloomConfig = {
@@ -88,6 +90,26 @@ const bloomConfig = {
         deleteBloombergConfig(data)
           .then(response => {
             resolve()
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doPreviewMDBBloomberg ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doPreviewMDBBloomberg(data)
+          .then(response => {
+            resolve(response)
+          })
+          .catch(err => reject(err))
+      })
+    },
+
+    doImportMDBBloomberg ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        doImportMDBBloomberg(data)
+          .then(response => {
+            resolve(response)
           })
           .catch(err => reject(err))
       })

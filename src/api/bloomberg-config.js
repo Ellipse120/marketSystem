@@ -49,3 +49,27 @@ export function deleteBloombergConfig (data) {
     data
   })
 }
+
+/**
+ * 彭博预览接口
+ * */
+export function doPreviewMDBBloomberg (data) {
+  return request({
+    url: `${baseUrl}PreviewMDBBloomberg/${data.id}`,
+    method: 'get',
+    params: {
+      sheetName: data.sheetName
+    }
+  })
+}
+
+/**
+ * 彭博导入接口
+ * */
+export function doImportMDBBloomberg (data) {
+  return request({
+    url: `${baseUrl}ImportMDBBloomberg/${data.id}`,
+    method: 'post',
+    params: data
+  })
+}

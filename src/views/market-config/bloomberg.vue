@@ -49,12 +49,12 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="MDBCodeId"
+          prop="MDBCodeCode"
           label="编码配置代码"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="MDBCodeCode"
+          prop="MDBCodeDisplayName"
           label="编码配置名称"
           align="center">
         </el-table-column>
@@ -250,15 +250,36 @@
       </el-dialog>
     </div>
 
+    <!-- import dialog -->
+    <div>
+      <el-dialog v-if="dialogImportVisible"
+                 title="导入"
+                 :visible.sync="dialogImportVisible"
+                 width="30%"
+                 :close-on-click-modal="false"
+                 :before-close="handleBeforeClose">
+        <upload-excel
+          :previewData="previewData"
+          :isImportSuccess="isImportSuccess"
+          @do-preview="doPreview"
+          @do-import="doImportCode">
+        </upload-excel>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="handleBeforeClose">取 消</el-button>
+            <el-button type="primary" @click="handleSure">确 定</el-button>
+          </span>
+      </el-dialog>
+    </div>
+
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import ElFormItem from 'element-ui/packages/form/src/form-item'
+  import uploadExcel from '@/components/uploadExcel/index'
 
   export default {
-    components: { ElFormItem },
+    components: { uploadExcel },
     name: 'bloomberg',
     data () {
       return {
@@ -292,33 +313,9 @@
           create: '创建'
         },
         rules: {},
-        pickerOptions2: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', [start, end])
-            }
-          }, {
-            text: '最近一个月',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', [start, end])
-            }
-          }, {
-            text: '最近三个月',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-              picker.$emit('pick', [start, end])
-            }
-          }]
-        }
+        dialogImportVisible: false,
+        previewData: {},
+        isImportSuccess: false
       }
     },
     created () {
@@ -437,11 +434,6 @@
         this.dialogFormVisible = this.$store.getters.isShowDialog
       },
 
-      handleImportBloomConfig () {
-        // TODO 导入
-        console.log('import bloomBerg config')
-      },
-
       handleSizeChange: function (val) {
         this.listQuery.PageSize = val
         this.getList()
@@ -450,6 +442,47 @@
       handleCurrentChange: function (val) {
         this.listQuery.CurrentPage = val
         this.getList()
+      },
+
+      handleImportBloomConfig () {
+        this.dialogImportVisible = true
+      },
+
+      handleSure: function () {
+        this.previewData = {}
+        this.dialogImportVisible = false
+        if (this.isImportSuccess) {
+          this.getList()
+        }
+      },
+
+      handleBeforeClose: function () {
+        this.$store.commit('resetUpload')
+        this.previewData = {}
+        this.dialogImportVisible = false
+      },
+
+      doPreview: function (data) {
+        this.$store.dispatch('doPreviewMDBBloomberg', data)
+          .then(res => {
+            this.previewData = res.Data.PreviewData
+            this.$store.commit('changeIsPreviewCheck', false)
+            if (res.Data.PreviewData.ImportAllowed) {
+              this.$store.commit('changeStepActive', 2)
+              this.$store.commit('changeFinishStatus', 'success')
+            }
+          })
+      },
+
+      doImportCode: function (data) {
+        this.$store.dispatch('doImportMDBBloomberg', data)
+          .then(res => {
+            this.isImportSuccess = res.Status
+            if (res.Status) {
+              this.$store.commit('changeStepActive', 3)
+              this.$store.commit('changeFinishStatus', 'success')
+            }
+          })
       }
     }
   }

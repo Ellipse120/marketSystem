@@ -328,13 +328,6 @@
         this.changeDialog(false)
       },
 
-      handleSure: function () {
-        this.dialogImportVisible = false
-        if (this.isImportSuccess) {
-          this.getList()
-        }
-      },
-
       handleBloomConfig: function (row) {
         this.$router.push('bloomBerg')
         this.changeDialog(true)
@@ -444,6 +437,14 @@
 
       handleImportCodeConfig: function () {
         this.dialogImportVisible = true
+      },
+
+      handleSure: function () {
+        this.previewData = {}
+        this.dialogImportVisible = false
+        if (this.isImportSuccess) {
+          this.getList()
+        }
       },
 
       handleBeforeClose: function () {
