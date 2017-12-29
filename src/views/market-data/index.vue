@@ -28,9 +28,10 @@
         <el-col :span="12" style="display: inline-flex;">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData()">导入
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData">导入
           </el-button>
-          <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item">彭博行情</el-button>
+          <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item"
+                     @click="handleRefreshBloomberg">彭博行情</el-button>
         </el-col>
       </el-row>
     </div>
@@ -200,8 +201,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-
   import uploadExcel from '@/components/uploadExcel/index'
+  import { getToken } from '@/utils/auth'
 
   export default {
     name: 'marketDataManagement',
@@ -382,6 +383,12 @@
               this.$store.commit('changeFinishStatus', 'success')
             }
           })
+      },
+
+      handleRefreshBloomberg: function () {
+        // TODO socket connection
+        // const ws = new WebSocket('ws://192.168.125.63:12344')
+        // ws.send(`hello ,`)
       }
     }
   }
