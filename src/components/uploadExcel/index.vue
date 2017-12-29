@@ -199,7 +199,6 @@
     },
     methods: {
       success: function (response, file, fileList) {
-        console.log(response.Data.UploadRecordId)
         this.uploadRecordId = response.Data.UploadRecordId
         this.xlsSheets = response.Data.Sheets
         this.xlsSheet = this.xlsSheets[0]

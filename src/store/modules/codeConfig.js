@@ -112,7 +112,6 @@ const codeConfig = {
       return new Promise((resolve, reject) => {
         addFutureCode(data)
           .then(response => {
-            console.log(response)
             resolve()
           })
           .catch(err => reject(err))
@@ -123,7 +122,6 @@ const codeConfig = {
       return new Promise((resolve, reject) => {
         addForexCode(data)
           .then(response => {
-            console.log(response)
             resolve()
           })
           .catch(err => reject(err))
@@ -134,7 +132,6 @@ const codeConfig = {
       return new Promise((resolve, reject) => {
         addInterestRateCode(data)
           .then(response => {
-            console.log(response)
             resolve()
           })
           .catch(err => reject(err))
@@ -145,7 +142,6 @@ const codeConfig = {
       return new Promise((resolve, reject) => {
         updateFutureCode(data)
           .then(response => {
-            console.log(response)
             resolve()
           })
           .catch(err => reject(err))
