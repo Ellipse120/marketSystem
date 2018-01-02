@@ -195,7 +195,7 @@
             <el-button
               type="primary"
               :disabled="!isAllowImport"
-              @click="handleSure">确 定
+              @click="handleSure">导 入
             </el-button>
           </span>
         </el-dialog>
