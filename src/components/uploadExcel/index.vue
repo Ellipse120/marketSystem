@@ -52,30 +52,37 @@
             </el-row>
           </div>
           <div v-if="stepActive === 1">
-            <el-table
-              :data="errorTableData"
-              v-loading="isPreviewCheck"
-              element-loading-text="拼命加载中。。。"
-              max-height="400"
-              border>
-              <el-table-column
-                prop="row"
-                label="Excel行号"
-                align="center">
-              </el-table-column>
-              <el-table-column
-                prop="message"
-                label="错误信息"
-                align="center">
-              </el-table-column>
-            </el-table>
+            <div v-if="errorTableData.length > 0">
+              <el-table
+                :data="errorTableData"
+                v-loading="isPreviewCheck"
+                element-loading-text="拼命加载中。。。"
+                max-height="400"
+                border>
+                <!--<el-table-column-->
+                <!--prop="row"-->
+                <!--label="Excel行号"-->
+                <!--align="center">-->
+                <!--</el-table-column>-->
+                <el-table-column
+                  prop="message"
+                  label="综合错误"
+                  align="center">
+                </el-table-column>
+              </el-table>
+            </div>
+            <div v-else-if="detailData">
+              <p class="gmk-center">
+                Excel表格内容有错误，请点击<span style="color: #409EFF;">预览详情</span>按钮查看详情
+              </p>
+            </div>
           </div>
         </div>
         <div v-if="stepActive === 2" style="text-align: center;">
-          <el-button @click="handleImportExcel">导入</el-button>
+          <!--<el-button @click="handleImportExcel">导入</el-button>-->
         </div>
         <div v-if="stepActive === 3 && isImportSuccess">
-          <p style="text-align: center;">
+          <p class="gmk-center">
             done!
           </p>
         </div>
@@ -94,6 +101,8 @@
       <el-table
         :data="detailData"
         border
+        fit
+        :row-class-name="tablePreviewClassName"
         max-height="600">
         <!--<el-table-column v-for="item of detailTableHeaders.slice(0,1)"-->
         <!--fixed="left"-->
@@ -166,7 +175,9 @@
       detailData: {
         get: function () {
           if (this.previewData !== null) {
-            return this.previewData.ResultDatas
+            return this.previewData.PreviewData
+          } else {
+            return []
           }
         }
       },
@@ -174,8 +185,8 @@
         get: function () {
           if (this.previewData !== null) {
             const temp = []
-            const errMessages = this.previewData.ErrorRowMessages
-            if (errMessages !== undefined) {
+            const errMessages = this.previewData.ComprehensiveErrors
+            if (Array.isArray(errMessages)) {
               Object.keys(errMessages).map(k => temp.push({ row: k, message: errMessages[k] }))
             }
             return temp
@@ -186,8 +197,8 @@
         }
       },
       detailTableHeaders: function () {
-        if (this.previewData.ResultDatas !== undefined || null) {
-          return Object.keys(this.previewData.ResultDatas[0])
+        if (Array.isArray(this.previewData.PreviewData) && this.previewData.PreviewData.length > 0) {
+          return Object.keys(this.previewData.PreviewData[0])
         } else {
           return []
         }
@@ -240,11 +251,19 @@
 
       handleClose: function () {
         this.isDetailDialogVisible = false
+      },
+
+      tablePreviewClassName ({ row, rowIndex }) {
+        if (row['错误信息'] !== '') {
+          return 'error-row'
+        }
       }
     }
   }
 </script>
 
-<style scoped>
-
+<style>
+  .el-table .error-row {
+    background-color: #f56c6c;
+  }
 </style>

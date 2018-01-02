@@ -172,14 +172,20 @@
                    :close-on-click-modal="false"
                    :before-close="handleBeforeClose">
           <upload-excel
+            ref="upload"
             :previewData="previewData"
             :isImportSuccess="isImportSuccess"
             @do-preview="doPreview"
             @do-import="doImportCode">
           </upload-excel>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="handleBeforeClose">取 消</el-button>
-            <el-button type="primary" @click="handleSure">确 定</el-button>
+            <el-button @click="handleBeforeClose">取 消
+            </el-button>
+            <el-button
+              type="primary"
+              :disabled="!isAllowImport"
+              @click="handleSure">确 定
+            </el-button>
           </span>
         </el-dialog>
       </div>
@@ -242,6 +248,7 @@
         },
         dialogImportVisible: false,
         previewData: {},
+        isAllowImport: false,
         isImportSuccess: false
       }
     },
@@ -441,10 +448,7 @@
 
       handleSure: function () {
         this.previewData = {}
-        this.dialogImportVisible = false
-        if (this.isImportSuccess) {
-          this.getList()
-        }
+        this.$refs['upload'].handleImportExcel()
       },
 
       handleBeforeClose: function () {
@@ -475,34 +479,49 @@
           case 'MDBFutureCode':
             this.$store.dispatch('doPreviewMDBFutureCode', data)
               .then(res => {
-                this.previewData = res.Data.PreviewData
+                this.previewData = res.Data
                 this.$store.commit('changeIsPreviewCheck', false)
-                if (res.Data.PreviewData.ImportAllowed) {
+                if (res.Data.ImportAllowed) {
+                  this.isAllowImport = true
                   this.$store.commit('changeStepActive', 2)
                   this.$store.commit('changeFinishStatus', 'success')
                 }
+              })
+              .catch(err => {
+                this.$store.commit('changeIsPreviewCheck', false)
+                console.log(err)
               })
             break
           case 'MDBForexCode':
             this.$store.dispatch('doPreviewMDBForexCode', data)
               .then(res => {
-                this.previewData = res.Data.PreviewData
+                this.previewData = res.Data
                 this.$store.commit('changeIsPreviewCheck', false)
-                if (res.Data.PreviewData.ImportAllowed) {
+                if (res.Data.ImportAllowed) {
+                  this.isAllowImport = true
                   this.$store.commit('changeStepActive', 2)
                   this.$store.commit('changeFinishStatus', 'success')
                 }
+              })
+              .catch(err => {
+                this.$store.commit('changeIsPreviewCheck', false)
+                console.log(err)
               })
             break
           case 'MDBIborCode':
             this.$store.dispatch('doPreviewMDBInterestRateCode', data)
               .then(res => {
-                this.previewData = res.Data.PreviewData
+                this.previewData = res.Data
                 this.$store.commit('changeIsPreviewCheck', false)
-                if (res.Data.PreviewData.ImportAllowed) {
+                if (res.Data.ImportAllowed) {
+                  this.isAllowImport = true
                   this.$store.commit('changeStepActive', 2)
                   this.$store.commit('changeFinishStatus', 'success')
                 }
+              })
+              .catch(err => {
+                this.$store.commit('changeIsPreviewCheck', false)
+                console.log(err)
               })
             break
         }
@@ -515,8 +534,12 @@
               .then(res => {
                 this.isImportSuccess = res.Status
                 if (res.Status) {
+                  this.dialogImportVisible = false
                   this.$store.commit('changeStepActive', 3)
                   this.$store.commit('changeFinishStatus', 'success')
+                  if (this.isImportSuccess) {
+                    this.getList()
+                  }
                 }
               })
             break
@@ -525,8 +548,12 @@
               .then(res => {
                 this.isImportSuccess = res.Status
                 if (res.Status) {
+                  this.dialogImportVisible = false
                   this.$store.commit('changeStepActive', 3)
                   this.$store.commit('changeFinishStatus', 'success')
+                  if (this.isImportSuccess) {
+                    this.getList()
+                  }
                 }
               })
             break
@@ -535,8 +562,12 @@
               .then(res => {
                 this.isImportSuccess = res.Status
                 if (res.Status) {
+                  this.dialogImportVisible = false
                   this.$store.commit('changeStepActive', 3)
                   this.$store.commit('changeFinishStatus', 'success')
+                  if (this.isImportSuccess) {
+                    this.getList()
+                  }
                 }
               })
             break
