@@ -254,6 +254,7 @@
     <div>
       <el-dialog v-if="dialogImportVisible"
                  title="导入"
+                 width="550px"
                  :visible.sync="dialogImportVisible"
                  :close-on-click-modal="false"
                  :before-close="handleBeforeClose">
