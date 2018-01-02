@@ -151,7 +151,7 @@
       <el-dialog :title="textMap[dialogStatus]"
                  :visible.sync="dialogFormVisible"
                  top="10vh"
-                 width="30%"
+                 width="550px"
                  @close="closeBloomDialog">
         <el-form :rules="rules"
                  ref="dataForm"
@@ -255,7 +255,6 @@
       <el-dialog v-if="dialogImportVisible"
                  title="导入"
                  :visible.sync="dialogImportVisible"
-                 width="30%"
                  :close-on-click-modal="false"
                  :before-close="handleBeforeClose">
         <upload-excel

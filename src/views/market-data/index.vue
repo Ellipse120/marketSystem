@@ -123,7 +123,7 @@
       <div>
         <el-dialog :title="textMap[dialogStatus]"
                    :visible.sync="dialogFormVisible"
-                   width="30%">
+                   width="550px">
           <el-form :rules="rules"
                    ref="dataForm"
                    :model="mDBDataItem"
@@ -179,7 +179,6 @@
         <el-dialog v-if="dialogImportVisible"
                    title="导入"
                    :visible.sync="dialogImportVisible"
-                   width="30%"
                    :close-on-click-modal="false"
                    :before-close="handleBeforeClose">
           <upload-excel
@@ -202,7 +201,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
-  import { getToken } from '@/utils/auth'
+  // import { getToken } from '@/utils/auth'
 
   export default {
     name: 'marketDataManagement',
