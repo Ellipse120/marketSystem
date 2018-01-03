@@ -4,7 +4,7 @@
     <div class="filter-container">
       <el-row :gutter="10">
         <el-col :span="3">
-          <el-input placeholder="彭博代码" v-model="listQuery.MDBCodeId" class="filter-item">
+          <el-input placeholder="市场编码" v-model="listQuery.MDBCodeId" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="3">
@@ -14,15 +14,13 @@
           </el-select>
         </el-col>
         <el-col :span="3">
+          <el-input placeholder="彭博编码" v-model="listQuery.BloombergCode" class="filter-item">
+          </el-input>
+        </el-col>
+        <el-col :span="3">
           <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item" :clearable="true">
             <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description"
                        :value="item.Key">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="3">
-          <el-select placeholder="市场类型" v-model="listQuery.BloombergDataType" class="filter-item" :clearable="true">
-            <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
@@ -159,11 +157,16 @@
                  label-position="left"
                  label-width="100px"
                  style='width: 400px; margin-left:50px;'>
-          <el-form-item label="编码配置">
-            <el-select class="filter-item" v-model="bloombergConfigItem.MDBCodeId" placeholder="请选择编码配置"
+          <el-form-item label="编码">
+            <el-select class="filter-item"
+                       v-model="bloombergConfigItem.MDBCodeId"
+                       filterable
+                       placeholder="请选择编码"
                        style="width: 100%;">
               <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.DisplayName"
                          :value="item.Id">
+                <span style="float: left">{{ item.DisplayName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">Id: {{ item.Id }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -179,18 +182,14 @@
           </el-form-item>
           <el-form-item label="请求类型">
             <el-select class="filter-item" v-model="bloombergConfigItem.RequestType" placeholder="请选择请求类型"
-                       style="width: 100%;">
+                       style="width: 100%;" @change="bloombergRequestType">
               <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description"
                          :value="item.Key">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="市场活动类型">
-            <el-select class="filter-item" v-model="bloombergConfigItem.BloombergDataType" placeholder="请选择市场活动类型"
-                       style="width: 100%;">
-              <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
-              </el-option>
-            </el-select>
+            <el-input v-model="bloombergConfigItem.BloombergDataType" placeholder="请输入彭博市场活动类型"></el-input>
           </el-form-item>
           <el-form-item label="合成转仓预设">
             <el-select class="filter-item" v-model="bloombergConfigItem.Warehouse" placeholder="请选择市场活动类型"
@@ -203,7 +202,9 @@
             <div style="display: flex;">
               <el-time-select
                 placeholder="起始时间"
+                :editable="false"
                 v-model="bloombergConfigItem.RequestStartTime"
+                :disabled="!isAllowRequestStartEnd"
                 :picker-options="{
                   start: '00:00',
                   step: '00:15',
@@ -212,7 +213,9 @@
               </el-time-select>
               <el-time-select
                 placeholder="结束时间"
+                :editable="false"
                 v-model="bloombergConfigItem.RequestEndTime"
+                :disabled="!isAllowRequestStartEnd"
                 :picker-options="{
                   start: '00:00',
                   step: '00:15',
@@ -320,6 +323,7 @@
           create: '创建'
         },
         rules: {},
+        isAllowRequestStartEnd: false,
         dialogImportVisible: false,
         previewData: {},
         isAllowImport: false,
@@ -334,7 +338,6 @@
     computed: {
       ...mapGetters([
         'isShowDialog',
-        'marketTypes',
         'priceTypes',
         'warehouses',
         'bloombergRequestTypes',
@@ -406,6 +409,7 @@
       },
 
       createData: function () {
+        // TODO 时间选择器 手动输入有问题，目前设为不可编辑，待替换。
         this.$store.dispatch('addBloombergConfig', [this.bloombergConfigItem])
           .then(() => {
             this.changeDialog(false)
@@ -439,6 +443,7 @@
 
       changeDialog: function (v) {
         this.$store.commit('CHANGE_DIALOG', { val: v })
+        this.isAllowRequestStartEnd = false
         this.dialogFormVisible = this.$store.getters.isShowDialog
       },
 
@@ -497,6 +502,10 @@
               }
             }
           })
+      },
+
+      bloombergRequestType: function (e) {
+        this.isAllowRequestStartEnd = e === 2
       }
     }
   }

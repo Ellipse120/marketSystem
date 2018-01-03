@@ -31,7 +31,8 @@
           <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData">导入
           </el-button>
           <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item"
-                     @click="handleRefreshBloomberg">彭博行情</el-button>
+                     @click="handleRefreshBloomberg">彭博行情
+          </el-button>
         </el-col>
       </el-row>
     </div>
@@ -208,7 +209,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
-  // import { getToken } from '@/utils/auth'
+  import { getToken } from '@/utils/auth'
 
   export default {
     name: 'marketDataManagement',
@@ -400,9 +401,49 @@
 
       handleRefreshBloomberg: function () {
         // TODO socket connection
-        // const ws = new WebSocket('ws://192.168.125.63:12344')
-        // ws.send(`hello ,`)
+        const wsURI = 'ws://192.168.125.63:12344?token=' + getToken()
+        const ws = new WebSocket(wsURI)
+        const that = this
+
+        switch (ws.readyState) {
+          case WebSocket.CONNECTING:
+            that.$message({
+              type: 'info',
+              message: '正在连接'
+            })
+            break
+          case WebSocket.OPEN:
+            break
+          case WebSocket.CLOSING:
+            break
+          case WebSocket.CLOSED:
+            break
+          default:
+            break
+        }
+
+        ws.addEventListener('open', function (event) {
+          ws.send(`user connected.`)
+          that.$message({
+            type: 'info',
+            message: '连接成功'
+          })
+        })
+
+        ws.addEventListener('message', function (event) {
+          // TODO 点击还没做
+          that.$notify({
+            title: '提醒',
+            type: 'success',
+            dangerouslyUseHTMLString: true,
+            message: `
+              <div>${JSON.parse(event.data).Message}</div>
+              <router-link to="marketData/index"><i style="color: blue;cursor: pointer;">点击</i>查看结果</router-link>
+            `
+          })
+        })
       }
+
     }
   }
 </script>
