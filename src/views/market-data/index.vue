@@ -160,12 +160,12 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="市场类型">
-              <el-select class="filter-item" v-model="mDBDataItem.MarketType" placeholder="请选择" style="width: 100%;">
-                <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
-                </el-option>
-              </el-select>
-            </el-form-item>
+            <!--<el-form-item label="市场类型">-->
+            <!--<el-select class="filter-item" v-model="mDBDataItem.MarketType" placeholder="请选择" style="width: 100%;">-->
+            <!--<el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">-->
+            <!--</el-option>-->
+            <!--</el-select>-->
+            <!--</el-form-item>-->
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -209,7 +209,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
-  import { getToken } from '@/utils/auth'
+  import { setRefreshState } from '@/utils/auth'
 
   export default {
     name: 'marketDataManagement',
@@ -261,8 +261,12 @@
         'quotationSources',
         'allMDBDataList',
         'mDBDataItem',
-        'allMDBCodeConfigs'
+        'allMDBCodeConfigs',
+        'ws'
       ])
+    },
+    mounted () {
+      console.log(this.ws.readyState)
     },
     methods: {
       getList () {
@@ -400,14 +404,9 @@
       },
 
       handleRefreshBloomberg: function () {
-        // TODO socket connection
-        const wsURI = 'ws://192.168.125.63:12344?token=' + getToken()
-        const ws = new WebSocket(wsURI)
-        const that = this
-
-        switch (ws.readyState) {
+        switch (this.ws.readyState) {
           case WebSocket.CONNECTING:
-            that.$message({
+            this.$message({
               type: 'info',
               message: '正在连接'
             })
@@ -415,35 +414,23 @@
           case WebSocket.OPEN:
             break
           case WebSocket.CLOSING:
+            this.$message({
+              type: 'info',
+              message: '正在关闭'
+            })
             break
           case WebSocket.CLOSED:
+            this.$message({
+              type: 'info',
+              message: '连接关闭'
+            })
             break
           default:
             break
         }
-
-        ws.addEventListener('open', function (event) {
-          ws.send(`user connected.`)
-          that.$message({
-            type: 'info',
-            message: '连接成功'
-          })
-        })
-
-        ws.addEventListener('message', function (event) {
-          // TODO 点击还没做
-          that.$notify({
-            title: '提醒',
-            type: 'success',
-            dangerouslyUseHTMLString: true,
-            message: `
-              <div>${JSON.parse(event.data).Message}</div>
-              <router-link to="marketData/index"><i style="color: blue;cursor: pointer;">点击</i>查看结果</router-link>
-            `
-          })
-        })
+        setRefreshState('true')
+        this.$store.commit('REFRESH_BLOOMBERG', { 'router': this.$router })
       }
-
     }
   }
 </script>

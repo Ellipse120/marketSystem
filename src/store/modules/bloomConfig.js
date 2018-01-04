@@ -7,16 +7,24 @@ import {
   doImportMDBBloomberg
 } from '../../api/bloomberg-config'
 
+import { getToken, setRefreshState } from '@/utils/auth'
+import { Message } from 'element-ui'
+import { MessageBox } from 'element-ui'
+
+const wsURI = 'ws://192.168.125.63:12344?token=' + getToken()
+
 const bloomConfig = {
   state: {
     isShowDialog: false,
     MDBBloombergConfigList: [],
-    bloombergConfigItem: {}
+    bloombergConfigItem: {},
+    ws: {}
   },
 
   getters: {
     allMDBBloombergConfigList: state => state.MDBBloombergConfigList,
-    bloombergConfigItem: state => state.bloombergConfigItem
+    bloombergConfigItem: state => state.bloombergConfigItem,
+    ws: state => state.ws
   },
 
   mutations: {
@@ -46,6 +54,38 @@ const bloomConfig = {
     },
     CONFIG_BLOOMBERG: (state, val) => {
       state.bloombergConfigItem.MDBCodeId = val
+    },
+    REFRESH_BLOOMBERG: (state, val) => {
+      state.ws = new WebSocket(wsURI)
+      state.ws.addEventListener('open', function (event) {
+        state.ws.send(`user connected.`)
+        Message.success({
+          type: 'success',
+          message: '连接成功，彭博刷新成功后通知您'
+        })
+      })
+
+      state.ws.addEventListener('message', function (event) {
+        setRefreshState('false')
+        MessageBox.confirm(`${JSON.parse(event.data).Message}`, '彭博行情刷新成功提醒', {
+          confirmButtonText: '查看',
+          cancelButtonText: '稍后',
+          center: true
+        }).then(() => {
+          val.router.push('/marketData/index')
+          if (!val.router.currentRoute.path.includes('marketData')) {
+            Message.success({
+              type: 'success',
+              message: '跳转成功!'
+            })
+          }
+        }).catch(() => {
+          Message.success({
+            type: 'info',
+            message: '取消查看'
+          })
+        })
+      })
     }
   },
 

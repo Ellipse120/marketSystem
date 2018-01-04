@@ -10,6 +10,7 @@
 
 <script>
   import { Navbar, Sidebar, AppMain } from '@/views/layout/components'
+  import { getRefreshState } from '../../utils/auth'
 
   export default {
     name: 'layout',
@@ -21,6 +22,11 @@
     computed: {
       sidebar () {
         return this.$store.state.app.sidebar
+      }
+    },
+    mounted () {
+      if (getRefreshState() === 'true') {
+        this.$store.commit('REFRESH_BLOOMBERG', { 'router': this.$router })
       }
     }
   }
