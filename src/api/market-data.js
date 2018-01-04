@@ -6,11 +6,19 @@ const baseUrl = '/MDBData/'
  * 获取市场行情列表
  * */
 export function getAllMDBData (query) {
+  if (query.TradeDate === null) {
+    query.TradeDate = []
+  }
   return request({
     url: `${baseUrl}QueryList`,
     method: 'get',
     params: {
-      marketType: query.marketType,
+      'query.mDBCode': query.mDBCode, // TODO 目前似乎查询结果为模糊查询。待确认
+      'query.startTradeDate': query.TradeDate[0],
+      'query.endTradeDate': query.TradeDate[1],
+      'query.priceType': query.priceType,
+      'query.source': query.source,
+      'query.marketType': query.marketType,
       'Pagination.CurrentPage': query.CurrentPage,
       'Pagination.PageSize': query.PageSize
     }

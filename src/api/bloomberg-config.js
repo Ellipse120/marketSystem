@@ -10,7 +10,10 @@ export function getAllMDBBloombergConfigs (query) {
     url: `${baseUrl}QueryList`,
     method: 'get',
     params: {
-      marketType: query.marketType,
+      'query.mDBCode': query.mDBCode,
+      'query.priceType': query.priceType,
+      'query.bloombergCode': query.bloombergCode,
+      'query.requestType': query.requestType,
       'Pagination.CurrentPage': query.CurrentPage,
       'Pagination.PageSize': query.PageSize
     }

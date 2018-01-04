@@ -10,7 +10,9 @@ export function getAllMDBCodeConfigs (query) {
     url: `${baseUrl}QueryList`,
     method: 'get',
     params: {
-      marketType: query.marketType,
+      'query.code': query.code,
+      'query.displayName': query.displayName,
+      'query.marketType': query.marketType,
       'Pagination.CurrentPage': query.CurrentPage,
       'Pagination.PageSize': query.PageSize
     }
@@ -171,5 +173,40 @@ export function doImportMDBInterestRateCode (data) {
     url: `${baseUrl}ImportMDBInterestRateCode/${data.id}`,
     method: 'post',
     params: data
+  })
+}
+
+/**
+ * 期货导入模板Id 接口
+ * */
+export function doExportMDBFutureCodeTemplateExcel () {
+  return request({
+    url: `${baseUrl}ExportMDBFutureCodeTemplateExcel`,
+    method: 'get',
+    params: {}
+  })
+}
+
+/**
+ * 外汇导入模板Id 接口
+ * TODO 后台写好后 修改地址
+ * */
+export function doExportMDBForexCodeTemplateExcel () {
+  return request({
+    url: `${baseUrl}ExportMDBForexCodeTemplateExcel`,
+    method: 'get',
+    params: {}
+  })
+}
+
+/**
+ * 利率导入模板Id 接口
+ * TODO 后台写好后 修改地址
+ * */
+export function doExportMDBInterestRateCodeTemplateExcel () {
+  return request({
+    url: `${baseUrl}ExportMDBInterestRateCodeTemplateExcel`,
+    method: 'get',
+    params: {}
   })
 }

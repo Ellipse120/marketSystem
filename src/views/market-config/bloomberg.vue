@@ -4,28 +4,28 @@
     <div class="filter-container">
       <el-row :gutter="10">
         <el-col :span="3">
-          <el-input placeholder="市场编码" v-model="listQuery.MDBCodeId" class="filter-item">
+          <el-input :clearable="true" placeholder="市场编码" v-model="listQuery.mDBCode" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item" :clearable="true">
+          <el-select placeholder="行情类型" v-model="listQuery.priceType" class="filter-item" :clearable="true">
             <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
         <el-col :span="3">
-          <el-input placeholder="彭博编码" v-model="listQuery.BloombergCode" class="filter-item">
+          <el-input :clearable="true" placeholder="彭博代码" v-model="listQuery.bloombergCode" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="请求类型" v-model="listQuery.RequestType" class="filter-item" :clearable="true">
+          <el-select placeholder="请求类型" v-model="listQuery.requestType" class="filter-item" :clearable="true">
             <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description"
                        :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
         <el-col :span="12">
-          <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
+          <el-button type="primary" icon="el-icon-search" plain class="filter-item" @click="handleSearch">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
           <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportBloomConfig">导入
           </el-button>
@@ -177,7 +177,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="彭博代码">
+          <el-form-item label="彭博编码">
             <el-input v-model="bloombergConfigItem.BloombergCode" placeholder="请输入彭博代码"></el-input>
           </el-form-item>
           <el-form-item label="请求类型">
@@ -297,9 +297,10 @@
         listQuery: {
           CurrentPage: 1,
           PageSize: 10,
-          BloombergCode: '',
-          PriceType: null,
-          RequestType: '',
+          mDBCode: '',
+          priceType: null,
+          bloombergCode: '',
+          requestType: '',
           BloombergDataType: '',
           Warehouse: '',
           RequestStartTime: '',
@@ -362,6 +363,10 @@
             this.tableData = this.allMDBBloombergConfigList
             this.listLoading = false
           })
+      },
+
+      handleSearch: function () {
+        this.getList()
       },
 
       handleCreate: function () {

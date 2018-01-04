@@ -2,13 +2,15 @@ const upload = {
   state: {
     stepActive: 0,
     finishStatus: 'wait',
-    isPreviewCheck: false
+    isPreviewCheck: false,
+    templateFileId: 0
   },
 
   getters: {
     stepActive: state => state.stepActive,
     finishStatus: state => state.finishStatus,
-    isPreviewCheck: state => state.isPreviewCheck
+    isPreviewCheck: state => state.isPreviewCheck,
+    templateFileId: state => state.templateFileId
   },
 
   mutations: {
@@ -25,6 +27,9 @@ const upload = {
     },
     changeIsPreviewCheck: (state, data) => {
       state.isPreviewCheck = data
+    },
+    changeTemplateFileId: (state, data) => {
+      state.templateFileId = data
     }
   },
 

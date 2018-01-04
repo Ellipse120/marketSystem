@@ -4,17 +4,15 @@
     <div class="filter-container">
       <el-row :gutter="10">
         <el-col :span="3">
-          <el-input placeholder="市场编码" v-model="listQuery.MDBCodeId" class="filter-item">
+          <el-input :clearable="true" placeholder="唯一编码" v-model="listQuery.code" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item" :clearable="true">
-            <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
-            </el-option>
-          </el-select>
+          <el-input :clearable="true" placeholder="显示名称" v-model="listQuery.displayName" class="filter-item">
+          </el-input>
         </el-col>
         <el-col :span="15">
-          <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
+          <el-button type="primary" icon="el-icon-search" plain class="filter-item" @click="handleSearch">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
           <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportCodeConfig">导入
           </el-button>
@@ -197,6 +195,11 @@
 <script>
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
+  import {
+    doExportMDBFutureCodeTemplateExcel,
+    doExportMDBForexCodeTemplateExcel,
+    doExportMDBInterestRateCodeTemplateExcel
+  } from '../../../api/code-config'
 
   export default {
     name: 'code-tab-pane',
@@ -224,6 +227,8 @@
           CurrentPage: 1,
           PageSize: 10,
           PriceType: null,
+          code: '',
+          displayName: '',
           marketType: 1
         },
         statusOptions: [1, 2, 3],
@@ -278,6 +283,10 @@
             })
             break
         }
+      },
+
+      handleSearch: function () {
+        this.getList()
       },
 
       handleCreate: function () {
@@ -444,6 +453,29 @@
 
       handleImportCodeConfig: function () {
         this.dialogImportVisible = true
+        switch (this.type) {
+          case 'MDBFutureCode':
+            doExportMDBFutureCodeTemplateExcel()
+              .then(response => {
+                this.$store.commit('changeTemplateFileId', response.Data)
+              })
+              .catch(err => console.log(err))
+            break
+          case 'MDBForexCode':
+            doExportMDBForexCodeTemplateExcel()
+              .then(response => {
+                this.$store.commit('changeTemplateFileId', response.Data)
+              })
+              .catch(err => console.log(err))
+            break
+          case 'MDBIborCode':
+            doExportMDBInterestRateCodeTemplateExcel()
+              .then(response => {
+                this.$store.commit('changeTemplateFileId', response.Data)
+              })
+              .catch(err => console.log(err))
+            break
+        }
       },
 
       handleSure: function () {

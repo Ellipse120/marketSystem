@@ -4,29 +4,38 @@
     <div class="filter-container">
       <el-row :gutter="10">
         <el-col :span="3">
-          <el-input placeholder="市场编码" v-model="listQuery.MDBCodeId" class="filter-item">
+          <el-input :clearable="true" placeholder="市场编码" v-model="listQuery.mDBCode" class="filter-item">
           </el-input>
         </el-col>
-        <el-col :span="3">
-          <el-select placeholder="行情类型" v-model="listQuery.PriceType" class="filter-item">
+        <el-col :span="5">
+          <el-date-picker
+            v-model="listQuery.TradeDate"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            default-value="2018-01-01">
+          </el-date-picker>
+        </el-col>
+        <el-col :span="2">
+          <el-select :clearable="true" placeholder="行情类型" v-model="listQuery.priceType" class="filter-item">
             <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="3">
-          <el-select placeholder="行情来源" v-model="listQuery.Source" class="filter-item">
+        <el-col :span="2">
+          <el-select :clearable="true" placeholder="行情来源" v-model="listQuery.source" class="filter-item">
             <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="3">
-          <el-select placeholder="市场类型" v-model="listQuery.MarketType" class="filter-item">
+        <el-col :span="2">
+          <el-select :clearable="true" placeholder="市场类型" v-model="listQuery.marketType" class="filter-item">
             <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="12" style="display: inline-flex;">
-          <el-button type="primary" icon="el-icon-search" plain class="filter-item">搜索</el-button>
+        <el-col :span="10" style="display: inline-flex;">
+          <el-button type="primary" icon="el-icon-search" plain class="filter-item" @click="handleSearch">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
           <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData">导入
           </el-button>
@@ -220,12 +229,12 @@
         listQuery: {
           CurrentPage: 1,
           PageSize: 20,
-          MDBCodeId: '',
+          mDBCode: '',
           TradeDate: '',
-          PriceType: '',
+          priceType: '',
           PriceValue: '',
-          Source: '',
-          MarketType: ''
+          source: '',
+          marketType: ''
         },
         tableData: {
           List: [],
@@ -276,6 +285,10 @@
             this.tableData = this.allMDBDataList
             this.listLoading = false
           })
+      },
+
+      handleSearch: function () {
+        this.getList()
       },
 
       handleCreate: function () {
@@ -358,6 +371,7 @@
 
       handleImportMDBData: function () {
         this.dialogImportVisible = true
+        // TODO 获取模板文件id
       },
 
       handleSure: function () {

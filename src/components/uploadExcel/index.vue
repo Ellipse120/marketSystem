@@ -18,6 +18,11 @@
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip">只能上传Excel文件</div>
+          <div class="el-upload__tip" slot="tip">
+            <a :href="`http://192.168.125.63:12345/api/File/DownLoad/${templateFileId}`" download>
+              <em style="color: #409EFF;font-style: normal;">下载模板</em>
+            </a>
+          </div>
         </el-upload>
         <div v-if="stepActive === 1">
           <div v-if="!isAllowImport">
@@ -165,7 +170,8 @@
       ...mapGetters([
         'stepActive',
         'finishStatus',
-        'isPreviewCheck'
+        'isPreviewCheck',
+        'templateFileId'
       ]),
       isAllowImport: function () {
         if (this.previewData !== null) {
