@@ -76,3 +76,14 @@ export function doImportMDBBloomberg (data) {
     params: data
   })
 }
+
+/**
+ * 彭博配置导入模板Id 接口
+ * */
+export function doExportMDBBloombergTemplateExcel () {
+  return request({
+    url: `${baseUrl}ExportMDBBloombergTemplateExcel`,
+    method: 'get',
+    params: {}
+  })
+}

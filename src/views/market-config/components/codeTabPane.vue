@@ -220,6 +220,9 @@
       this.getList()
       this.changeDialog(false)
     },
+    mounted () {
+      this.$store.commit('changeTemplateFileId', 0)
+    },
     data () {
       return {
         listLoading: true,

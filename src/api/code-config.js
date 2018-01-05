@@ -189,7 +189,6 @@ export function doExportMDBFutureCodeTemplateExcel () {
 
 /**
  * 外汇导入模板Id 接口
- * TODO 后台写好后 修改地址
  * */
 export function doExportMDBForexCodeTemplateExcel () {
   return request({
@@ -201,7 +200,6 @@ export function doExportMDBForexCodeTemplateExcel () {
 
 /**
  * 利率导入模板Id 接口
- * TODO 后台写好后 修改地址
  * */
 export function doExportMDBInterestRateCodeTemplateExcel () {
   return request({

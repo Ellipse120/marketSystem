@@ -81,3 +81,14 @@ export function doImportMDBData (data) {
     params: data
   })
 }
+
+/**
+ * 行情数据导入模板Id 接口
+ * */
+export function doExportMDBDataTemplateExcel () {
+  return request({
+    url: `${baseUrl}ExportMDBDataTemplateExcel`,
+    method: 'get',
+    params: {}
+  })
+}

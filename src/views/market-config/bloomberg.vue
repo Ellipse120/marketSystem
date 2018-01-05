@@ -290,6 +290,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
+  import { doExportMDBBloombergTemplateExcel } from '../../api/bloomberg-config'
 
   export default {
     components: { uploadExcel },
@@ -338,6 +339,9 @@
       this.$store.dispatch('allMDBCodeConfigs', { marketType: null }).then(() => {
       })
       this.getList()
+    },
+    mounted () {
+      this.$store.commit('changeTemplateFileId', 0)
     },
     computed: {
       ...mapGetters([
@@ -467,6 +471,11 @@
 
       handleImportBloomConfig () {
         this.dialogImportVisible = true
+        doExportMDBBloombergTemplateExcel()
+          .then(response => {
+            this.$store.commit('changeTemplateFileId', response.Data)
+          })
+          .catch(err => console.log(err))
       },
 
       handleSure: function () {

@@ -242,6 +242,7 @@
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
   import { setRefreshState } from '@/utils/auth'
+  import { doExportMDBDataTemplateExcel } from '../../api/market-data'
 
   export default {
     name: 'marketDataManagement',
@@ -285,6 +286,9 @@
       this.$store.dispatch('allMDBCodeConfigs', { marketType: null }).then(() => {
       })
       this.getList()
+    },
+    mounted () {
+      this.$store.commit('changeTemplateFileId', 0)
     },
     computed: {
       ...mapGetters([
@@ -391,7 +395,11 @@
 
       handleImportMDBData: function () {
         this.dialogImportVisible = true
-        // TODO 获取模板文件id
+        doExportMDBDataTemplateExcel()
+          .then(response => {
+            this.$store.commit('changeTemplateFileId', response.Data)
+          })
+          .catch(err => console.log(err))
       },
 
       handleSure: function () {
