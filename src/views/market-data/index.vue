@@ -274,9 +274,6 @@
         'ws'
       ])
     },
-    mounted () {
-      console.log(this.ws.readyState)
-    },
     methods: {
       getList () {
         this.listLoading = true
@@ -443,7 +440,7 @@
             break
         }
         setRefreshState('true')
-        this.$store.commit('REFRESH_BLOOMBERG', { 'router': this.$router })
+        this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
       }
     }
   }

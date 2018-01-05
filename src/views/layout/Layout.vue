@@ -26,7 +26,7 @@
     },
     mounted () {
       if (getRefreshState() === 'true') {
-        this.$store.commit('REFRESH_BLOOMBERG', { 'router': this.$router })
+        this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
       }
     }
   }
