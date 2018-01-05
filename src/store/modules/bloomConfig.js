@@ -8,8 +8,7 @@ import {
 } from '../../api/bloomberg-config'
 
 import { getToken, setRefreshState } from '@/utils/auth'
-import { Message } from 'element-ui'
-import { MessageBox } from 'element-ui'
+import { Message, MessageBox, Notification } from 'element-ui'
 
 const wsURI = 'ws://192.168.125.63:12344?token=' + getToken()
 
@@ -70,10 +69,6 @@ const bloomConfig = {
           })
           .catch(err => reject(err))
       })
-    },
-
-    CHANGE_DIALOG_ASYNC: ({ commit }, val) => {
-      commit('CHANGE_DIALOG', val)
     },
 
     addBloombergConfig ({ commit }, data) {
@@ -153,6 +148,7 @@ const bloomConfig = {
         }).catch(() => {
           Message.success('取消查看')
         })
+        Notification.success(`<div style="color: red;">${JSON.parse(event.data).Message}</div>`)
       })
 
       state.ws.addEventListener('close', function (event) {

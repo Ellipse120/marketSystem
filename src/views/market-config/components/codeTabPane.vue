@@ -144,7 +144,7 @@
             </el-select>
             <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'"
                        :disabled="dialogStatus === 'ObjectId'"
-                       v-model="codeConfigItem.InterestRateId"
+                       v-model="codeConfigItem.ObjectId"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in interestRates.datas"
                          :key="item.Id"
@@ -487,23 +487,6 @@
         this.$store.commit('resetUpload')
         this.previewData = {}
         this.dialogImportVisible = false
-        // this.$confirm('此操作将取消导入操作, 是否继续?', '提示', {
-        //   confirmButtonText: '确定',
-        //   cancelButtonText: '取消',
-        //   type: 'warning',
-        //   center: true
-        // }).then(() => {
-        //   this.dialogImportVisible = false
-        //   // this.$message({
-        //   //   type: 'success',
-        //   //   message: '删除成功!'
-        //   // })
-        // }).catch(() => {
-        //   this.$message({
-        //     type: 'info',
-        //     message: '已取消导入'
-        //   })
-        // })
       },
 
       doPreview: function (data) {

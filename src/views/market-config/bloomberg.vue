@@ -161,6 +161,7 @@
             <el-select class="filter-item"
                        v-model="bloombergConfigItem.MDBCodeId"
                        filterable
+                       :disabled="dialogStatus === 'update'"
                        placeholder="请选择编码"
                        style="width: 100%;">
               <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.DisplayName"
@@ -192,7 +193,10 @@
             <el-input v-model="bloombergConfigItem.BloombergDataType" placeholder="请输入彭博市场活动类型"></el-input>
           </el-form-item>
           <el-form-item label="合成转仓预设">
-            <el-select class="filter-item" v-model="bloombergConfigItem.Warehouse" placeholder="请选择市场活动类型"
+            <el-select class="filter-item"
+                       v-model="bloombergConfigItem.Warehouse"
+                       :clearable="true"
+                       placeholder="请选择市场活动类型"
                        style="width: 100%;">
               <el-option v-for="item in warehouses" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
@@ -238,8 +242,8 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="失效时间">
-            <el-date-picker :readonly="dialogStatus === 'update'" v-model="bloombergConfigItem.ExpirationDate"
-                            type="datetime"
+            <el-date-picker :disabled="dialogStatus === 'update'" v-model="bloombergConfigItem.ExpirationDate"
+                            type="datetime" :clearable="true"
                             disabledDate="return true" placeholder="选择日期时间"
                             style="width: 100%;">
             </el-date-picker>

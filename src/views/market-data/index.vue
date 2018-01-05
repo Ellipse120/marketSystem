@@ -2,12 +2,30 @@
   <div class="app-container">
     <!-- filter ↓ -->
     <div class="filter-container">
-      <el-row :gutter="10">
-        <el-col :span="3">
+      <el-row :gutter="5" type="flex">
+        <el-col>
           <el-input :clearable="true" placeholder="市场编码" v-model="listQuery.mDBCode" class="filter-item">
           </el-input>
         </el-col>
-        <el-col :span="5">
+        <el-col>
+          <el-select :clearable="true" placeholder="行情类型" v-model="listQuery.priceType" class="filter-item">
+            <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col>
+          <el-select :clearable="true" placeholder="行情来源" v-model="listQuery.source" class="filter-item">
+            <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col>
+          <el-select :clearable="true" placeholder="市场类型" v-model="listQuery.marketType" class="filter-item">
+            <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col>
           <el-date-picker
             v-model="listQuery.TradeDate"
             type="daterange"
@@ -16,34 +34,37 @@
             default-value="2018-01-01">
           </el-date-picker>
         </el-col>
-        <el-col :span="2">
-          <el-select :clearable="true" placeholder="行情类型" v-model="listQuery.priceType" class="filter-item">
-            <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="2">
-          <el-select :clearable="true" placeholder="行情来源" v-model="listQuery.source" class="filter-item">
-            <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="2">
-          <el-select :clearable="true" placeholder="市场类型" v-model="listQuery.marketType" class="filter-item">
-            <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="10" style="display: inline-flex;">
-          <el-button type="primary" icon="el-icon-search" plain class="filter-item" @click="handleSearch">搜索</el-button>
-          <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData">导入
-          </el-button>
-          <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item"
-                     @click="handleRefreshBloomberg">彭博行情
-          </el-button>
+        <el-col style="display: inline-flex;">
+          <el-tooltip class="item" effect="dark" content="搜索" placement="top">
+            <el-button type="primary" icon="el-icon-search" plain class="filter-item" @click="handleSearch">
+              <span class="hidden-lg-and-down">搜索</span>
+            </el-button>
+          </el-tooltip>
+        <!--</el-col>-->
+        <!--<el-col>-->
+          <el-tooltip class="item" effect="dark" content="添加" placement="top-start">
+            <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">
+              <span class="hidden-lg-and-down">添加</span>
+            </el-button>
+          </el-tooltip>
+        <!--</el-col>-->
+        <!--<el-col>-->
+          <el-tooltip class="item" effect="dark" content="批量导入" placement="top-start">
+            <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportMDBData">
+              <span class="hidden-lg-and-down">导入</span>
+            </el-button>
+          </el-tooltip>
+        <!--</el-col>-->
+        <!--<el-col>-->
+          <el-tooltip class="item" effect="dark" content="刷新彭博行情" placement="top-start">
+            <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item"
+                       @click="handleRefreshBloomberg">
+              <span class="hidden-lg-and-down">彭博行情</span>
+            </el-button>
+          </el-tooltip>
         </el-col>
       </el-row>
+
     </div>
     <!-- table ↓ -->
     <div>
@@ -141,7 +162,9 @@
                    label-width="80px"
                    style='width: 400px; margin-left:50px;'>
             <el-form-item label="市场编码">
-              <el-select class="filter-item" v-model="mDBDataItem.MDBCodeId" placeholder="请选择编码配置"
+              <el-select class="filter-item" v-model="mDBDataItem.MDBCodeId"
+                         placeholder="请选择编码配置"
+                         :disabled="dialogStatus === 'update'"
                          style="width: 100%;">
                 <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.Code"
                            :value="item.Id">
@@ -149,7 +172,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="交易日期" prop="TradeDate">
-              <el-date-picker :readonly="dialogStatus ==='update'" v-model="mDBDataItem.TradeDate" type="datetime"
+              <el-date-picker :disabled="dialogStatus ==='update'" v-model="mDBDataItem.TradeDate" type="datetime"
                               disabledDate="return true" placeholder="选择日期时间"
                               style="width: 100%;">
               </el-date-picker>
@@ -447,5 +470,9 @@
 </script>
 
 <style scoped>
-
+  @media only screen and (max-width: 1600px) {
+    .hidden-lg-and-down {
+      display: none !important
+    }
+  }
 </style>
