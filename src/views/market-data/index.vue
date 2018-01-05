@@ -423,7 +423,7 @@
             })
             break
           case WebSocket.OPEN:
-            break
+            return false
           case WebSocket.CLOSING:
             this.$message({
               type: 'info',
