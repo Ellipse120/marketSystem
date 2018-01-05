@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- filter ↓ -->
     <div class="filter-container">
-      <el-row :gutter="5" type="flex">
+      <el-row :gutter="10" type="flex">
         <el-col>
           <el-input :clearable="true" placeholder="市场编码" v-model="listQuery.mDBCode" class="filter-item">
           </el-input>
