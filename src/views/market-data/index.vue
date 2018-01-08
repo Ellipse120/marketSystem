@@ -80,12 +80,13 @@
         </el-table-column>
         <el-table-column
           prop="MDBCodeCode"
-          label="市场编码"
+          label="行情编码"
           align="center">
         </el-table-column>
         <el-table-column
           prop="TradeDate"
           label="交易日期"
+          :formatter="formatTradeDate"
           align="center">
         </el-table-column>
         <el-table-column
@@ -95,7 +96,8 @@
         </el-table-column>
         <el-table-column
           prop="PriceValue"
-          align="center"
+          header-align="center"
+          align="right"
           label="行情值">
         </el-table-column>
         <el-table-column
@@ -111,6 +113,7 @@
         <el-table-column
           prop="LastUpdateTime"
           align="center"
+          :formatter="format_yyyy_mm_dd_hh_mm_ss"
           label="更新时间">
         </el-table-column>
         <el-table-column
@@ -172,8 +175,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="交易日期" prop="TradeDate">
-              <el-date-picker :disabled="dialogStatus ==='update'" v-model="mDBDataItem.TradeDate" type="datetime"
-                              disabledDate="return true" placeholder="选择日期时间"
+              <el-date-picker :disabled="dialogStatus ==='update'" v-model="mDBDataItem.TradeDate" type="date"
+                              disabledDate="return true" placeholder="选择日期"
                               style="width: 100%;">
               </el-date-picker>
             </el-form-item>
@@ -186,18 +189,6 @@
             <el-form-item label="行情值">
               <el-input v-model="mDBDataItem.PriceValue"></el-input>
             </el-form-item>
-            <el-form-item label="行情来源">
-              <el-select class="filter-item" v-model="mDBDataItem.Source" placeholder="请选择" style="width: 100%;">
-                <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <!--<el-form-item label="市场类型">-->
-            <!--<el-select class="filter-item" v-model="mDBDataItem.MarketType" placeholder="请选择" style="width: 100%;">-->
-            <!--<el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">-->
-            <!--</el-option>-->
-            <!--</el-select>-->
-            <!--</el-form-item>-->
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -243,6 +234,7 @@
   import uploadExcel from '@/components/uploadExcel/index'
   import { setRefreshState } from '@/utils/auth'
   import { doExportMDBDataTemplateExcel, doExportMDNDataExcel } from '../../api/market-data'
+  import { formatDateYMD, formatDateYMDHMS } from '@/utils/index'
 
   export default {
     name: 'marketDataManagement',
@@ -334,7 +326,7 @@
       },
 
       handleDelete: function (row) {
-        this.$confirm(`此操作将永久删除市场编码Id【${row.MDBCodeId}】`, '提示', {
+        this.$confirm(`确认删除 行情编码: 【${row.MDBCodeCode}】`, '提示', {
           type: 'warning',
           confirmButtonText: '删除',
           cancelButtonText: '取消',
@@ -481,6 +473,14 @@
         }
         setRefreshState('true')
         this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
+      },
+
+      formatTradeDate: function (row, column, cellValue) {
+        return formatDateYMD(cellValue)
+      },
+
+      format_yyyy_mm_dd_hh_mm_ss (row, column, cellValue) {
+        return formatDateYMDHMS(cellValue)
       }
     }
   }

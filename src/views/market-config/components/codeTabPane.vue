@@ -37,13 +37,13 @@
         </el-table-column>
         <el-table-column
           prop="Code"
-          label="唯一编码"
+          label="行情编码"
           align="center">
         </el-table-column>
         <el-table-column
           prop="DisplayName"
           align="center"
-          label="名称">
+          label="行情编码名称">
         </el-table-column>
         <el-table-column
           prop="MarketTypeNote"
@@ -325,7 +325,7 @@
       },
 
       handleDelete: function (row) {
-        this.$confirm(`此操作将永久删除编码【${row.Code}】`, '提示', {
+        this.$confirm(`确认删除 行情编码【${row.Code}】`, '提示', {
           type: 'warning',
           confirmButtonText: '删除',
           cancelButtonText: '取消',

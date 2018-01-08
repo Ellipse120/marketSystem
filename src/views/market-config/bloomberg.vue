@@ -48,12 +48,12 @@
         </el-table-column>
         <el-table-column
           prop="MDBCodeCode"
-          label="编码配置代码"
+          label="行情编码"
           align="center">
         </el-table-column>
         <el-table-column
           prop="MDBCodeDisplayName"
-          label="编码配置名称"
+          label="行情编码名称"
           align="center">
         </el-table-column>
         <el-table-column
@@ -93,17 +93,20 @@
         </el-table-column>
         <el-table-column
           prop="CreationTime"
+          :formatter="format_yyyy_mm_dd_hh_mm_ss"
           label="创建时间"
           align="center">
         </el-table-column>
         <el-table-column
           prop="LastUpdateTime"
+          :formatter="format_yyyy_mm_dd_hh_mm_ss"
           label="最后更新时间"
           align="center">
         </el-table-column>
         <el-table-column
           prop="ExpirationDate"
-          label="失效时间"
+          label="失效日期"
+          :formatter="formatTradeDate"
           align="center">
         </el-table-column>
         <el-table-column
@@ -293,6 +296,7 @@
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
   import { doExportMDBBloombergTemplateExcel, doExportMDBBloombergExcel } from '../../api/bloomberg-config'
+  import { formatDateYMD, formatDateYMDHMS } from '@/utils/index'
 
   export default {
     components: { uploadExcel },
@@ -397,7 +401,7 @@
       },
 
       handleDelete: function (row) {
-        this.$confirm(`此操作将永久删除彭博代码【${row.BloombergCode}】`, '提示', {
+        this.$confirm(`确认删除 名称：【${row.MDBCodeDisplayName}】, 行情类型：【${row.PriceTypeNote}】, 彭博代码【${row.BloombergCode}】`, '提示', {
           type: 'warning',
           confirmButtonText: '删除',
           cancelButtonText: '取消',
@@ -534,6 +538,14 @@
 
       bloombergRequestType: function (e) {
         this.isAllowRequestStartEnd = e === 2
+      },
+
+      formatTradeDate: function (row, column, cellValue) {
+        return formatDateYMD(cellValue)
+      },
+
+      format_yyyy_mm_dd_hh_mm_ss (row, column, cellValue) {
+        return formatDateYMDHMS(cellValue)
       }
     }
   }

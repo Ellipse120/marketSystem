@@ -52,3 +52,33 @@ export function formatTime (time, option) {
     return d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分'
   }
 }
+
+export function formatDateYMD (time) {
+  return new Date(time).toISOString().split('T')[0]
+}
+
+export function formatDateYMDHMS (time) {
+  const now = new Date(time)
+  const year = '' + now.getFullYear()
+  let month = '' + (now.getMonth() + 1)
+  if (month.length === 1) {
+    month = '0' + month
+  }
+  let day = '' + now.getDate()
+  if (day.length === 1) {
+    day = '0' + day
+  }
+  let hour = '' + now.getHours()
+  if (hour.length === 1) {
+    hour = '0' + hour
+  }
+  let minute = '' + now.getMinutes()
+  if (minute.length === 1) {
+    minute = '0' + minute
+  }
+  let second = '' + now.getSeconds()
+  if (second.length === 1) {
+    second = '0' + second
+  }
+  return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
+}
