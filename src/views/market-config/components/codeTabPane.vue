@@ -234,7 +234,6 @@
           displayName: '',
           marketType: 1
         },
-        statusOptions: [1, 2, 3],
         tableData: {
           List: [],
           Pagination: {

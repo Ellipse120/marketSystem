@@ -19,7 +19,7 @@
           <!--<use class="text" xlink:href="#s-text"></use>-->
         <!--</svg>-->
       <!--</div>-->
-      <!---->
+
     </div>
   </div>
 </template>
@@ -58,7 +58,7 @@
     width: 100%;
   }
 
-  /* Main styles for G M T
+  /* Main styles for G M T */
   .text {
     fill: none;
     stroke-width: 3;
@@ -113,8 +113,8 @@
 
   svg {
     position: absolute;
-    width: 100%;
-    height: 100%;
-  } */
+    width: 200px;
+    height: 100px;
+  }
 
 </style>
