@@ -87,3 +87,21 @@ export function doExportMDBBloombergTemplateExcel () {
     params: {}
   })
 }
+
+/**
+ * 导出彭博配置数据接口
+ * */
+export function doExportMDBBloombergExcel (query) {
+  return request({
+    url: `${baseUrl}ExportMDBBloombergExcel`,
+    method: 'get',
+    params: {
+      'query.mDBCode': query.mDBCode,
+      'query.priceType': query.priceType,
+      'query.bloombergCode': query.bloombergCode,
+      'query.requestType': query.requestType,
+      'Pagination.CurrentPage': query.CurrentPage,
+      'Pagination.PageSize': query.PageSize
+    }
+  })
+}

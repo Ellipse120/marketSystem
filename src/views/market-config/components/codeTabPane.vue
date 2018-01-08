@@ -16,6 +16,8 @@
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
           <el-button type="info" icon="el-icon-upload2" class="filter-item" @click="handleImportCodeConfig">导入
           </el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleExportCodeConfig">导出
+          </el-button>
         </el-col>
       </el-row>
     </div>
@@ -99,6 +101,7 @@
       <el-dialog
         :title="textMap[dialogStatus]"
         :visible.sync="dialogFormVisible"
+        :close-on-click-modal="false"
         @close="closeBloomDialog"
         width="550px"
         top="10vh">
@@ -198,7 +201,8 @@
   import {
     doExportMDBFutureCodeTemplateExcel,
     doExportMDBForexCodeTemplateExcel,
-    doExportMDBInterestRateCodeTemplateExcel
+    doExportMDBInterestRateCodeTemplateExcel,
+    doExportMDBCodeDataExcel
   } from '../../../api/code-config'
 
   export default {
@@ -476,6 +480,38 @@
                 this.$store.commit('changeTemplateFileId', response.Data)
               })
               .catch(err => console.log(err))
+            break
+        }
+      },
+
+      handleExportCodeConfig () {
+        switch (this.type) {
+          case 'MDBFutureCode':
+            this.listQuery.marketType = 1
+            doExportMDBCodeDataExcel(this.listQuery)
+              .then(response => {
+                const link = document.createElement('a')
+                link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
+                link.click()
+              })
+            break
+          case 'MDBForexCode':
+            this.listQuery.marketType = 2
+            doExportMDBCodeDataExcel(this.listQuery)
+              .then(response => {
+                const link = document.createElement('a')
+                link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
+                link.click()
+              })
+            break
+          case 'MDBIborCode':
+            this.listQuery.marketType = 3
+            doExportMDBCodeDataExcel(this.listQuery)
+              .then(response => {
+                const link = document.createElement('a')
+                link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
+                link.click()
+              })
             break
         }
       },

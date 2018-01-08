@@ -208,3 +208,20 @@ export function doExportMDBInterestRateCodeTemplateExcel () {
     params: {}
   })
 }
+
+/**
+ * 期货、外汇、利率 导出接口
+ * */
+export function doExportMDBCodeDataExcel (query) {
+  return request({
+    url: `${baseUrl}ExportMDBCodeDataExcel`,
+    method: 'get',
+    params: {
+      'query.code': query.code,
+      'query.displayName': query.displayName,
+      'query.marketType': query.marketType,
+      'Pagination.CurrentPage': query.CurrentPage,
+      'Pagination.PageSize': query.PageSize
+    }
+  })
+}

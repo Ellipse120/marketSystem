@@ -92,3 +92,23 @@ export function doExportMDBDataTemplateExcel () {
     params: {}
   })
 }
+
+/**
+ * 行情数据导出接口
+ * */
+export function doExportMDNDataExcel (query) {
+  return request({
+    url: `${baseUrl}ExportMDBDataExcel`,
+    method: 'get',
+    params: {
+      'query.mDBCode': query.mDBCode,
+      'query.startTradeDate': query.TradeDate[0],
+      'query.endTradeDate': query.TradeDate[1],
+      'query.priceType': query.priceType,
+      'query.source': query.source,
+      'query.marketType': query.marketType,
+      'Pagination.CurrentPage': query.CurrentPage,
+      'Pagination.PageSize': query.PageSize
+    }
+  })
+}

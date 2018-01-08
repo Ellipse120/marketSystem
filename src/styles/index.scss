@@ -70,3 +70,9 @@ a:hover {
 .gmk-center {
   text-align: center;
 }
+
+@media only screen and (max-width: 1600px) {
+  .hidden-lg-and-down {
+    display: none !important
+  }
+}

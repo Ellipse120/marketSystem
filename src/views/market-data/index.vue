@@ -50,14 +50,11 @@
               <span class="hidden-lg-and-down">导入</span>
             </el-button>
           </el-tooltip>
-          <!--<form method="get" action="http://192.168.125.63:12345/api/File/DownLoad/33">-->
-            <!--<button type="submit">导出</button>-->
-          <!--</form>-->
-          <!--<el-tooltip class="item" effect="dark" content="批量导出" placement="top-start">-->
-            <!--<el-button type="info" icon="el-icon-download" class="filter-item" @click="handleExportMDBData">-->
-              <!--<span class="hidden-lg-and-down">导出</span>-->
-            <!--</el-button>-->
-          <!--</el-tooltip>-->
+          <el-tooltip class="item" effect="dark" content="批量导出" placement="top-start">
+            <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleExportMDBData">
+              <span class="hidden-lg-and-down">导出</span>
+            </el-button>
+          </el-tooltip>
           <el-tooltip class="item" effect="dark" content="刷新彭博行情" placement="top-start">
             <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item"
                        @click="handleRefreshBloomberg">
@@ -156,6 +153,7 @@
       <div>
         <el-dialog :title="textMap[dialogStatus]"
                    :visible.sync="dialogFormVisible"
+                   :close-on-click-modal="false"
                    width="550px">
           <el-form :rules="rules"
                    ref="dataForm"
@@ -236,15 +234,6 @@
         </el-dialog>
       </div>
 
-      <!-- export dialog -->
-      <div>
-        <el-dialog
-         title="导出"
-         width="550px"
-        >
-        </el-dialog>
-      </div>
-
     </div>
   </div>
 </template>
@@ -253,7 +242,7 @@
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
   import { setRefreshState } from '@/utils/auth'
-  import { doExportMDBDataTemplateExcel } from '../../api/market-data'
+  import { doExportMDBDataTemplateExcel, doExportMDNDataExcel } from '../../api/market-data'
 
   export default {
     name: 'marketDataManagement',
@@ -414,6 +403,12 @@
       },
 
       handleExportMDBData: function () {
+        doExportMDNDataExcel(this.listQuery)
+          .then(response => {
+            const link = document.createElement('a')
+            link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
+            link.click()
+          })
       },
 
       handleSure: function () {
@@ -490,11 +485,3 @@
     }
   }
 </script>
-
-<style scoped>
-  @media only screen and (max-width: 1600px) {
-    .hidden-lg-and-down {
-      display: none !important
-    }
-  }
-</style>

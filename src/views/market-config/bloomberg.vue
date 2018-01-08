@@ -28,6 +28,7 @@
           <el-button type="primary" icon="el-icon-search" plain class="filter-item" @click="handleSearch">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
           <el-button type="info" icon="el-icon-upload2" class="filter-item" @click="handleImportBloomConfig">导入</el-button>
+          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleExportBloomConfig">导出</el-button>
         </el-col>
       </el-row>
     </div>
@@ -147,6 +148,7 @@
     <div>
       <el-dialog :title="textMap[dialogStatus]"
                  :visible.sync="dialogFormVisible"
+                 :close-on-click-modal="false"
                  top="10vh"
                  width="550px"
                  @close="closeBloomDialog">
@@ -160,7 +162,7 @@
             <el-select class="filter-item"
                        v-model="bloombergConfigItem.MDBCodeId"
                        filterable
-                       :disabled="dialogStatus === 'update'"
+                       :disabled="dialogStatus !== 'create'"
                        placeholder="请选择编码"
                        style="width: 100%;">
               <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.DisplayName"
@@ -250,8 +252,8 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="cancel">取 消</el-button>
-          <el-button v-if="dialogStatus === 'create'" type="primary" @click="createData">确 定</el-button>
-          <el-button type="primary" v-else @click="updateData">确 定</el-button>
+          <el-button v-if="dialogStatus !== 'update'" type="primary" @click="createData">确 定</el-button>
+          <el-button type="primary" v-else @click="updateData">确 定 2</el-button>
         </div>
       </el-dialog>
     </div>
@@ -290,7 +292,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
-  import { doExportMDBBloombergTemplateExcel } from '../../api/bloomberg-config'
+  import { doExportMDBBloombergTemplateExcel, doExportMDBBloombergExcel } from '../../api/bloomberg-config'
 
   export default {
     components: { uploadExcel },
@@ -476,6 +478,15 @@
             this.$store.commit('changeTemplateFileId', response.Data)
           })
           .catch(err => console.log(err))
+      },
+
+      handleExportBloomConfig () {
+        doExportMDBBloombergExcel(this.listQuery)
+          .then(response => {
+            const link = document.createElement('a')
+            link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
+            link.click()
+          })
       },
 
       handleSure: function () {
