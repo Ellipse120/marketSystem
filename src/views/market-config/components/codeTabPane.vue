@@ -14,7 +14,7 @@
         <el-col :span="15">
           <el-button type="primary" icon="el-icon-search" plain class="filter-item" @click="handleSearch">搜索</el-button>
           <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">添加</el-button>
-          <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleImportCodeConfig">导入
+          <el-button type="info" icon="el-icon-upload2" class="filter-item" @click="handleImportCodeConfig">导入
           </el-button>
         </el-col>
       </el-row>
