@@ -538,6 +538,10 @@
 
       bloombergRequestType: function (e) {
         this.isAllowRequestStartEnd = e === 2
+        if (e !== 2) {
+          this.bloombergConfigItem.RequestStartTime = ''
+          this.bloombergConfigItem.RequestEndTime = ''
+        }
       },
 
       formatTradeDate: function (row, column, cellValue) {
