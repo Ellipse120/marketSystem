@@ -559,9 +559,9 @@
 
         doRequestBloombergQuotation(this.refreshBloomberg)
           .then(response => {
-            console.log(response)
-            this.dialogBloombergVisible = false
+            this.$message.info('后台刷新中。。。')
           })
+        this.dialogBloombergVisible = false
       },
 
       formatTradeDate: function (row, column, cellValue) {
