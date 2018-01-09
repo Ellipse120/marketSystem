@@ -125,7 +125,7 @@
           fixed="right"
           width="80">
           <template slot-scope="scope">
-            <el-dropdown size="medium">
+            <el-dropdown size="medium" v-if="scope.row.SourceNote === '手工录入'">
               <el-button type="text">
                 操作<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
