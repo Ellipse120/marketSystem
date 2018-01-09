@@ -4,6 +4,7 @@ const getters = {
   avatar: state => state.user.avatar,
   name: state => state.user.name,
   roles: state => state.user.roles,
+  addRouters: state => state.permission.addRouters,
   isShowDialog: state => state.bloomConfig.isShowDialog
 }
 export default getters

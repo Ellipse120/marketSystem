@@ -4,8 +4,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 import store from './store'
-import '@/icons' // icon
-import '@/permission' // 权限
+import '@/icons'
+import '@/permission'
 import 'babel-polyfill'
 
 Vue.use(ElementUI)
