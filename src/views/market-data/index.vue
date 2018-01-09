@@ -573,7 +573,7 @@
       },
 
       filterOperation (value, row) {
-        debugger
+        // debugger
       }
     }
   }
