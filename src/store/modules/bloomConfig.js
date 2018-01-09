@@ -7,23 +7,16 @@ import {
   doImportMDBBloomberg
 } from '../../api/bloomberg-config'
 
-import { getToken, setRefreshState } from '@/utils/auth'
-import { Message, Notification } from 'element-ui'
-
-const wsURI = 'ws://192.168.125.63:12344?token=' + getToken()
-
 const bloomConfig = {
   state: {
     isShowDialog: false,
     MDBBloombergConfigList: [],
-    bloombergConfigItem: {},
-    ws: {}
+    bloombergConfigItem: {}
   },
 
   getters: {
     allMDBBloombergConfigList: state => state.MDBBloombergConfigList,
-    bloombergConfigItem: state => state.bloombergConfigItem,
-    ws: state => state.ws
+    bloombergConfigItem: state => state.bloombergConfigItem
   },
 
   mutations: {
@@ -53,9 +46,6 @@ const bloomConfig = {
     },
     CONFIG_BLOOMBERG: (state, val) => {
       state.bloombergConfigItem.MDBCodeId = val
-    },
-    REFRESH_BLOOMBERG: (state, val) => {
-      state.ws = val
     }
   },
 
@@ -118,66 +108,6 @@ const bloomConfig = {
             resolve(response)
           })
           .catch(err => reject(err))
-      })
-    },
-
-    REFRESH_BLOOMBERG: ({ commit, state, dispatch }, val) => {
-      commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
-      state.ws.addEventListener('open', function (event) {
-        state.ws.send(`user connected.`)
-        Message.success('连接成功，彭博刷新成功后通知您')
-      })
-
-      state.ws.addEventListener('message', function (event) {
-        setRefreshState('false')
-        // MessageBox.confirm(`${JSON.parse(event.data).Message}`, '彭博行情刷新成功提醒', {
-        //   confirmButtonText: '查看',
-        //   cancelButtonText: '稍后',
-        //   center: true
-        // }).then(() => {
-        //   val.router.push('/marketData/index')
-        //   if (!val.router.currentRoute.path.includes('marketData')) {
-        //     Message.success('跳转成功!')
-        //   } else {
-        //     dispatch('allMDBBloombergConfigList', {}).then(() => {
-        //       if (state.ws.readyState === WebSocket.OPEN) {
-        //         state.ws.close()
-        //       }
-        //     })
-        //   }
-        // }).catch(() => {
-        //   Message.success('取消查看')
-        // })
-        Notification.success({
-          title: '彭博行情刷新成功',
-          dangerouslyUseHTMLString: true,
-          duration: 3000,
-          message: `<div>${JSON.parse(event.data).Message}, <a style="cursor: pointer;color: #409EFF">点我查看</a></div>`,
-          position: 'bottom-right',
-          onClick: function () {
-            if (!val.router.currentRoute.path.includes('marketData')) {
-              val.router.push('/marketData/index')
-            } else {
-              dispatch('allMDBBloombergConfigList', {})
-            }
-            if (state.ws.readyState === WebSocket.OPEN) {
-              state.ws.close()
-            }
-          }
-        })
-      })
-
-      state.ws.addEventListener('close', function (event) {
-        if (event.code !== 1000) {
-          commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
-          if (!navigator.onLine) {
-            Message.warning('网络出问题了。。。')
-          }
-        }
-      })
-
-      state.ws.addEventListener('error', function (event) {
-        Message.error(event.data)
       })
     }
   }

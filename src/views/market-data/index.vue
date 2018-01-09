@@ -4,7 +4,7 @@
     <div class="filter-container">
       <el-row :gutter="10" type="flex">
         <el-col>
-          <el-input :clearable="true" placeholder="市场编码" v-model="listQuery.mDBCode" class="filter-item">
+          <el-input :clearable="true" placeholder="行情编码" v-model="listQuery.mDBCode" class="filter-item">
           </el-input>
         </el-col>
         <el-col>
@@ -85,6 +85,7 @@
         </el-table-column>
         <el-table-column
           prop="TradeDate"
+          sortable
           label="交易日期"
           :formatter="formatTradeDate"
           align="center">
@@ -112,8 +113,10 @@
         </el-table-column>
         <el-table-column
           prop="LastUpdateTime"
+          sortable
           align="center"
           :formatter="format_yyyy_mm_dd_hh_mm_ss"
+          :show-overflow-tooltip="true"
           label="更新时间">
         </el-table-column>
         <el-table-column
@@ -146,13 +149,13 @@
           :page-sizes="[10,20,30,50]"
           :page-size="listQuery.PageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="tableData.Pagination.TotalCount"
+          :total="total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange">
         </el-pagination>
       </div>
 
-      <!-- add/update dialog -->
+      <!-- add/update dialog :total="tableData.Pagination.TotalCount" -->
       <div>
         <el-dialog :title="textMap[dialogStatus]"
                    :visible.sync="dialogFormVisible"
@@ -164,9 +167,9 @@
                    label-position="left"
                    label-width="80px"
                    style='width: 400px; margin-left:50px;'>
-            <el-form-item label="市场编码">
+            <el-form-item label="行情编码">
               <el-select class="filter-item" v-model="mDBDataItem.MDBCodeId"
-                         placeholder="请选择编码配置"
+                         placeholder="请选择行情编码"
                          :disabled="dialogStatus === 'update'"
                          style="width: 100%;">
                 <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.Code"
@@ -181,7 +184,8 @@
               </el-date-picker>
             </el-form-item>
             <el-form-item label="行情类型">
-              <el-select class="filter-item" v-model="mDBDataItem.PriceType" placeholder="请选择" style="width: 100%;">
+              <el-select class="filter-item" :disabled="dialogStatus ==='update'"
+                         v-model="mDBDataItem.PriceType" placeholder="请选择" style="width: 100%;">
                 <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
@@ -194,6 +198,63 @@
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button v-if="dialogStatus === 'create'" type="primary" @click="createData">确 定</el-button>
             <el-button type="primary" v-else @click="updateData">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+
+      <!-- refresh bloomberg dialog -->
+      <div>
+        <el-dialog
+          v-if="dialogBloombergVisible"
+          title="刷新彭博行情"
+          width="550px"
+          :visible.sync="dialogBloombergVisible"
+          :close-on-click-modal="false">
+          <el-form
+            label-position="left"
+            label-width="100px"
+            style='width: 400px; margin-left:40px;'
+          >
+            <el-form-item label="行情编码">
+              <el-select class="filter-item"
+                         v-model="refreshBloomberg.mDBCode"
+                         multiple
+                         :clearable="true"
+                         placeholder="请选择行情编码"
+                         style="width: 100%;">
+                <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.Code"
+                           :value="item.Code">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="行情类型">
+              <el-select :clearable="true" multiple placeholder="行情类型" v-model="refreshBloomberg.priceType"
+                         class="filter-item" style="width: 100%;">
+                <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="市场类型">
+              <el-select :clearable="true" multiple placeholder="市场类型" v-model="refreshBloomberg.marketType"
+                         class="filter-item" style="width: 100%;">
+                <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="开始结束日期">
+              <el-date-picker
+                v-model="refreshBloomberg.TradeDate"
+                style="width: 100%;"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                default-value="2018-01-01">
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogBloombergVisible = false">取 消</el-button>
+            <el-button type="primary" @click="doRefreshBloomberg">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -233,7 +294,11 @@
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
   import { setRefreshState } from '@/utils/auth'
-  import { doExportMDBDataTemplateExcel, doExportMDNDataExcel } from '../../api/market-data'
+  import {
+    doExportMDBDataTemplateExcel,
+    doExportMDNDataExcel,
+    doRequestBloombergQuotation
+  } from '../../api/market-data'
   import { formatDateYMD, formatDateYMDHMS } from '@/utils/index'
 
   export default {
@@ -244,13 +309,19 @@
         listLoading: false,
         listQuery: {
           CurrentPage: 1,
-          PageSize: 20,
+          PageSize: 10,
           mDBCode: '',
           TradeDate: '',
           priceType: '',
           PriceValue: '',
           source: '',
           marketType: ''
+        },
+        refreshBloomberg: {
+          mDBCode: [],
+          TradeDate: '',
+          priceType: [],
+          marketType: []
         },
         tableData: {
           List: [],
@@ -268,6 +339,7 @@
           create: '创建'
         },
         dialogImportVisible: false,
+        dialogBloombergVisible: false,
         rules: {},
         previewData: {},
         isAllowImport: false,
@@ -291,7 +363,12 @@
         'mDBDataItem',
         'allMDBCodeConfigs',
         'ws'
-      ])
+      ]),
+      total () {
+        if (this.allMDBDataList.Pagination !== undefined) {
+          return this.allMDBDataList.Pagination.TotalCount
+        }
+      }
     },
     methods: {
       getList () {
@@ -447,6 +524,11 @@
       },
 
       handleRefreshBloomberg: function () {
+        this.dialogBloombergVisible = true
+        this.refreshBloomberg = {}
+      },
+
+      doRefreshBloomberg: function () {
         switch (this.ws.readyState) {
           case WebSocket.CONNECTING:
             this.$message({
@@ -455,6 +537,7 @@
             })
             break
           case WebSocket.OPEN:
+            this.$message.warning('请等待刷新成功后再试')
             return false
           case WebSocket.CLOSING:
             this.$message({
@@ -473,6 +556,12 @@
         }
         setRefreshState('true')
         this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
+
+        doRequestBloombergQuotation(this.refreshBloomberg)
+          .then(response => {
+            console.log(response)
+            this.dialogBloombergVisible = false
+          })
       },
 
       formatTradeDate: function (row, column, cellValue) {
@@ -481,6 +570,10 @@
 
       format_yyyy_mm_dd_hh_mm_ss (row, column, cellValue) {
         return formatDateYMDHMS(cellValue)
+      },
+
+      filterOperation (value, row) {
+        debugger
       }
     }
   }

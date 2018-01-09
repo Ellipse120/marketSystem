@@ -110,7 +110,7 @@
           align="center">
         </el-table-column>
         <el-table-column
-          label=""
+          label="操作"
           align="center"
           fixed="right"
           width="80">

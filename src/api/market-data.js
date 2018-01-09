@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { getToken } from '@/utils/auth'
 
 const baseUrl = '/MDBData/'
 
@@ -13,14 +14,14 @@ export function getAllMDBData (query) {
     url: `${baseUrl}QueryList`,
     method: 'get',
     params: {
-      'query.mDBCode': query.mDBCode, // TODO 目前似乎查询结果为模糊查询。待确认
+      'query.mDBCode': query.mDBCode,
       'query.startTradeDate': query.TradeDate[0],
       'query.endTradeDate': query.TradeDate[1],
       'query.priceType': query.priceType,
       'query.source': query.source,
       'query.marketType': query.marketType,
-      'Pagination.CurrentPage': query.CurrentPage,
-      'Pagination.PageSize': query.PageSize
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
     }
   })
 }
@@ -78,7 +79,7 @@ export function doImportMDBData (data) {
   return request({
     url: `${baseUrl}ImportMDBData/${data.id}`,
     method: 'post',
-    params: data
+    data
   })
 }
 
@@ -107,8 +108,26 @@ export function doExportMDNDataExcel (query) {
       'query.priceType': query.priceType,
       'query.source': query.source,
       'query.marketType': query.marketType,
-      'Pagination.CurrentPage': query.CurrentPage,
-      'Pagination.PageSize': query.PageSize
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
+    }
+  })
+}
+
+/**
+ * 请求彭博行情接口
+ * */
+export function doRequestBloombergQuotation (query) {
+  return request({
+    url: `${baseUrl}RequestBloombergQuotation`,
+    method: 'put',
+    data: {
+      'RequestUserToken': getToken(),
+      'MDBCodes': query.mDBCode,
+      'priceType': query.priceType,
+      'MarketTypes': query.marketType,
+      'StartDate': query.TradeDate[0],
+      'EndDate': query.TradeDate[1]
     }
   })
 }

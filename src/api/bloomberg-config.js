@@ -14,8 +14,8 @@ export function getAllMDBBloombergConfigs (query) {
       'query.priceType': query.priceType,
       'query.bloombergCode': query.bloombergCode,
       'query.requestType': query.requestType,
-      'Pagination.CurrentPage': query.CurrentPage,
-      'Pagination.PageSize': query.PageSize
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
     }
   })
 }
@@ -100,8 +100,8 @@ export function doExportMDBBloombergExcel (query) {
       'query.priceType': query.priceType,
       'query.bloombergCode': query.bloombergCode,
       'query.requestType': query.requestType,
-      'Pagination.CurrentPage': query.CurrentPage,
-      'Pagination.PageSize': query.PageSize
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
     }
   })
 }

@@ -13,8 +13,8 @@ export function getAllMDBCodeConfigs (query) {
       'query.code': query.code,
       'query.displayName': query.displayName,
       'query.marketType': query.marketType,
-      'Pagination.CurrentPage': query.CurrentPage,
-      'Pagination.PageSize': query.PageSize
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
     }
   })
 }
@@ -220,8 +220,8 @@ export function doExportMDBCodeDataExcel (query) {
       'query.code': query.code,
       'query.displayName': query.displayName,
       'query.marketType': query.marketType,
-      'Pagination.CurrentPage': query.CurrentPage,
-      'Pagination.PageSize': query.PageSize
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
     }
   })
 }
