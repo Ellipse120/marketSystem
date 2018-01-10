@@ -574,10 +574,12 @@
       },
 
       formatTradeDate: function (row, column, cellValue) {
+        // TODO FIXME elementUI bug , 重复执行，自定义filter也是这样，应该是框架 update 渲染问题。
         return formatDateYMD(cellValue)
       },
 
       format_yyyy_mm_dd_hh_mm_ss (row, column, cellValue) {
+        // TODO FIXME elementUI bug , 重复执行，自定义filter也是这样，应该是框架 update 渲染问题。
         return formatDateYMDHMS(cellValue)
       }
     }
