@@ -40,22 +40,22 @@
               <span class="hidden-lg-and-down">搜索</span>
             </el-button>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="添加" placement="top-start">
+          <el-tooltip class="item" effect="dark" content="添加" placement="top-start" v-if="hasPermission">
             <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="handleCreate">
               <span class="hidden-lg-and-down">添加</span>
             </el-button>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="批量导入" placement="top-start">
+          <el-tooltip class="item" effect="dark" content="批量导入" placement="top-start" v-if="hasPermission">
             <el-button type="info" icon="el-icon-upload2" class="filter-item" @click="handleImportMDBData">
               <span class="hidden-lg-and-down">导入</span>
             </el-button>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="批量导出" placement="top-start">
+          <el-tooltip class="item" effect="dark" content="批量导出" placement="top-start" v-if="hasPermission">
             <el-button type="info" icon="el-icon-download" class="filter-item" @click="handleExportMDBData">
               <span class="hidden-lg-and-down">导出</span>
             </el-button>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="刷新彭博行情" placement="top-start">
+          <el-tooltip class="item" effect="dark" content="刷新彭博行情" placement="top-start" v-if="hasPermission">
             <el-button type="success" icon="el-icon-refresh" title="刷新彭博行情" round class="filter-item"
                        @click="handleRefreshBloomberg">
               <span class="hidden-lg-and-down">彭博行情</span>
@@ -75,6 +75,7 @@
         style="width: 100%">
         <el-table-column
           type="selection"
+          v-show="hasPermission"
           align="center"
           width="55">
         </el-table-column>
@@ -120,6 +121,7 @@
           label="更新时间">
         </el-table-column>
         <el-table-column
+          v-if="hasPermission"
           label="操作"
           align="center"
           fixed="right"
@@ -362,11 +364,17 @@
         'allMDBDataList',
         'mDBDataItem',
         'allMDBCodeConfigs',
-        'ws'
+        'ws',
+        'roles'
       ]),
       total () {
         if (this.allMDBDataList.Pagination !== undefined) {
           return this.allMDBDataList.Pagination.TotalCount
+        }
+      },
+      hasPermission () {
+        if (this.roles[0] !== undefined) {
+          return this.roles[0].Code.indexOf('Admin') >= 0
         }
       }
     },

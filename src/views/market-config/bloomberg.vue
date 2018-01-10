@@ -4,7 +4,7 @@
     <div class="filter-container">
       <el-row :gutter="10">
         <el-col :span="3">
-          <el-input :clearable="true" placeholder="市场编码" v-model="listQuery.mDBCode" class="filter-item">
+          <el-input :clearable="true" placeholder="行情编码" v-model="listQuery.mDBCode" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="3">
@@ -161,7 +161,7 @@
                  label-position="left"
                  label-width="100px"
                  style='width: 400px; margin-left:50px;'>
-          <el-form-item label="编码">
+          <el-form-item label="行情编码">
             <el-select class="filter-item"
                        v-model="bloombergConfigItem.MDBCodeId"
                        filterable
@@ -182,7 +182,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="彭博编码">
+          <el-form-item label="彭博代码">
             <el-input v-model="bloombergConfigItem.BloombergCode" placeholder="请输入彭博代码"></el-input>
           </el-form-item>
           <el-form-item label="请求类型">

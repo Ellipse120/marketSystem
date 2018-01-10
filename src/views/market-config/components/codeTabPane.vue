@@ -4,11 +4,11 @@
     <div class="filter-container">
       <el-row :gutter="10">
         <el-col :span="3">
-          <el-input :clearable="true" placeholder="唯一编码" v-model="listQuery.code" class="filter-item">
+          <el-input :clearable="true" placeholder="行情编码" v-model="listQuery.code" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-input :clearable="true" placeholder="显示名称" v-model="listQuery.displayName" class="filter-item">
+          <el-input :clearable="true" placeholder="行情名称" v-model="listQuery.displayName" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="15">
@@ -202,7 +202,9 @@
     doExportMDBFutureCodeTemplateExcel,
     doExportMDBForexCodeTemplateExcel,
     doExportMDBInterestRateCodeTemplateExcel,
-    doExportMDBCodeDataExcel
+    doExportMDBFutureCodeDataExcel,
+    doExportMDBForexCodeDataExcel,
+    doExportMDBInterestRateCodeDataExcel
   } from '../../../api/code-config'
 
   export default {
@@ -488,7 +490,7 @@
         switch (this.type) {
           case 'MDBFutureCode':
             this.listQuery.marketType = 1
-            doExportMDBCodeDataExcel(this.listQuery)
+            doExportMDBFutureCodeDataExcel(this.listQuery)
               .then(response => {
                 const link = document.createElement('a')
                 link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
@@ -497,7 +499,7 @@
             break
           case 'MDBForexCode':
             this.listQuery.marketType = 2
-            doExportMDBCodeDataExcel(this.listQuery)
+            doExportMDBForexCodeDataExcel(this.listQuery)
               .then(response => {
                 const link = document.createElement('a')
                 link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
@@ -506,7 +508,7 @@
             break
           case 'MDBIborCode':
             this.listQuery.marketType = 3
-            doExportMDBCodeDataExcel(this.listQuery)
+            doExportMDBInterestRateCodeDataExcel(this.listQuery)
               .then(response => {
                 const link = document.createElement('a')
                 link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`

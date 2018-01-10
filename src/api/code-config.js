@@ -210,11 +210,45 @@ export function doExportMDBInterestRateCodeTemplateExcel () {
 }
 
 /**
- * 期货、外汇、利率 导出接口
+ * 期货 导出接口
  * */
-export function doExportMDBCodeDataExcel (query) {
+export function doExportMDBFutureCodeDataExcel (query) {
   return request({
-    url: `${baseUrl}ExportMDBCodeDataExcel`,
+    url: `${baseUrl}ExportMDBFutureCodeDataExcel`,
+    method: 'get',
+    params: {
+      'query.code': query.code,
+      'query.displayName': query.displayName,
+      'query.marketType': query.marketType,
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
+    }
+  })
+}
+
+/**
+ * 外汇 导出接口
+ * */
+export function doExportMDBForexCodeDataExcel (query) {
+  return request({
+    url: `${baseUrl}ExportMDBForexCodeDataExcel`,
+    method: 'get',
+    params: {
+      'query.code': query.code,
+      'query.displayName': query.displayName,
+      'query.marketType': query.marketType,
+      'query.pagination.currentPage': query.CurrentPage,
+      'query.pagination.pageSize': query.PageSize
+    }
+  })
+}
+
+/**
+ * 利率 导出接口
+ * */
+export function doExportMDBInterestRateCodeDataExcel (query) {
+  return request({
+    url: `${baseUrl}ExportMDBInterestRateCodeDataExcel`,
     method: 'get',
     params: {
       'query.code': query.code,
