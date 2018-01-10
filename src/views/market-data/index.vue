@@ -67,6 +67,8 @@
     </div>
     <!-- table ↓ -->
     <div>
+      <!--{{hasPermission}}-->
+      <!--{{hasPermission ? 'selection' : 'index'}}-->
       <el-table
         :data="tableData.List"
         v-loading.body="listLoading"
@@ -75,7 +77,6 @@
         style="width: 100%">
         <el-table-column
           type="selection"
-          v-show="hasPermission"
           align="center"
           width="55">
         </el-table-column>
@@ -157,7 +158,7 @@
         </el-pagination>
       </div>
 
-      <!-- add/update dialog :total="tableData.Pagination.TotalCount" -->
+      <!-- add/update dialog -->
       <div>
         <el-dialog :title="textMap[dialogStatus]"
                    :visible.sync="dialogFormVisible"
