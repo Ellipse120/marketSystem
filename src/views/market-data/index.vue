@@ -570,10 +570,6 @@
 
       format_yyyy_mm_dd_hh_mm_ss (row, column, cellValue) {
         return formatDateYMDHMS(cellValue)
-      },
-
-      filterOperation (value, row) {
-        // debugger
       }
     }
   }

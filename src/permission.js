@@ -1,9 +1,9 @@
 import router from './router'
 import store from './store'
-import NProgress from 'nprogress' // Progress 进度条
-import 'nprogress/nprogress.css'// Progress 进度条样式
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 import { Message } from 'element-ui'
-import { getToken } from '@/utils/auth' // 验权
+import { getToken } from '@/utils/auth'
 
 NProgress.configure({ showSpinner: false })
 
@@ -17,7 +17,7 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
     } else {
       if (store.getters.roles.length === 0) {
-        store.dispatch('GetUserInfo').then(res => { // 获取用户信息
+        store.dispatch('GetUserInfo').then(res => {
           const roles = res.Data.Roles
           store.dispatch('GenerateRoutes', { roles })
             .then(() => {
@@ -32,6 +32,12 @@ router.beforeEach((to, from, next) => {
         })
         next()
       } else {
+        const roles = store.getters.roles
+        store.dispatch('GenerateRoutes', { roles })
+          .then(() => {
+            router.addRoutes(store.getters.addRouters)
+            next({ ...to, replace: true })
+          })
         next()
       }
     }
@@ -46,5 +52,5 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
-  NProgress.done() // 结束Progress
+  NProgress.done()
 })

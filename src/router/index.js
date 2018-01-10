@@ -10,7 +10,7 @@ import Layout from '../views/layout/Layout'
 
 export const constantRouterMap = [
   { path: '/login', component: _import('login/index'), hidden: true },
-  { path: '/404', component: _import('404'), hidden: true },
+  { path: '/404', component: _import('errorPage/404'), hidden: true },
 
   {
     path: '',
@@ -23,8 +23,7 @@ export const constantRouterMap = [
       name: 'dashboard',
       meta: {
         title: '首页',
-        icon: 'dashboard',
-        roles: ['Admin']
+        icon: 'dashboard'
       }
     }]
   },
@@ -45,12 +44,22 @@ export const constantRouterMap = [
     ]
   },
 
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+export default new Router({
+  // mode: 'history',
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap
+})
+
+export const asyncRouterMap = [
   {
     path: '/marketConfig',
     component: Layout,
     name: 'marketConfig',
     redirect: '/marketConfig/bloomBerg',
-    meta: { title: '行情配置', icon: 'example' },
+    meta: { title: '行情配置', icon: 'example', roles: ['Admin'] },
     children: [
       {
         path: 'bloomBerg',
@@ -72,17 +81,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
-  { path: '*', redirect: '/404', hidden: true }
-]
-
-export default new Router({
-  // mode: 'history',
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
-})
-
-export const asyncRouterMap = [
   {
     path: '/example',
     component: Layout,
@@ -116,5 +114,5 @@ export const asyncRouterMap = [
         meta: { title: 'Form', icon: 'form', roles: ['Admin'] }
       }
     ]
-  },
+  }
 ]
