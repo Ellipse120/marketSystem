@@ -7,12 +7,6 @@ import { getToken } from '@/utils/auth'
 
 NProgress.configure({ showSpinner: false })
 
-function hasPermission (roles, permissionRoles) {
-  if (roles[0].Code.indexOf('Admin') >= 0) return true
-  if (!permissionRoles) return true
-  return roles.some(role => permissionRoles.indexOf(role) >= 0)
-}
-
 const whiteList = ['/login']
 
 router.beforeEach((to, from, next) => {
@@ -38,23 +32,6 @@ router.beforeEach((to, from, next) => {
         })
         next()
       } else {
-        const roles = store.getters.roles
-        store.dispatch('GenerateRoutes', { roles })
-          .then(() => {
-            router.addRoutes(store.getters.addRouters)
-            next({ ...to, replace: true })
-          })
-        // if (hasPermission(store.getters.roles, to.meta.roles)) {
-        //   const roles = store.getters.roles
-        //   store.dispatch('GenerateRoutes', { roles })
-        //     .then(() => {
-        //       router.addRoutes(store.getters.addRouters)
-        //       next({ ...to, replace: true })
-        //     })
-        //   next()
-        // } else {
-        //   next({ path: '/404', replace: true, query: { noGoBack: true }})
-        // }
         next()
       }
     }

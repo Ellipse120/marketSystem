@@ -43,9 +43,7 @@ export const constantRouterMap = [
         }
       }
     ]
-  },
-
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 export default new Router({
@@ -59,7 +57,7 @@ export const asyncRouterMap = [
     path: '/marketConfig',
     component: Layout,
     name: 'marketConfig',
-    redirect: '/marketConfig/bloomBerg',
+    redirect: 'noredirect',
     meta: { title: '行情配置', icon: 'example', roles: ['Admin'] },
     children: [
       {
@@ -81,7 +79,9 @@ export const asyncRouterMap = [
         }
       }
     ]
-  }
+  },
+
+  { path: '*', redirect: '/404', hidden: true }
   // {
   //   path: '/example',
   //   component: Layout,
