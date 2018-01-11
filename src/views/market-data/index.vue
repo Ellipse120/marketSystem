@@ -609,7 +609,7 @@
             break
         }
         setRefreshState('true')
-        this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
+        this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router, 'instance': this })
 
         doRequestBloombergQuotation(this.refreshBloomberg)
           .then(response => {

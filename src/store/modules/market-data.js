@@ -127,16 +127,17 @@ const marketData = {
             if (!val.router.currentRoute.path.includes('marketData')) {
               val.router.push('/marketData/index')
             } else {
-              dispatch('allMDBDataList', {
-                CurrentPage: 1,
-                PageSize: 10,
-                mDBCode: '',
-                TradeDate: '',
-                priceType: '',
-                PriceValue: '',
-                source: '',
-                marketType: ''
-              })
+              val.instance.getList()
+              // dispatch('allMDBDataList', {
+              //   CurrentPage: 1,
+              //   PageSize: 10,
+              //   mDBCode: '',
+              //   TradeDate: '',
+              //   priceType: '',
+              //   PriceValue: '',
+              //   source: '',
+              //   marketType: ''
+              // })
             }
             if (state.ws.readyState === WebSocket.OPEN) {
               state.ws.close()
