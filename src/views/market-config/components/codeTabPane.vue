@@ -8,7 +8,7 @@
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-input :clearable="true" placeholder="行情名称" v-model="listQuery.displayName" class="filter-item">
+          <el-input :clearable="true" placeholder="行情编码名称" v-model="listQuery.displayName" class="filter-item">
           </el-input>
         </el-col>
         <el-col :span="15">
