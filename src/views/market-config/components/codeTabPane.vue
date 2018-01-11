@@ -28,8 +28,9 @@
         :data="tableData.List"
         v-loading.body="listLoading"
         element-loading-text="拼命加载中。。。"
-        border
-        style="width: 100%;">
+        border fit
+        style="width: 100%;"
+        @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
           align="center"
@@ -79,6 +80,28 @@
             </el-dropdown>
           </template>
         </el-table-column>
+        <template slot="append">
+          <el-row>
+            <el-col :span="2">
+              <transition name="bounce">
+                <el-button type="danger"
+                           style="margin: 10px;"
+                           v-show="hasPermission && isShowBatchDeleteBtn"
+                           @click="handleBatchDelete">批量删除
+                </el-button>
+              </transition>
+            </el-col>
+            <el-col :span="22">
+              <transition name="fade">
+                <p v-show="hasPermission && isShowBatchDeleteBtn">
+                  共选中了
+                  <el-tag type="danger">{{multipleSelection.length}}</el-tag>
+                  条
+                </p>
+              </transition>
+            </el-col>
+          </el-row>
+        </template>
       </el-table>
     </div>
 
@@ -262,7 +285,8 @@
         dialogImportVisible: false,
         previewData: {},
         isAllowImport: false,
-        isImportSuccess: false
+        isImportSuccess: false,
+        multipleSelection: []
       }
     },
     methods: {
@@ -344,6 +368,28 @@
           this.$message({
             type: 'info',
             message: '已取消删除操作'
+          })
+        })
+      },
+
+      handleBatchDelete: function () {
+        this.$confirm(`确认批量删除 行情编码: 【${this.multipleSelection}】`, '提示', {
+          type: 'warning',
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          center: true
+        }).then(() => {
+          this.$store.dispatch('deleteFutureCode', this.multipleSelection).then(() => {
+            this.$message({
+              type: 'success',
+              message: '批量删除成功'
+            })
+            this.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消批量删除操作'
           })
         })
       },
@@ -627,6 +673,10 @@
               })
             break
         }
+      },
+
+      handleSelectionChange: function (val) {
+        this.multipleSelection = val.map(a => a.Id)
       }
     },
     computed: {
@@ -638,7 +688,8 @@
         'futureContracts',
         'forexes',
         'interestRates',
-        'allMDBCodeConfigs'
+        'allMDBCodeConfigs',
+        'roles'
       ]),
       dialogFormVisible: {
         get: function () {
@@ -669,6 +720,14 @@
             }
             return this.marketType
         }
+      },
+      hasPermission () {
+        if (this.roles[0] !== undefined) {
+          return this.roles[0].Code.indexOf('Admin') >= 0
+        }
+      },
+      isShowBatchDeleteBtn () {
+        return this.multipleSelection.length > 0
       }
     }
   }
