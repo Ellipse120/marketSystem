@@ -229,7 +229,7 @@
     doExportMDBForexCodeDataExcel,
     doExportMDBInterestRateCodeDataExcel
   } from '../../../api/code-config'
-  import { exportExcel} from '../../../components/mixins/exportExcel'
+  import { exportExcel } from '../../../components/mixins/exportExcel'
 
   export default {
     name: 'code-tab-pane',
