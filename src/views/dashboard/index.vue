@@ -8,7 +8,9 @@
           <div style="padding: 14px;font-size: 24px;line-height: 46px;">
             <svg-icon icon-class="user"/><span> 用户名 : {{name}}</span>
             <div class="bottom clearfix">
-              <svg-icon icon-class="role"/><span v-for='role in roles' :key='role.$index'> 用户角色 : {{role.DisplayName}}</span>
+              <span v-for='role in roles' :key='role.$index'>
+                <svg-icon icon-class="role"/> 用户角色 : {{role.DisplayName}}
+              </span>
             </div>
           </div>
         </el-card>
