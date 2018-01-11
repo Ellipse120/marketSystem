@@ -149,7 +149,7 @@
           </el-form-item>
           <el-form-item :label="marketTypeObj.label">
             <el-select class="filter-item" v-if="this.type === 'MDBFutureCode'"
-                       v-model="codeConfigItem.ObjectId"
+                       v-model="codeConfigItem.ObjectId" filterable
                        :disabled="dialogStatus === 'update'"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in futureContracts.datas"
@@ -159,7 +159,7 @@
               </el-option>
             </el-select>
             <el-select class="filter-item" v-else-if="this.type === 'MDBForexCode'"
-                       v-model="codeConfigItem.ObjectId"
+                       v-model="codeConfigItem.ObjectId" filterable
                        :disabled="dialogStatus === 'update'"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in forexes.datas"
@@ -169,7 +169,7 @@
               </el-option>
             </el-select>
             <el-select class="filter-item" v-else-if="this.type === 'MDBIborCode'"
-                       :disabled="dialogStatus === 'ObjectId'"
+                       :disabled="dialogStatus === 'ObjectId'" filterable
                        v-model="codeConfigItem.ObjectId"
                        placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in interestRates.datas"
@@ -229,10 +229,12 @@
     doExportMDBForexCodeDataExcel,
     doExportMDBInterestRateCodeDataExcel
   } from '../../../api/code-config'
+  import { exportExcel} from '../../../components/mixins/exportExcel'
 
   export default {
     name: 'code-tab-pane',
     components: { uploadExcel },
+    mixins: [exportExcel],
     props: {
       type: {
         type: String,
@@ -538,27 +540,21 @@
             this.listQuery.marketType = 1
             doExportMDBFutureCodeDataExcel(this.listQuery)
               .then(response => {
-                const link = document.createElement('a')
-                link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
-                link.click()
+                this.doExportExcelData(response.Data)
               })
             break
           case 'MDBForexCode':
             this.listQuery.marketType = 2
             doExportMDBForexCodeDataExcel(this.listQuery)
               .then(response => {
-                const link = document.createElement('a')
-                link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
-                link.click()
+                this.doExportExcelData(response.Data)
               })
             break
           case 'MDBIborCode':
             this.listQuery.marketType = 3
             doExportMDBInterestRateCodeDataExcel(this.listQuery)
               .then(response => {
-                const link = document.createElement('a')
-                link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
-                link.click()
+                this.doExportExcelData(response.Data)
               })
             break
         }

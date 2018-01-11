@@ -18,6 +18,7 @@
       this.$store.dispatch('getWarehouses')
       this.$store.dispatch('getContractTypes')
       this.$store.dispatch('getInterestDurations')
+      this.$store.dispatch('getMDBCodes')
     },
     computed: {
       // key() {

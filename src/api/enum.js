@@ -1,11 +1,13 @@
 import request from '@/utils/request'
 
+const baseUrl = '/BasicStaticData/'
+
 /**
- * 查询合约类型键值对ret
+ * 查询合约类型键值对
  * */
 export function getContractTypes () {
   return request({
-    url: '/BasicStaticData/QueryContractTypes',
+    url: `${baseUrl}QueryContractTypes`,
     method: 'get'
   })
 }
@@ -15,7 +17,7 @@ export function getContractTypes () {
  * */
 export function getPriceTypes () {
   return request({
-    url: '/BasicStaticData/QueryPriceTypes',
+    url: `${baseUrl}QueryPriceTypes`,
     method: 'get',
     params: {}
   })
@@ -26,7 +28,7 @@ export function getPriceTypes () {
  * */
 export function getBloombergRequestTypes () {
   return request({
-    url: '/BasicStaticData/QueryBloombergRequestTypes',
+    url: `${baseUrl}QueryBloombergRequestTypes`,
     method: 'get'
   })
 }
@@ -36,7 +38,7 @@ export function getBloombergRequestTypes () {
  * */
 export function getWarehouses () {
   return request({
-    url: '/BasicStaticData/QueryWarehouses',
+    url: `${baseUrl}QueryWarehouses`,
     method: 'get'
   })
 }
@@ -46,7 +48,7 @@ export function getWarehouses () {
  * */
 export function getMarketTypes () {
   return request({
-    url: '/BasicStaticData/QueryMarketTypes',
+    url: `${baseUrl}QueryMarketTypes`,
     method: 'get'
   })
 }
@@ -56,7 +58,7 @@ export function getMarketTypes () {
  * */
 export function getQuotationSources () {
   return request({
-    url: '/BasicStaticData/QueryQuotationSources',
+    url: `${baseUrl}QueryQuotationSources`,
     method: 'get'
   })
 }
@@ -66,7 +68,17 @@ export function getQuotationSources () {
  * */
 export function getInterestDurations () {
   return request({
-    url: '/BasicStaticData/QueryDurations',
+    url: `${baseUrl}QueryDurations`,
+    method: 'get'
+  })
+}
+
+/**
+ * 查询行情编码键值对
+ * */
+export function getMDBCodes () {
+  return request({
+    url: `${baseUrl}QueryMDBCodes`,
     method: 'get'
   })
 }

@@ -322,10 +322,12 @@
   import uploadExcel from '@/components/uploadExcel/index'
   import { doExportMDBBloombergTemplateExcel, doExportMDBBloombergExcel } from '../../api/bloomberg-config'
   import { formatDateYMD, formatDateYMDHMS } from '@/utils/index'
+  import { exportExcel } from '../../components/mixins/exportExcel'
 
   export default {
-    components: { uploadExcel },
     name: 'bloomberg',
+    components: { uploadExcel },
+    mixins: [exportExcel],
     data () {
       return {
         listLoading: true,
@@ -544,9 +546,7 @@
       handleExportBloomConfig () {
         doExportMDBBloombergExcel(this.listQuery)
           .then(response => {
-            const link = document.createElement('a')
-            link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
-            link.click()
+            this.doExportExcelData(response.Data)
           })
       },
 

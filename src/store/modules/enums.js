@@ -5,7 +5,8 @@ import {
   getWarehouses,
   getMarketTypes,
   getQuotationSources,
-  getInterestDurations
+  getInterestDurations,
+  getMDBCodes
 } from '../../api/enum'
 
 import { Message } from 'element-ui'
@@ -18,7 +19,8 @@ const enums = {
     quotationSources: [],
     warehouses: [],
     contractTypes: [],
-    interestDurations: []
+    interestDurations: [],
+    allMDBCodes: []
   },
 
   getters: {
@@ -28,7 +30,8 @@ const enums = {
     quotationSources: state => state.quotationSources,
     warehouses: state => state.warehouses,
     contractTypes: state => state.contractTypes,
-    interestDurations: state => state.interestDurations
+    interestDurations: state => state.interestDurations,
+    mDBCodes: state => state.allMDBCodes
   },
 
   mutations: {
@@ -52,6 +55,9 @@ const enums = {
     },
     allInterestRates: (state, data) => {
       state.interestDurations = data
+    },
+    allMDBCodes: (state, data) => {
+      state.allMDBCodes = data
     }
   },
 
@@ -124,6 +130,14 @@ const enums = {
           .then(response => {
             commit('allInterestRates', response.Data)
             resolve()
+          })
+      })
+    },
+    getMDBCodes: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        getMDBCodes()
+          .then(response => {
+            commit('allMDBCodes', response.Data)
           })
       })
     }

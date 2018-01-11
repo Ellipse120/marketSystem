@@ -194,10 +194,10 @@
                    style='width: 400px; margin-left:50px;'>
             <el-form-item label="行情编码">
               <el-select class="filter-item" v-model="mDBDataItem.MDBCodeId"
-                         placeholder="请选择行情编码"
+                         placeholder="请选择行情编码" filterable
                          :disabled="dialogStatus === 'update'"
                          style="width: 100%;">
-                <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.Code"
+                <el-option v-for="item in mDBCodes" :key="item.Id" :label="item.MDBCode"
                            :value="item.Id">
                 </el-option>
               </el-select>
@@ -238,8 +238,7 @@
           <el-form
             label-position="left"
             label-width="100px"
-            style='width: 400px; margin-left:40px;'
-          >
+            style='width: 400px; margin-left:40px;'>
             <el-form-item label="行情编码">
               <el-select class="filter-item"
                          v-model="refreshBloomberg.mDBCode"
@@ -247,8 +246,8 @@
                          :clearable="true"
                          placeholder="请选择行情编码"
                          style="width: 100%;">
-                <el-option v-for="item in allMDBCodeConfigs.List" :key="item.Id" :label="item.Code"
-                           :value="item.Code">
+                <el-option v-for="item in mDBCodes" :key="item.Id" :label="item.MDBCode"
+                           :value="item.MDBCode">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -325,10 +324,12 @@
     doRequestBloombergQuotation
   } from '../../api/market-data'
   import { formatDateYMD, formatDateYMDHMS } from '@/utils/index'
+  import { exportExcel } from '../../components/mixins/exportExcel'
 
   export default {
     name: 'marketDataManagement',
     components: { uploadExcel },
+    mixins: [exportExcel],
     data () {
       return {
         listLoading: false,
@@ -373,8 +374,6 @@
       }
     },
     created () {
-      this.$store.dispatch('allMDBCodeConfigs', { marketType: null }).then(() => {
-      })
       this.getList()
     },
     mounted () {
@@ -387,7 +386,7 @@
         'quotationSources',
         'allMDBDataList',
         'mDBDataItem',
-        'allMDBCodeConfigs',
+        'mDBCodes',
         'ws',
         'roles'
       ]),
@@ -531,9 +530,7 @@
       handleExportMDBData: function () {
         doExportMDNDataExcel(this.listQuery)
           .then(response => {
-            const link = document.createElement('a')
-            link.href = `http://192.168.125.63:12345/api/File/DownLoad/${response.Data}`
-            link.click()
+            this.doExportExcelData(response.Data)
           })
       },
 
