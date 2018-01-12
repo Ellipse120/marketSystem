@@ -2,10 +2,10 @@
   <div class="app-wrapper" :class="{hideSidebar:!sidebar.opened}">
     <div style="position: absolute;left: 43%;z-index: 2000;top: -23px;">
       <router-link to="/">
-        <svg viewBox="0 0 50 50">
+        <svg viewBox="0 0 120 50">
           <!-- Symbol-->
           <symbol id="s-text">
-            <text text-anchor="middle" x="50%" y="50%" dy=".35em">G M T</text>
+            <text text-anchor="middle" x="50%" y="50%" dy=".35em">G M K - X G C</text>
           </symbol>
           <!-- Duplicate symbols-->
           <use class="text" xlink:href="#s-text"></use>
@@ -20,6 +20,7 @@
     <div class="main-container">
       <navbar></navbar>
       <app-main></app-main>
+      <img class="gmk-logo" src="../../assets/xgc.png" alt="" title="Welcome">
     </div>
   </div>
 </template>
@@ -56,6 +57,17 @@
     position: relative;
     height: 100%;
     width: 100%;
+  }
+
+  .gmk-logo {
+    position: absolute;
+    top: 95vh;
+    right: 20px;
+
+    &:hover {
+      transform: rotateZ(360deg);
+      transition: all 0.4s ease-in;
+    }
   }
 
   /* Main styles for G M T */
