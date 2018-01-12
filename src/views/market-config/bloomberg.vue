@@ -281,7 +281,7 @@
         <div slot="footer" class="dialog-footer">
           <el-button @click="cancel">取 消</el-button>
           <el-button v-if="dialogStatus !== 'update'" type="primary" @click="createData">确 定</el-button>
-          <el-button type="primary" v-else @click="updateData">确 定 2</el-button>
+          <el-button type="primary" v-else @click="updateData">确 定</el-button>
         </div>
       </el-dialog>
     </div>
