@@ -6,7 +6,7 @@ import {
   doPreviewMDBData,
   doImportMDBData
 } from '../../api/market-data'
-import { getToken, setRefreshState } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 import { Message, Notification } from 'element-ui'
 
 const wsURI = 'ws://192.168.125.63:12344?token=' + getToken()
@@ -15,7 +15,7 @@ const marketData = {
   state: {
     mDBDataList: [],
     mDBDataItem: {},
-    ws: {}
+    ws: new WebSocket(wsURI)
   },
 
   getters: {
@@ -108,40 +108,41 @@ const marketData = {
       })
     },
 
-    REFRESH_BLOOMBERG: ({ commit, state, dispatch }, val) => {
-      commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
+    REFRESH_BLOOMBERG: ({ commit, state, dispatch, rootState }, val) => {
+      // commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
       state.ws.addEventListener('open', function (event) {
         state.ws.send(`user connected.`)
-        Message.success('连接成功，彭博刷新成功后通知您')
+        // Message.success('连接成功，彭博刷新成功后通知您')
       })
 
       state.ws.addEventListener('message', function (event) {
-        setRefreshState('false')
+        // setRefreshState('false')
+        console.log(event.data)
         Notification.success({
           title: '彭博行情刷新成功',
           dangerouslyUseHTMLString: true,
           duration: 0,
-          message: `<div>${JSON.parse(event.data).Message}, <a style="cursor: pointer;color: #409EFF">点我查看</a></div>`,
+          message: `<div>${JSON.parse(event.data).Message}, <a style="cursor: pointer;color: #409EFF"><p>点我查看</p></a></div>`,
           position: 'bottom-right',
           onClick: function () {
             if (!val.router.currentRoute.path.includes('marketData')) {
               val.router.push('/marketData/index')
             } else {
-              val.instance.getList()
-              // dispatch('allMDBDataList', {
-              //   CurrentPage: 1,
-              //   PageSize: 10,
-              //   mDBCode: '',
-              //   TradeDate: '',
-              //   priceType: '',
-              //   PriceValue: '',
-              //   source: '',
-              //   marketType: ''
-              // })
+              // val.instance.getList()
+              dispatch('allMDBDataList', {
+                CurrentPage: 1,
+                PageSize: 10,
+                mDBCode: '',
+                TradeDate: '',
+                priceType: '',
+                PriceValue: '',
+                source: '',
+                marketType: ''
+              })
             }
-            if (state.ws.readyState === WebSocket.OPEN) {
-              state.ws.close()
-            }
+            // if (state.ws.readyState === WebSocket.OPEN) {
+            //   state.ws.close()
+            // }
           }
         })
       })
@@ -150,6 +151,7 @@ const marketData = {
         if (event.code !== 1000) {
           console.log(event.code + ' ：error code')
           commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
+          dispatch('REFRESH_BLOOMBERG', { 'router': rootState.app.appRouter })
           if (!navigator.onLine) {
             Message.warning('网络出问题了。。。')
           }

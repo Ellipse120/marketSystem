@@ -69,7 +69,7 @@
     <div>
       <el-table
         ref="marketDataTable"
-        :data="tableData.List"
+        :data="allMDBDataList.List"
         v-loading.body="listLoading"
         element-loading-text="拼命加载中。。。"
         border fit
@@ -317,7 +317,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import uploadExcel from '@/components/uploadExcel/index'
-  import { setRefreshState } from '@/utils/auth'
+  // import { setRefreshState } from '@/utils/auth'
   import {
     doExportMDBDataTemplateExcel,
     doExportMDNDataExcel,
@@ -409,7 +409,7 @@
         this.listLoading = true
         this.$store.dispatch('allMDBDataList', this.listQuery)
           .then(() => {
-            this.tableData = this.allMDBDataList
+            // this.tableData = this.allMDBDataList
             this.listLoading = false
           })
       },
@@ -583,33 +583,32 @@
       },
 
       doRefreshBloomberg: function () {
-        switch (this.ws.readyState) {
-          case WebSocket.CONNECTING:
-            this.$message({
-              type: 'info',
-              message: '正在连接'
-            })
-            break
-          case WebSocket.OPEN:
-            this.$message.warning('请等待刷新成功后再试')
-            return false
-          case WebSocket.CLOSING:
-            this.$message({
-              type: 'info',
-              message: '正在关闭'
-            })
-            break
-          case WebSocket.CLOSED:
-            this.$message({
-              type: 'info',
-              message: '连接关闭'
-            })
-            break
-          default:
-            break
-        }
-        setRefreshState('true')
-        this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router, 'instance': this })
+        // switch (this.ws.readyState) {
+        //   case WebSocket.CONNECTING:
+        //     this.$message({
+        //       type: 'info',
+        //       message: '正在连接'
+        //     })
+        //     break
+        //   case WebSocket.OPEN:
+        //     // this.$message.warning('请等待刷新成功后再试')
+        //     return false
+        //   case WebSocket.CLOSING:
+        //     this.$message({
+        //       type: 'info',
+        //       message: '正在关闭'
+        //     })
+        //     break
+        //   case WebSocket.CLOSED:
+        //     this.$message({
+        //       type: 'info',
+        //       message: '连接关闭'
+        //     })
+        //     break
+        //   default:
+        //     break
+        // }
+        // setRefreshState('true')
 
         doRequestBloombergQuotation(this.refreshBloomberg)
           .then(response => {
