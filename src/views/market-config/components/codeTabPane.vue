@@ -29,6 +29,7 @@
         v-loading.body="listLoading"
         element-loading-text="拼命加载中。。。"
         border fit
+        size="medium "
         style="width: 100%;"
         @selection-change="handleSelectionChange">
         <el-table-column
