@@ -1,21 +1,21 @@
 <template>
   <div class="app-wrapper" :class="{hideSidebar:!sidebar.opened}">
-    <div style="position: absolute;left: 43%;z-index: 2000;top: -23px;">
-      <router-link to="/">
-        <svg viewBox="0 0 120 50">
-          <!-- Symbol-->
-          <symbol id="s-text">
-            <text text-anchor="middle" x="50%" y="50%" dy=".35em">G M K - X G C</text>
-          </symbol>
-          <!-- Duplicate symbols-->
-          <use class="text" xlink:href="#s-text"></use>
-          <use class="text" xlink:href="#s-text"></use>
-          <use class="text" xlink:href="#s-text"></use>
-          <use class="text" xlink:href="#s-text"></use>
-          <use class="text" xlink:href="#s-text"></use>
-        </svg>
-      </router-link>
-    </div>
+    <!--<div style="position: absolute;left: 43%;z-index: 2000;top: -23px;">-->
+      <!--<router-link to="/">-->
+        <!--<svg viewBox="0 0 120 50">-->
+          <!--&lt;!&ndash; Symbol&ndash;&gt;-->
+          <!--<symbol id="s-text">-->
+            <!--<text text-anchor="middle" x="50%" y="50%" dy=".35em">G M K - X G C</text>-->
+          <!--</symbol>-->
+          <!--&lt;!&ndash; Duplicate symbols&ndash;&gt;-->
+          <!--<use class="text" xlink:href="#s-text"></use>-->
+          <!--<use class="text" xlink:href="#s-text"></use>-->
+          <!--<use class="text" xlink:href="#s-text"></use>-->
+          <!--<use class="text" xlink:href="#s-text"></use>-->
+          <!--<use class="text" xlink:href="#s-text"></use>-->
+        <!--</svg>-->
+      <!--</router-link>-->
+    <!--</div>-->
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
       <navbar></navbar>

@@ -120,7 +120,7 @@ const marketData = {
         Notification.success({
           title: '彭博行情刷新成功',
           dangerouslyUseHTMLString: true,
-          duration: 6000,
+          duration: 0,
           message: `<div>${JSON.parse(event.data).Message}, <a style="cursor: pointer;color: #409EFF">点我查看</a></div>`,
           position: 'bottom-right',
           onClick: function () {
