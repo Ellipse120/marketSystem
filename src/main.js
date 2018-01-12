@@ -7,7 +7,7 @@ import store from './store'
 import '@/icons'
 import '@/permission'
 import 'babel-polyfill'
-// test issue
+// test issue fixed
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
