@@ -583,37 +583,37 @@
       },
 
       doRefreshBloomberg: function () {
-        // switch (this.ws.readyState) {
-        //   case WebSocket.CONNECTING:
-        //     this.$message({
-        //       type: 'info',
-        //       message: '正在连接'
-        //     })
-        //     break
-        //   case WebSocket.OPEN:
-        //     // this.$message.warning('请等待刷新成功后再试')
-        //     return false
-        //   case WebSocket.CLOSING:
-        //     this.$message({
-        //       type: 'info',
-        //       message: '正在关闭'
-        //     })
-        //     break
-        //   case WebSocket.CLOSED:
-        //     this.$message({
-        //       type: 'info',
-        //       message: '连接关闭'
-        //     })
-        //     break
-        //   default:
-        //     break
-        // }
+        switch (this.ws.readyState) {
+          case WebSocket.CONNECTING:
+            this.$message({
+              type: 'info',
+              message: '正在连接'
+            })
+            break
+          case WebSocket.OPEN:
+            // this.$message.warning('请等待刷新成功后再试')
+            doRequestBloombergQuotation(this.refreshBloomberg)
+              .then(response => {
+                this.$message.info('后台刷新中。。。')
+              })
+            return false
+          case WebSocket.CLOSING:
+            this.$message({
+              type: 'info',
+              message: '正在关闭'
+            })
+            break
+          case WebSocket.CLOSED:
+            this.$message({
+              type: 'error',
+              message: '失去连接，请稍后重试'
+            })
+            break
+          default:
+            break
+        }
         // setRefreshState('true')
 
-        doRequestBloombergQuotation(this.refreshBloomberg)
-          .then(response => {
-            this.$message.info('后台刷新中。。。')
-          })
         this.dialogBloombergVisible = false
       },
 

@@ -112,7 +112,7 @@ const marketData = {
       // commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
       state.ws.addEventListener('open', function (event) {
         state.ws.send(`user connected.`)
-        // Message.success('连接成功，彭博刷新成功后通知您')
+        Message.success('连接成功，可以刷新彭博行情')
       })
 
       state.ws.addEventListener('message', function (event) {
@@ -128,7 +128,6 @@ const marketData = {
             if (!val.router.currentRoute.path.includes('marketData')) {
               val.router.push('/marketData/index')
             } else {
-              // val.instance.getList()
               dispatch('allMDBDataList', {
                 CurrentPage: 1,
                 PageSize: 10,
@@ -148,18 +147,22 @@ const marketData = {
       })
 
       state.ws.addEventListener('close', function (event) {
-        if (event.code !== 1000) {
-          console.log(event.code + ' ：error code')
+        if (event.code !== 1000 && event.code !== 1006) {
+          // console.log(event.code + ' ：error code')
           commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
           dispatch('REFRESH_BLOOMBERG', { 'router': rootState.app.appRouter })
           if (!navigator.onLine) {
             Message.warning('网络出问题了。。。')
           }
         }
+        if (!event.wasClean) {
+          Message.error('socket 连接出错了。。。')
+        }
       })
 
       state.ws.addEventListener('error', function (event) {
-        Message.error(event.data)
+        // Message.error('后台出错。。。')
+        console.log(event)
       })
     }
   }

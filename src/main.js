@@ -12,6 +12,8 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+Object.defineProperty(Vue.prototype, '$lusai', { value: 'lusai' })
+
 new Vue({
   el: '#app',
   router,
