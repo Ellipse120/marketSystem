@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import app from './modules/app'
 import user from './modules/user'
 import permission from './modules/permission'
+import errorLog from './modules/errorLog'
 import bloomConfig from './modules/bloomConfig'
 import codeConfig from './modules/codeConfig'
 import marketData from './modules/market-data'
@@ -17,6 +18,7 @@ const store = new Vuex.Store({
     app,
     user,
     permission,
+    errorLog,
     bloomConfig,
     codeConfig,
     marketData,

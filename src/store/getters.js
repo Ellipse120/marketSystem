@@ -7,6 +7,7 @@ const getters = {
   addRouters: state => state.permission.addRouters,
   permission_routers: state => state.permission.routers,
   isShowDialog: state => state.bloomConfig.isShowDialog,
-  appRouter: state => state.app.appRouter
+  appRouter: state => state.app.appRouter,
+  errorLogs: state => state.errorLog.logs
 }
 export default getters

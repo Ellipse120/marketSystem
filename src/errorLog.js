@@ -1,8 +1,14 @@
 import Vue from 'vue'
 import store from './store'
 
-Vue.config.errorHandler = function (error, vm, info) {
+Vue.config.errorHandler = function (err, vm, info) {
   Vue.nextTick(() => {
+    store.dispatch('addErrorLog', {
+      err,
+      vm,
+      info,
+      url: window.location.href
+    })
   })
-  console.log(error, info)
+  console.error(err, info)
 }

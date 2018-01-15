@@ -2,23 +2,27 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
-        <!--<img class="user-avatar" :src="avatar +'?imageView2/1/w/80/h/80'">-->
-        <span>{{name}}</span>
-        <i class="el-icon-caret-bottom"></i>
-      </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <router-link class="inlineBlock" to="/">
-          <el-dropdown-item>
-            主页
+
+    <div class="right-menu">
+      <error-log class="errLog-container right-menu-item"></error-log>
+      <el-dropdown class="avatar-container" trigger="click">
+        <div class="avatar-wrapper">
+          <!--<img class="user-avatar" :src="avatar +'?imageView2/1/w/80/h/80'">-->
+          <span>{{name}}</span>
+          <i class="el-icon-caret-bottom"></i>
+        </div>
+        <el-dropdown-menu class="user-dropdown" slot="dropdown">
+          <router-link class="inlineBlock" to="/">
+            <el-dropdown-item>
+              主页
+            </el-dropdown-item>
+          </router-link>
+          <el-dropdown-item divided>
+            <span @click="logout" style="display:block;">退出</span>
           </el-dropdown-item>
-        </router-link>
-        <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">退出</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
   </el-menu>
 </template>
 
@@ -26,11 +30,13 @@
   import { mapGetters } from 'vuex'
   import Breadcrumb from '@/components/Breadcrumb'
   import Hamburger from '@/components/Hamburger'
+  import ErrorLog from '@/components/ErrorLog'
 
   export default {
     components: {
       Breadcrumb,
-      Hamburger
+      Hamburger,
+      ErrorLog
     },
     computed: {
       ...mapGetters([
@@ -67,19 +73,27 @@
       float: left;
       padding: 0 10px;
     }
-    .screenfull {
-      position: absolute;
-      right: 90px;
-      top: 16px;
-      color: red;
+    .errLog-container {
+      display: inline-block;
+      vertical-align: top;
+    }
+    .right-menu {
+      float: right;
+      height: 100%;
+      &:focus{
+        outline: none;
+      }
+      .right-menu-item {
+        display: inline-block;
+        padding-right: 3em;
+      }
     }
     .avatar-container {
       height: 50px;
-      display: inline-block;
-      position: absolute;
-      right: 35px;
+      right: 30px;
       .avatar-wrapper {
         cursor: pointer;
+        margin-top: 5px;
         position: relative;
         .user-avatar {
           width: 40px;
