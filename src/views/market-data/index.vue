@@ -591,10 +591,13 @@
             })
             break
           case WebSocket.OPEN:
-            // this.$message.warning('请等待刷新成功后再试')
             doRequestBloombergQuotation(this.refreshBloomberg)
               .then(response => {
+                this.dialogBloombergVisible = false
                 this.$message.info('后台刷新中。。。')
+              })
+              .catch(() => {
+                this.dialogBloombergVisible = false
               })
             return false
           case WebSocket.CLOSING:
@@ -613,8 +616,6 @@
             break
         }
         // setRefreshState('true')
-
-        this.dialogBloombergVisible = false
       },
 
       formatTradeDate: function (row, column, cellValue) {

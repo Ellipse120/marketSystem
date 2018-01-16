@@ -109,63 +109,61 @@ const marketData = {
     },
 
     REFRESH_BLOOMBERG: ({ commit, state, dispatch, rootState }, val) => {
-      if (state.ws !== null || undefined) {
-        // commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
-        state.ws.addEventListener('open', function (event) {
-          state.ws.send(`user connected.`)
-          Message.success('连接成功，可以刷新彭博行情')
-        })
+      // commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
+      state.ws.addEventListener('open', function (event) {
+        state.ws.send(`user connected.`)
+        // Message.success('连接成功，可以刷新彭博行情')
+      })
 
-        state.ws.addEventListener('message', function (event) {
-          // setRefreshState('false')
-          console.log(event.data)
-          Notification.success({
-            title: '彭博行情刷新成功',
-            dangerouslyUseHTMLString: true,
-            duration: 0,
-            message: `<div>${JSON.parse(event.data).Message}, <a style="cursor: pointer;color: #409EFF"><p>点我查看</p></a></div>`,
-            position: 'bottom-right',
-            onClick: function () {
-              if (!val.router.currentRoute.path.includes('marketData')) {
-                val.router.push('/marketData/index')
-              } else {
-                dispatch('allMDBDataList', {
-                  CurrentPage: 1,
-                  PageSize: 10,
-                  mDBCode: '',
-                  TradeDate: '',
-                  priceType: '',
-                  PriceValue: '',
-                  source: '',
-                  marketType: ''
-                })
-              }
-              // if (state.ws.readyState === WebSocket.OPEN) {
-              //   state.ws.close()
-              // }
+      state.ws.addEventListener('message', function (event) {
+        // setRefreshState('false')
+        console.log(event.data)
+        Notification.success({
+          title: '彭博行情刷新成功',
+          dangerouslyUseHTMLString: true,
+          duration: 0,
+          message: `<div>${JSON.parse(event.data).Message}, <a style="cursor: pointer;color: #409EFF"><p>点我查看</p></a></div>`,
+          position: 'bottom-right',
+          onClick: function () {
+            if (!val.router.currentRoute.path.includes('marketData')) {
+              val.router.push('/marketData/index')
+            } else {
+              dispatch('allMDBDataList', {
+                CurrentPage: 1,
+                PageSize: 10,
+                mDBCode: '',
+                TradeDate: '',
+                priceType: '',
+                PriceValue: '',
+                source: '',
+                marketType: ''
+              })
             }
-          })
-        })
-
-        state.ws.addEventListener('close', function (event) {
-          if (event.code !== 1000 && event.code !== 1006) {
-            // console.log(event.code + ' ：error code')
-            commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
-            dispatch('REFRESH_BLOOMBERG', { 'router': rootState.app.appRouter })
-            if (!navigator.onLine) {
-              Message.warning('网络出问题了。。。')
-            }
-          }
-          if (!event.wasClean) {
-            Message.error('socket 连接出错了。。。')
+            // if (state.ws.readyState === WebSocket.OPEN) {
+            //   state.ws.close()
+            // }
           }
         })
+      })
 
-        state.ws.addEventListener('error', function (event) {
-          // Message.error('后台出错。。。')
-          console.log(event)
-        })
-      }
+      state.ws.addEventListener('close', function (event) {
+        if (event.code !== 1000 && event.code !== 1006) {
+          // console.log(event.code + ' ：error code')
+          commit('REFRESH_BLOOMBERG', new WebSocket(wsURI))
+          dispatch('REFRESH_BLOOMBERG', { 'router': rootState.app.appRouter })
+          if (!navigator.onLine) {
+            Message.warning('网络出问题了。。。')
+          }
+        }
+        if (!event.wasClean) {
+          Message.error('socket 连接出错了。。。')
+        }
+      })
+
+      state.ws.addEventListener('error', function (event) {
+        // Message.error('后台出错。。。')
+        console.log(event)
+      })
     }
   }
 }

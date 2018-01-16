@@ -9,8 +9,6 @@ import {
   getMDBCodes
 } from '../../api/enum'
 
-import { Message } from 'element-ui'
-
 const enums = {
   state: {
     marketTypes: [],

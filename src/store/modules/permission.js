@@ -35,11 +35,12 @@ const permission = {
   },
 
   actions: {
-    GenerateRoutes ({ commit }, data) {
+    GenerateRoutes ({ commit, dispatch, rootState }, data) {
       return new Promise(resolve => {
         const { roles } = data
         let accessedRouters
         if (roles[0].Code.indexOf('Admin') >= 0) {
+          dispatch('REFRESH_BLOOMBERG', { 'router': rootState.app.appRouter })
           accessedRouters = asyncRouterMap
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles)

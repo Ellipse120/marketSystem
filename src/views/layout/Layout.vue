@@ -27,7 +27,7 @@
 
 <script>
   import { Navbar, Sidebar, AppMain } from '@/views/layout/components'
-  import { getRefreshState } from '../../utils/auth'
+  // import { getRefreshState } from '../../utils/auth'
 
   export default {
     name: 'layout',
@@ -43,7 +43,6 @@
     },
     mounted () {
       this.$store.commit('getRouter', this.$router)
-      this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
       // if (getRefreshState() === 'true') {
       // this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
       // }
