@@ -69,14 +69,6 @@ const enums = {
             commit('allMarketTypes', response.Data)
             resolve()
           })
-          .catch(err => {
-            Message({
-              message: `${err.response.data.Message}`,
-              type: 'error',
-              duration: 2 * 1000
-            })
-            reject(err)
-          })
       })
     },
     getPriceTypes: ({ commit }) => {
