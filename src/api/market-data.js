@@ -124,7 +124,7 @@ export function doRequestBloombergQuotation (query) {
     data: {
       'RequestUserToken': getToken(),
       'MDBCodes': query.mDBCode,
-      'priceType': query.priceType,
+      'PriceTypes': query.priceType,
       'MarketTypes': query.marketType,
       'StartDate': query.TradeDate[0],
       'EndDate': query.TradeDate[1]
