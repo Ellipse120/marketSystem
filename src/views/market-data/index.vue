@@ -204,7 +204,7 @@
             </el-form-item>
             <el-form-item label="交易日期" prop="TradeDate">
               <el-date-picker :disabled="dialogStatus ==='update'" v-model="mDBDataItem.TradeDate" type="date"
-                              disabledDate="return true" placeholder="选择日期"
+                              disabledDate="return true" placeholder="选择日期" value-format="yyyy-MM-dd"
                               style="width: 100%;">
               </el-date-picker>
             </el-form-item>
