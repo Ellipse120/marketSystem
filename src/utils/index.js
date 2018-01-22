@@ -54,7 +54,8 @@ export function formatTime (time, option) {
 }
 
 export function formatDateYMD (time) {
-  return time ? new Date(time).toISOString().split('T')[0] : null
+  // return time ? new Date(time).toISOString().split('T')[0] : null
+  return time ? time.split('T')[0] : null
 }
 
 export function formatDateYMDHMS (time) {
