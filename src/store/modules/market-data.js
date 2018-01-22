@@ -126,8 +126,10 @@ const marketData = {
             message: `<div>${JSON.parse(event.data).Message}, <a style="cursor: pointer;color: #409EFF"><p>点我查看</p></a></div>`,
             position: 'bottom-right',
             onClick: function () {
-              if (!val.router.currentRoute.path.includes('marketData')) {
-                val.router.push('/marketData/index')
+              const a = rootState.app.appRouter
+              if (!a.currentRoute.path.includes('marketData')) {
+                a.push('/marketData/index')
+                this.close()
               } else {
                 dispatch('allMDBDataList', {
                   CurrentPage: 1,
@@ -138,6 +140,8 @@ const marketData = {
                   PriceValue: '',
                   source: '',
                   marketType: ''
+                }).then(() => {
+                  this.close()
                 })
               }
               // if (state.ws.readyState === WebSocket.OPEN) {

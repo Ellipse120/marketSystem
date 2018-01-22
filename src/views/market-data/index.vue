@@ -8,19 +8,19 @@
           </el-input>
         </el-col>
         <el-col>
-          <el-select :clearable="true" placeholder="行情类型" v-model="listQuery.priceType" class="filter-item">
+          <el-select :clearable="true" placeholder="行情类型" filterable v-model="listQuery.priceType" class="filter-item">
             <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
         <el-col>
-          <el-select :clearable="true" placeholder="行情来源" v-model="listQuery.source" class="filter-item">
+          <el-select :clearable="true" placeholder="行情来源" filterable v-model="listQuery.source" class="filter-item">
             <el-option v-for="item in quotationSources" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
         </el-col>
         <el-col>
-          <el-select :clearable="true" placeholder="市场类型" v-model="listQuery.marketType" class="filter-item">
+          <el-select :clearable="true" placeholder="市场类型" filterable v-model="listQuery.marketType" class="filter-item">
             <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
@@ -209,7 +209,7 @@
               </el-date-picker>
             </el-form-item>
             <el-form-item label="行情类型">
-              <el-select class="filter-item" :disabled="dialogStatus ==='update'"
+              <el-select class="filter-item" :disabled="dialogStatus ==='update'" filterable
                          v-model="mDBDataItem.PriceType" placeholder="请选择" style="width: 100%;">
                 <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
@@ -237,12 +237,15 @@
           :close-on-click-modal="false">
           <el-form
             label-position="left"
-            label-width="100px"
+            label-width="120px"
+            ref="refreshBloombergForm"
+            :model="refreshBloomberg"
+            :rules="refreshBloombergRules"
             style='width: 400px; margin-left:40px;'>
-            <el-form-item label="行情编码">
+            <el-form-item label="行情编码" prop="mDBCode">
               <el-select class="filter-item"
                          v-model="refreshBloomberg.mDBCode"
-                         multiple
+                         multiple filterable
                          :clearable="true"
                          placeholder="请选择行情编码"
                          style="width: 100%;">
@@ -253,19 +256,19 @@
             </el-form-item>
             <el-form-item label="行情类型">
               <el-select :clearable="true" multiple placeholder="行情类型" v-model="refreshBloomberg.priceType"
-                         class="filter-item" style="width: 100%;">
+                         filterable class="filter-item" style="width: 100%;">
                 <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="市场类型">
               <el-select :clearable="true" multiple placeholder="市场类型" v-model="refreshBloomberg.marketType"
-                         class="filter-item" style="width: 100%;">
+                         filterable class="filter-item" style="width: 100%;">
                 <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="开始结束日期">
+            <el-form-item label="开始结束日期" prop="TradeDate">
               <el-date-picker
                 v-model="refreshBloomberg.TradeDate"
                 style="width: 100%;"
@@ -367,6 +370,16 @@
         dialogImportVisible: false,
         dialogBloombergVisible: false,
         rules: {},
+        refreshBloombergRules: {
+          mDBCode: [
+            { required: true, message: '请选择行情编码', trigger: 'blur' }
+          ],
+          TradeDate: [
+            { required: true, message: '请选择开始, 结束日期', trigger: 'blur' }
+          ],
+          priceType: [],
+          marketType: []
+        },
         previewData: {},
         isAllowImport: false,
         isImportSuccess: false,
@@ -583,38 +596,44 @@
       },
 
       doRefreshBloomberg: function () {
-        switch (this.ws.readyState) {
-          case WebSocket.CONNECTING:
-            this.$message({
-              type: 'info',
-              message: '正在连接'
-            })
-            break
-          case WebSocket.OPEN:
-            doRequestBloombergQuotation(this.refreshBloomberg)
-              .then(response => {
-                this.dialogBloombergVisible = false
-                this.$message.info('后台刷新中。。。')
-              })
-              .catch(() => {
-                this.dialogBloombergVisible = false
-              })
+        this.$refs['refreshBloombergForm'].validate((valid) => {
+          if (valid) {
+            switch (this.ws.readyState) {
+              case WebSocket.CONNECTING:
+                this.$message({
+                  type: 'info',
+                  message: '正在连接'
+                })
+                break
+              case WebSocket.OPEN:
+                doRequestBloombergQuotation(this.refreshBloomberg)
+                  .then(response => {
+                    this.dialogBloombergVisible = false
+                    this.$message.info('后台刷新中。。。')
+                  })
+                  .catch(() => {
+                    this.dialogBloombergVisible = false
+                  })
+                break
+              case WebSocket.CLOSING:
+                this.$message({
+                  type: 'info',
+                  message: '正在关闭'
+                })
+                break
+              case WebSocket.CLOSED:
+                this.$message({
+                  type: 'error',
+                  message: '失去连接，请稍后重试'
+                })
+                break
+              default:
+                break
+            }
+          } else {
             return false
-          case WebSocket.CLOSING:
-            this.$message({
-              type: 'info',
-              message: '正在关闭'
-            })
-            break
-          case WebSocket.CLOSED:
-            this.$message({
-              type: 'error',
-              message: '失去连接，请稍后重试'
-            })
-            break
-          default:
-            break
-        }
+          }
+        })
         // setRefreshState('true')
       },
 

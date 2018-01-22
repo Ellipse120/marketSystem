@@ -143,7 +143,7 @@
           </el-form-item>
           <el-form-item label="市场类型">
             <el-select class="filter-item" v-model="codeConfigItem.MarketType" placeholder="请选择" :clearable="true"
-                       style="width: 100%;" disabled>
+                       filterable style="width: 100%;" disabled>
               <el-option v-for="item in marketTypes" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
             </el-select>

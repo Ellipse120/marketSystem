@@ -8,7 +8,7 @@
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="行情类型" v-model="listQuery.priceType" class="filter-item" :clearable="true">
+          <el-select placeholder="行情类型" v-model="listQuery.priceType" class="filter-item" filterable :clearable="true">
             <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
             </el-option>
           </el-select>
@@ -18,7 +18,7 @@
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-select placeholder="请求类型" v-model="listQuery.requestType" class="filter-item" :clearable="true">
+          <el-select placeholder="请求类型" v-model="listQuery.requestType" class="filter-item" filterable :clearable="true">
             <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description"
                        :value="item.Key">
             </el-option>
@@ -202,7 +202,7 @@
           </el-form-item>
           <el-form-item label="行情类型">
             <el-select class="filter-item" v-model="bloombergConfigItem.PriceType" placeholder="请选择行情类型"
-                       style="width: 100%;">
+                       filterable style="width: 100%;">
               <el-option v-for="item in priceTypes" :key="item.Key" :label="item.Description" :value="item.Key">
               </el-option>
             </el-select>
@@ -212,7 +212,7 @@
           </el-form-item>
           <el-form-item label="请求类型">
             <el-select class="filter-item" v-model="bloombergConfigItem.RequestType" placeholder="请选择请求类型"
-                       style="width: 100%;" @change="bloombergRequestType">
+                       filterable style="width: 100%;" @change="bloombergRequestType">
               <el-option v-for="item in bloombergRequestTypes" :key="item.Key" :label="item.Description"
                          :value="item.Key">
               </el-option>
@@ -224,7 +224,7 @@
           <el-form-item label="合成转仓预设">
             <el-select class="filter-item"
                        v-model="bloombergConfigItem.Warehouse"
-                       :clearable="true"
+                       :clearable="true" filterable
                        placeholder="请选择市场活动类型"
                        style="width: 100%;">
               <el-option v-for="item in warehouses" :key="item.Key" :label="item.Description" :value="item.Key">
