@@ -80,6 +80,7 @@
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.loading = false
               this.$router.push({ path: '/' })
+              location.reload()
               const roles = this.$store.getters.roles
               this.$store.dispatch('GenerateRoutes', { roles })
                 .then(() => {

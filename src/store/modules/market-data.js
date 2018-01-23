@@ -117,7 +117,6 @@ const marketData = {
         })
 
         state.ws.addEventListener('message', function (event) {
-          // setRefreshState('false')
           console.log(event.data)
           Notification.success({
             title: '彭博行情刷新成功',
