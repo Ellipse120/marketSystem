@@ -236,12 +236,13 @@
           :visible.sync="dialogBloombergVisible"
           :close-on-click-modal="false">
           <el-form
-            label-position="left"
-            label-width="120px"
+            label-position="right"
+            label-width="110px"
+            :status-icon="true"
             ref="refreshBloombergForm"
             :model="refreshBloomberg"
             :rules="refreshBloombergRules"
-            style='width: 400px; margin-left:40px;'>
+            style='width: 410px; margin-left: 35px;'>
             <el-form-item label="行情编码" prop="mDBCode">
               <el-select class="filter-item"
                          v-model="refreshBloomberg.mDBCode"
@@ -268,14 +269,14 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="开始结束日期" prop="TradeDate">
+            <el-form-item label="起止日期" prop="TradeDate">
               <el-date-picker
                 v-model="refreshBloomberg.TradeDate"
                 style="width: 100%;"
                 type="daterange"
                 value-format="yyyy-MM-dd"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
+                start-placeholder="起始日期"
+                end-placeholder="截止日期"
                 default-value="2018-01-01">
               </el-date-picker>
             </el-form-item>
