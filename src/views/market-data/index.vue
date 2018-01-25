@@ -424,7 +424,6 @@
         this.listLoading = true
         this.$store.dispatch('allMDBDataList', this.listQuery)
           .then(() => {
-            // this.tableData = this.allMDBDataList
             this.listLoading = false
           })
       },
