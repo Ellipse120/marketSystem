@@ -273,6 +273,7 @@
                 v-model="refreshBloomberg.TradeDate"
                 style="width: 100%;"
                 type="daterange"
+                value-format="yyyy-MM-dd"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 default-value="2018-01-01">
@@ -606,6 +607,7 @@
                 })
                 break
               case WebSocket.OPEN:
+                debugger
                 doRequestBloombergQuotation(this.refreshBloomberg)
                   .then(response => {
                     this.dialogBloombergVisible = false
