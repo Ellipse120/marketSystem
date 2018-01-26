@@ -66,8 +66,7 @@ service.interceptors.response.use(
         type: 'error',
         duration: 2 * 1000
       })
-      if (error.response.data.Message === 'token错误！') {
-        // TODO 超时处理目前只能先这么干
+      if (error.response.status === 501) {
         MessageBox.confirm('你已被登出，请重新登录', '确定', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
