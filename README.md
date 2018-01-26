@@ -1,6 +1,6 @@
 # 行情系统前端
 
-> Build with Element UI & iViewUI & axios & iconfont & permission control & lint
+> Build with Element UI & axios & iconfont & permission control & lint
 
 ## How to Use
 
@@ -8,14 +8,14 @@
 # Install dependencies
 npm install
 
-# serve with hot reload at localhost:9528
+# serve with webpack dev server at localhost:9528
 npm run dev
 
 # build for production with minification
-npm run build
+npm run build:prod
 
 # build for production and view the bundle analyzer report
-npm run build --report
+npm run build:prod --report
 ```
 
 ### Git Commit Messages
@@ -47,4 +47,4 @@ npm run build --report
 ## 配置 gitLab DevOps 
 
 # Contact Me
-路赛(sai.lu@itdev.xiangguang.com)
+Mail(ellipse120@gmail.com)

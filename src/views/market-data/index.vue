@@ -608,7 +608,6 @@
                 })
                 break
               case WebSocket.OPEN:
-                debugger
                 doRequestBloombergQuotation(this.refreshBloomberg)
                   .then(response => {
                     this.dialogBloombergVisible = false
