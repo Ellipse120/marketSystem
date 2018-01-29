@@ -9,7 +9,7 @@ import {
 import { getToken } from '@/utils/auth'
 import { Message, Notification } from 'element-ui'
 
-const wsURI = 'ws://192.168.125.63:12344?token=' + getToken()
+const wsURI = 'ws://http://10.5.0.33:23386?token=' + getToken()
 
 const marketData = {
   state: {
