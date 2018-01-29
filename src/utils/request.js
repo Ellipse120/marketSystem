@@ -66,7 +66,7 @@ service.interceptors.response.use(
         type: 'error',
         duration: 2 * 1000
       })
-      if (error.response.status === 501) {
+      if (error.response.status === 401) {
         MessageBox.confirm('你已被登出，请重新登录', '确定', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',

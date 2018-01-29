@@ -159,7 +159,7 @@
         headers: {
           'token': getToken()
         },
-        uploadURI: 'http://192.168.125.63:12345/api/File/Upload',
+        uploadURI: 'http://10.5.0.33:23386/api/File/Upload',
         uploadRecordId: '',
         xlsSheets: [],
         xlsSheet: '',
