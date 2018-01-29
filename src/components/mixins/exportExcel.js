@@ -7,7 +7,7 @@ export const exportExcel = {
   methods: {
     doExportExcelData (data) {
       const link = document.createElement('a')
-      link.href = `http://10.5.0.33:23386/api/File/DownLoad/${data}`
+      link.href = `${process.env.BASE_API}/File/DownLoad/${data}`
       link.click()
     }
   }
