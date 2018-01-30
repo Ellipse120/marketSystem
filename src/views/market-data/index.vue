@@ -650,7 +650,12 @@
       },
 
       handleSelectionChange: function (val) {
-        this.multipleSelection = val.map(a => a.Id)
+        this.multipleSelection = val.filter(b => {
+          if (b.Source === 1) {
+            return true
+          }
+          this.$refs.marketDataTable.toggleRowSelection(b)
+        }).map(a => a.Id)
       }
     }
   }
