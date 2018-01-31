@@ -610,7 +610,6 @@
               case WebSocket.OPEN:
                 doRequestBloombergQuotation(this.refreshBloomberg)
                   .then(response => {
-                    this.dialogBloombergVisible = false
                     this.$message.info('后台刷新中。。。')
                   })
                   .catch(() => {
@@ -632,6 +631,7 @@
               default:
                 break
             }
+            this.dialogBloombergVisible = false
           } else {
             return false
           }
