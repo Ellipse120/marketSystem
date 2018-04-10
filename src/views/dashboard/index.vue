@@ -17,14 +17,23 @@
         </el-card>
       </el-col>
     </el-row>
+    <upload-excel-in-front-page @on-selected-file="onSelectedFile"></upload-excel-in-front-page>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
 
+  import UploadExcelInFrontPage from '@/components/UploadExcelInFrontPage/index'
+
   export default {
     name: 'dashboard',
+    components: { UploadExcelInFrontPage },
+    methods: {
+      onSelectedFile (data) {
+        console.table(data.results)
+      }
+    },
     computed: {
       ...mapGetters([
         'name',
