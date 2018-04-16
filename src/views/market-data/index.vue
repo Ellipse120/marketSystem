@@ -411,7 +411,7 @@
         }
       },
       hasPermission () {
-        if (this.roles[0] !== undefined) {
+        if (Array.isArray(this.roles) && this.roles[0] !== undefined) {
           return this.roles[0].Code.indexOf('Admin') >= 0
         }
       },
