@@ -32,8 +32,7 @@
 <style lang="scss" scoped>
   .gmk-logo {
     position: absolute;
-    /*top: 95vh;*/
-    bottom: 3vh;
+    top: 95vh;
     right: 20px;
 
   &:hover {

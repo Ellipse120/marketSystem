@@ -56,6 +56,26 @@ export const constantRouterMap = [
         meta: { title: 'Form', icon: 'form' }
       }
     ]
+  },
+
+  {
+    path: '/blog',
+    component: Layout,
+    meta: { title: '写博客', icon: 'form' },
+    children: [
+      {
+        path: 'index',
+        name: 'blog',
+        component: _import('butterCMS/index'),
+        meta: { title: 'blog', icon: 'form' }
+      },
+      {
+        path: 'post/:slug',
+        name: 'blogPost',
+        component: _import('butterCMS/blog-post'),
+        meta: { title: 'post-blog', icon: 'form' }
+      }
+    ]
   }
 ]
 
