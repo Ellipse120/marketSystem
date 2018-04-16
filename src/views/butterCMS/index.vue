@@ -1,8 +1,8 @@
 <template>
     <div class="app-container">
       <h1>{{ postTitle }}</h1>
-      <el-row>
-        <el-col :span="8" v-for="(post, index) in posts" :key="post.slug + '_' + index" :offset="index > 0 ? 1 : 0">
+      <el-row type="flex" :gutter="6">
+        <el-col :span="8" v-for="(post, index) in posts" :key="post.slug + '_' + index">
           <el-card>
             <router-link :to="'/blog' + post.slug">
               <article class="media">
@@ -22,9 +22,7 @@
 </template>
 
 <script>
-  import Butter from 'buttercms'
-
-  const butter = Butter(`8ccebf10eeabaad22e7486ba94d852d386bd3906`)
+  import { butter } from '@/buttercms'
 
   export default {
     name: '',
