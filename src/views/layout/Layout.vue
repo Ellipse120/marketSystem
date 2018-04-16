@@ -4,14 +4,12 @@
     <div class="main-container">
       <navbar></navbar>
       <app-main></app-main>
-      <img class="gmk-logo" src="../../assets/xgc.png" alt="" title="Welcome">
     </div>
   </div>
 </template>
 
 <script>
   import { Navbar, Sidebar, AppMain } from '@/views/layout/components'
-  // import { getRefreshState } from '../../utils/auth'
 
   export default {
     name: 'layout',
@@ -27,9 +25,6 @@
     },
     mounted () {
       this.$store.commit('getRouter', this.$router)
-      // if (getRefreshState() === 'true') {
-      // this.$store.dispatch('REFRESH_BLOOMBERG', { 'router': this.$router })
-      // }
     }
   }
 </script>
@@ -44,14 +39,4 @@
     width: 100%;
   }
 
-  .gmk-logo {
-    position: absolute;
-    top: 95vh;
-    right: 20px;
-
-    &:hover {
-      transform: rotateZ(360deg);
-      transition: all 0.4s ease-in;
-    }
-  }
 </style>

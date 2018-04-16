@@ -4,6 +4,7 @@
       <!-- <router-view :key="key"></router-view> -->
       <router-view></router-view>
     </transition>
+    <img class="gmk-logo" src="../../../assets/xgc.png" alt="" title="Welcome">
   </section>
 </template>
 
@@ -27,3 +28,17 @@
     }
   }
 </script>
+
+<style lang="scss" scoped>
+  .gmk-logo {
+    position: absolute;
+    /*top: 95vh;*/
+    bottom: 3vh;
+    right: 20px;
+
+  &:hover {
+     transform: rotateZ(360deg);
+     transition: all 0.4s ease-in;
+   }
+  }
+</style>

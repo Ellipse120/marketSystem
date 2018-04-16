@@ -43,6 +43,19 @@ export const constantRouterMap = [
         }
       }
     ]
+  },
+
+  {
+    path: '/form',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Form',
+        component: _import('form/index'),
+        meta: { title: 'Form', icon: 'form' }
+      }
+    ]
   }
 ]
 
