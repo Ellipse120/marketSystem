@@ -30,7 +30,8 @@
     name: 'blogPost',
     created () {
       this.getPost()
-      this.getCategories()
+      // this.getCategories()
+      // this.getPostsByCategory()
     },
     data () {
       return {
@@ -52,12 +53,21 @@
             console.log('List of Categories:')
             console.log(res.data.data)
           })
+      },
+
+      getPostsByCategory () {
+        butter.category.retrieve('example-category', {
+          include: 'Vue'
+        })
+          .then((res) => {
+            console.log('Posts with specific category:')
+            console.log(res)
+          })
       }
     },
     watch: {
       $route (to, from) {
         this.getPost()
-        this.getCategories()
       }
     }
   }
