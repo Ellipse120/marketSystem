@@ -14,9 +14,15 @@ npm run dev
 # build for production with minification
 npm run build:prod
 
-# build for production and view the bundle analyzer report
+# build for production and view the bundle analyzing report
 npm run build:prod --report
 ```
+
+-----
+
+## [ButterCMS](https://buttercms.com), in this project, integrate the Awesome ButterCMS, so we can add a blog or CMS.
+
+-----
 
 ### Git Commit Messages
 
@@ -41,10 +47,6 @@ npm run build:prod --report
     * :arrow_up: `:arrow_up:` when upgrading dependencies
     * :arrow_down: `:arrow_down:` when downgrading dependencies
     * :shirt: `:shirt:` when removing linter warnings
-
-
-#  TODO
-## 配置 gitLab DevOps 
 
 # Contact Me
 Mail(ellipse120@gmail.com)
