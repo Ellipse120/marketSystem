@@ -4,7 +4,7 @@
       <el-row type="flex" :gutter="6">
         <el-col :span="8" v-for="(post, index) in posts" :key="post.slug + '_' + index">
           <el-card>
-            <router-link :to="'/blog' + post.slug">
+            <router-link :to="'/blog/' + post.slug">
               <article class="media">
                 <figure>
                   <img v-if="post.featured_image" :src="post.featured_image" :alt="post.summary" class="image">
@@ -38,7 +38,6 @@
     methods: {
       lists () {
         butter.post.list({ page: 1, page_size: 10 }).then(response => {
-          console.log(response)
           this.posts = response.data.data
         })
       }

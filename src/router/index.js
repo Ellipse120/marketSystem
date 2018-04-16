@@ -70,7 +70,7 @@ export const constantRouterMap = [
         meta: { title: 'blog', icon: 'form' }
       },
       {
-        path: 'post/:slug',
+        path: ':slug',
         name: 'blogPost',
         component: _import('butterCMS/blog-post'),
         meta: { title: 'post-blog', icon: 'form' }

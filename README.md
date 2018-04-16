@@ -1,4 +1,4 @@
-# 行情系统前端
+# MarketSystem
 
 > Build with Element UI & axios & iconfont & permission control & lint
 
