@@ -2,7 +2,7 @@
   <div class="app-container">
     <div v-if="post.data">
       <h1>{{ post.data.title }}</h1>
-      <el-tag v-for="(tag, index) in post.data.tags" :key="index">{{tag.name}}</el-tag>
+      <el-tag v-for="(tag, index) in post.data.tags" :key="tag + '_' + index">{{tag.name}}</el-tag>
       <h4>By: {{ post.data.author.first_name }} {{ post.data.author.last_name }}</h4>
       <div v-html="post.data.body"></div>
       <hr>
@@ -17,10 +17,9 @@
             Next: {{ post.meta.next_post.title }}
             <i class="el-icon-arrow-right el-icon--right"></i></el-button>
         </router-link>
-
       </el-button-group>
     </div>
-    <div v-else>error</div>
+    <div v-else>No data</div>
   </div>
 </template>
 
@@ -31,6 +30,7 @@
     name: 'blogPost',
     created () {
       this.getPost()
+      this.getCategories()
     },
     data () {
       return {
@@ -41,15 +41,23 @@
       getPost () {
         butter.post.retrieve(this.$route.params.slug)
           .then(response => {
-            console.log(response.data)
             this.post = response.data
           })
           .catch(res => console.log(res))
+      },
+
+      getCategories () {
+        butter.category.list()
+          .then((res) => {
+            console.log('List of Categories:')
+            console.log(res.data.data)
+          })
       }
     },
     watch: {
       $route (to, from) {
         this.getPost()
+        this.getCategories()
       }
     }
   }
