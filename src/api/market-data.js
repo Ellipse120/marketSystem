@@ -3,6 +3,19 @@ import { getToken } from '@/utils/auth'
 
 const baseUrl = '/MDBData/'
 
+function commonParams (query) {
+  return {
+    'query.mDBCode': query.mDBCode,
+    'query.startTradeDate': query.TradeDate[0] || '',
+    'query.endTradeDate': query.TradeDate[1] || '',
+    'query.priceType': query.priceType,
+    'query.source': query.source,
+    'query.marketType': query.marketType,
+    'query.pagination.currentPage': query.CurrentPage,
+    'query.pagination.pageSize': query.PageSize
+  }
+}
+
 /**
  * 获取市场行情列表
  * */
@@ -13,16 +26,7 @@ export function getAllMDBData (query) {
   return request({
     url: `${baseUrl}QueryList`,
     method: 'get',
-    params: {
-      'query.mDBCode': query.mDBCode,
-      'query.startTradeDate': query.TradeDate[0],
-      'query.endTradeDate': query.TradeDate[1],
-      'query.priceType': query.priceType,
-      'query.source': query.source,
-      'query.marketType': query.marketType,
-      'query.pagination.currentPage': query.CurrentPage,
-      'query.pagination.pageSize': query.PageSize
-    }
+    params: commonParams(query)
   })
 }
 
@@ -101,16 +105,7 @@ export function doExportMDNDataExcel (query) {
   return request({
     url: `${baseUrl}ExportMDBDataExcel`,
     method: 'get',
-    params: {
-      'query.mDBCode': query.mDBCode,
-      'query.startTradeDate': query.TradeDate[0],
-      'query.endTradeDate': query.TradeDate[1],
-      'query.priceType': query.priceType,
-      'query.source': query.source,
-      'query.marketType': query.marketType,
-      'query.pagination.currentPage': query.CurrentPage,
-      'query.pagination.pageSize': query.PageSize
-    }
+    params: commonParams(query)
   })
 }
 
