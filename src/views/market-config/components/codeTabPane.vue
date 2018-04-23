@@ -302,6 +302,10 @@
               this.tableData = this.allMDBCodeConfigs
               this.listLoading = false
             })
+              .catch(error => {
+                console.log(error)
+                this.listLoading = false
+              })
             break
           case 'MDBForexCode':
             this.listQuery.marketType = 2
@@ -309,6 +313,10 @@
               this.tableData = this.allMDBCodeConfigs
               this.listLoading = false
             })
+              .catch(error => {
+                console.log(error)
+                this.listLoading = false
+              })
             break
           case 'MDBIborCode':
             this.listQuery.marketType = 3
@@ -316,6 +324,10 @@
               this.tableData = this.allMDBCodeConfigs
               this.listLoading = false
             })
+              .catch(error => {
+                console.log(error)
+                this.listLoading = false
+              })
             break
         }
       },

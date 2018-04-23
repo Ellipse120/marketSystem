@@ -2,7 +2,7 @@
   "name": "market-system",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "Market System Front Vue End",
+  "description": "Market System Front End",
   "author": "Lusai <ellipse120@gmail.com>",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -16,7 +16,7 @@
   "dependencies": {
     "axios": "0.17.1",
     "buttercms": "^1.1.1",
-    "element-ui": "2.2.2",
+    "element-ui": "^2.3.6",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",

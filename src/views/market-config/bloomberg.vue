@@ -413,6 +413,10 @@
             this.tableData = this.allMDBBloombergConfigList
             this.listLoading = false
           })
+          .catch(error => {
+            console.log(error)
+            this.listLoading = false
+          })
       },
 
       handleSearch: function () {
