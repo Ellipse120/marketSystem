@@ -1,5 +1,7 @@
 # MarketSystem
 
+[![CodeFactor](https://www.codefactor.io/repository/github/ellipse120/marketsystem/badge)](https://www.codefactor.io/repository/github/ellipse120/marketsystem)
+
 > Build with Element UI & axios & iconfont & permission control & lint
 
 ## How to Use
