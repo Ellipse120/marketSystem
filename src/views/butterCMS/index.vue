@@ -19,7 +19,7 @@
             </el-card>
           </el-col>
         </el-row>
-        <div class="page">
+        <div class="page" v-cloak>
           <h4>Hover the card</h4>
           <ul>
             <li> <<< </li>
