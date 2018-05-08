@@ -100,7 +100,7 @@
     position: absolute;
     top: 95%;
     width: 100%;
-    left: 0%;
+    left: 0;
     height: 20%;
     z-index: 30;
   }
@@ -113,12 +113,12 @@
   }
 
   li:nth-child(1) {
-    left: 35%;
+    left: 45%;
     animation: simple1 1s linear infinite;
   }
 
   li:nth-child(2) {
-    right: 25%;
+    right: 35%;
     animation: simple2 1s linear infinite;
   }
 
@@ -136,7 +136,7 @@
       opacity: 0.1;
     }
     100% {
-      top: 0%;
+      top: 0;
     }
   }
 
