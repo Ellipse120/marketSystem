@@ -2,7 +2,7 @@
     <div class="app-container">
       <h1>{{ postTitle }}</h1>
       <div>
-        <el-row type="flex" :gutter="6" class="wrapper">
+        <el-row type="flex" :gutter="6" align="middle">
           <el-col :span="8" v-for="(post, index) in posts" :key="post.slug + '_' + index" class="container">
             <el-card>
               <router-link :to="'/blog/' + post.slug">
@@ -73,10 +73,6 @@
 
   .clearfix:after {
     clear: both
-  }
-
-  .wrapper {
-    align-items: center;
   }
 
   .container {
