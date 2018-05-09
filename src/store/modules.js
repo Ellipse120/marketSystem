@@ -8,6 +8,10 @@ requireModule.keys().forEach(fileName => {
 
   const moduleName = camelCase(fileName.replace(/(\.\/|\.js)/g, ''))
   modules[moduleName] = requireModule(fileName).default
+  // modules[moduleName] = {
+  //   namespaced: true,
+  //   ...requireModule(fileName).default
+  // }
 })
 
 export default modules
